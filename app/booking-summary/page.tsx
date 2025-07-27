@@ -1,13 +1,13 @@
 'use client'
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Image from 'next/image';
 
 // Import React Icons
 import { MdLocationOn, MdCalendarMonth, MdAccessTime } from 'react-icons/md';
 import { FaUsers, FaEuroSign } from 'react-icons/fa';
 
-export default function BookingSummary() {
+function BookingSummaryContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -268,5 +268,12 @@ export default function BookingSummary() {
         </div>
       </div>
     </div>
+  );
+}
+export default function BookingSummary() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookingSummaryContent />
+    </Suspense>
   );
 }
