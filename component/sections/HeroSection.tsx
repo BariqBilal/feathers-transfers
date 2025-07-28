@@ -23,7 +23,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ height = '80vh', bgImage, tit
       {/* Content at the top */}
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 text-white text-center pt-32">
         {/* Title and Description: visible only on large screens */}
-        <h1 className="hidden lg:block text-2xl md:text-5xl font-bold mb-4">{title}</h1>
+        <h1 className=" lg:block text-2xl md:text-5xl font-bold mb-4">{title}</h1>
         <p className="hidden lg:block text-xl sm:text-xl">{description}</p>
       </div>
 
