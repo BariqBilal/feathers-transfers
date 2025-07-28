@@ -17,9 +17,9 @@ export default function Navbar() {
       href: '#',
       dropdownItems: [
         { name: 'Geneva Airport', href: '/airport-geneva' },
-        { name: 'Chambery Airport', href: '/airport-b' },
-        { name: 'Grenoble Alpes-Isère Airport', href: '/airport-c' },
-        { name: 'Lyon Saint-Exupéry Airport', href:'/airport-c' },
+        { name: 'Chambery Airport', href: '/chambery-airport' },
+        { name: 'Grenoble Alpes-Isère Airport', href: '/grenoble-airport' },
+        { name: 'Lyon Saint-Exupéry Airport', href:'/lyon-airport' },
       ],
     },
     { name: 'Transfer Advice', href: '/transfer-advice' },

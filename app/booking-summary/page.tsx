@@ -2,6 +2,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import Image from 'next/image';
+import axios from 'axios';
 
 // Import React Icons
 import { MdLocationOn, MdCalendarMonth, MdAccessTime } from 'react-icons/md';
@@ -27,6 +28,7 @@ function BookingSummaryContent() {
   const supplements = parseFloat(searchParams.get('supplements') || '0');
   const totalPrice = parseFloat(searchParams.get('totalPrice') || '0');
   const supplementDetails = JSON.parse(searchParams.get('supplementDetails') || '[]');
+  const catTitle = searchParams.get('catTitle') || 'Standard Sedan';
   
   // Return journey pricing (if applicable)
   const returnBasePrice = parseFloat(searchParams.get('returnBasePrice') || '0');
@@ -86,24 +88,87 @@ function BookingSummaryContent() {
     ? formatPrice(totalPrice + returnTotalPrice)
     : formatPrice(totalPrice);
 
+  // State for form data
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    email: '',
+    accommodationAddress: '',
+    accommodationWebsite: '',
+    specialRequests: ''
+  });
+
   // State for terms and conditions checkbox
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  // Handle form input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!agreedToTerms) {
       alert('Please agree to the Terms and Conditions.');
       return;
     }
-    // Here you would typically send the booking data to your backend
-    console.log('Booking submitted!', {
-      journey1,
-      journey2,
-      totalAmount,
-    });
-    // Redirect to confirmation page or show success message
-    // router.push('/booking-confirmation');
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      // Prepare the API request data
+      const requestData = {
+        from_location: pickupLocation,
+        to_location: destinationLocation,
+        return_from_location: tripType === 'roundTrip' ? destinationLocation : '',
+        return_to_location: tripType === 'roundTrip' ? pickupLocation : '',
+        date_time: `${selectedDate}T${selectedTime}:00`,
+        return_date_time: tripType === 'roundTrip' ? `${returnDate}T${returnTime}:00` : '',
+        price: (totalPrice + (tripType === 'roundTrip' ? returnTotalPrice : 0)).toString(),
+        cat_title: catTitle,
+        email: formData.email,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone_number: formData.phoneNumber,
+        accommodation_address: formData.accommodationAddress,
+        accommodation_website: formData.accommodationWebsite,
+        special_requests: formData.specialRequests,
+        adults: adults,
+        children: children
+      };
+
+      // Make the API call
+      const response = await axios.post(
+        'https://devsquare-apis.vercel.app/api/transfers',
+        requestData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        router.push('/booking-confirmation');
+      } else {
+        throw new Error('Failed to submit booking');
+      }
+    } catch (error) {
+      console.error('Booking submission error:', error);
+      setSubmitError('Failed to submit booking. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -236,37 +301,45 @@ function BookingSummaryContent() {
                   type="text"
                   id="firstName"
                   name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="surname" className="block text-sm font-medium text-gray-700 mb-1">Surname</label>
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
                 <input
                   type="text"
-                  id="surname"
-                  name="surname"
+                  id="lastName"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="mobileNumber" className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
                 <input
                   type="tel"
-                  id="mobileNumber"
-                  name="mobileNumber"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   placeholder="+44"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="emailAddress" className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
                 <input
                   type="email"
-                  id="emailAddress"
-                  name="emailAddress"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
@@ -281,6 +354,8 @@ function BookingSummaryContent() {
                 <textarea
                   id="accommodationAddress"
                   name="accommodationAddress"
+                  value={formData.accommodationAddress}
+                  onChange={handleInputChange}
                   rows={3}
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 ></textarea>
@@ -291,6 +366,8 @@ function BookingSummaryContent() {
                   type="url"
                   id="accommodationWebsite"
                   name="accommodationWebsite"
+                  value={formData.accommodationWebsite}
+                  onChange={handleInputChange}
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
@@ -299,6 +376,8 @@ function BookingSummaryContent() {
                 <textarea
                   id="specialRequests"
                   name="specialRequests"
+                  value={formData.specialRequests}
+                  onChange={handleInputChange}
                   rows={3}
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 ></textarea>
@@ -379,15 +458,20 @@ function BookingSummaryContent() {
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Button and Error Message */}
           <div className="px-4 pb-4 sm:px-6 sm:pb-6 mt-8">
+            {submitError && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                {submitError}
+              </div>
+            )}
             <button
               type="submit"
               onClick={handleSubmit}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 ease-in-out text-lg"
-              disabled={!agreedToTerms}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 ease-in-out text-lg disabled:opacity-50"
+              disabled={!agreedToTerms || isSubmitting}
             >
-              {agreedToTerms ? 'Confirm Booking' : 'Please accept Terms & Conditions'}
+              {isSubmitting ? 'Submitting...' : agreedToTerms ? 'Confirm Booking' : 'Please accept Terms & Conditions'}
             </button>
           </div>
         </div>

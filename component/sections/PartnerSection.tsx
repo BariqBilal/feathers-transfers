@@ -9,7 +9,7 @@ const PartnerSection: React.FC = () => {
         {/* Image Column */}
         <div className="flex justify-center lg:justify-start">
           <Image
-            src="/trusted.jpg" // IMPORTANT: Replace with your actual image path (e.g., /images/la-plagne-ski.jpg)
+            src="/sec1.PNG" // IMPORTANT: Replace with your actual image path (e.g., /images/la-plagne-ski.jpg)
             alt="La Plagne Ski Resort"
             width={600} // Specify the width of the image
             height={400} // Specify the height of the image
