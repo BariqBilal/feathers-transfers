@@ -22,7 +22,7 @@ const ServiceSection: React.FC = () => {
   ];
 
   return (
-    <section className="pb-16 pt-32 bg-white"> {/* Section container with padding and white background */}
+    <section className="py-16 bg-white"> {/* Section container with padding and white background */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12 font-inter">
           Our Services

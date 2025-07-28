@@ -16,9 +16,10 @@ export default function Navbar() {
       name: 'Airports we serve',
       href: '#',
       dropdownItems: [
-        { name: 'Airport A', href: '/airport-a' },
-        { name: 'Airport B', href: '/airport-b' },
-        { name: 'Airport C', href: '/airport-c' },
+        { name: 'Geneva Airport', href: '/airport-geneva' },
+        { name: 'Chambery Airport', href: '/airport-b' },
+        { name: 'Grenoble Alpes-Isère Airport', href: '/airport-c' },
+        { name: 'Lyon Saint-Exupéry Airport', href:'/airport-c' },
       ],
     },
     { name: 'Transfer Advice', href: '/transfer-advice' },
@@ -47,7 +48,7 @@ export default function Navbar() {
             />
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:block z-50">
             <div className="ml-10 flex items-baseline space-x-4">
               {navItems.map((item) =>
                 item.dropdownItems ? (

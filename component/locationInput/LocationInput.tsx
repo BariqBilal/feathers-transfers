@@ -49,6 +49,19 @@ export default function LocationInput() {
     { value: 'Other', label: 'Other: Please specify' },
   ];
 
+  // Base prices from the Excel file
+  const basePrices: Record<string, Record<number, number>> = {
+    'CMF': { 1: 317, 2: 317, 3: 317, 4: 317, 5: 317*1.05, 6: 317*1.04, 7: 317*1.03, 8: 317*1.02, 9: 317*1.8, 10: 317*1.05, 11: 317*1.04, 12: 317*1.03 },
+    'GVA': { 1: 360, 2: 360, 3: 360, 4: 360, 5: 360*1.05, 6: 360*1.04, 7: 360*1.03, 8: 360*1.02, 9: 360*1.8, 10: 360*1.05, 11: 360*1.04, 12: 360*1.03 },
+    'Hotel GVA': { 1: 375, 2: 375, 3: 375, 4: 375, 5: 375*1.05, 6: 375*1.04, 7: 375*1.03, 8: 375*1.02, 9: 375*1.8, 10: 375*1.05, 11: 375*1.04, 12: 375*1.03 },
+    'Gen Centre': { 1: 390, 2: 390, 3: 390, 4: 390, 5: 390*1.05, 6: 390*1.04, 7: 390*1.03, 8: 390*1.02, 9: 390*1.8, 10: 390*1.05, 11: 390*1.04, 12: 390*1.03 },
+    'LYS': { 1: 410, 2: 410, 3: 410, 4: 410, 5: 410*1.05, 6: 410*1.04, 7: 410*1.03, 8: 410*1.02, 9: 410*1.8, 10: 410*1.05, 11: 410*1.04, 12: 410*1.03 },
+    'Lyon Centre': { 1: 450, 2: 450, 3: 450, 4: 450, 5: 450*1.05, 6: 450*1.04, 7: 450*1.03, 8: 450*1.02, 9: 450*1.8, 10: 450*1.05, 11: 450*1.04, 12: 450*1.03 },
+    'GNB': { 1: 410, 2: 410, 3: 410, 4: 410, 5: 410*1.05, 6: 410*1.04, 7: 410*1.03, 8: 410*1.02, 9: 410*1.8, 10: 410*1.05, 11: 410*1.04, 12: 410*1.03 },
+    'AIME': { 1: 80, 2: 80, 3: 80, 4: 80, 5: 80*1.05, 6: 80*1.04, 7: 80*1.03, 8: 80*1.02, 9: 80*1.8, 10: 80*1.05, 11: 80*1.04, 12: 80*1.03 },
+    'BSM': { 1: 120, 2: 120, 3: 120, 4: 120, 5: 120*1.05, 6: 120*1.04, 7: 120*1.03, 8: 120*1.02, 9: 120*1.8, 10: 120*1.05, 11: 120*1.04, 12: 120*1.03 },
+  };
+
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -75,11 +88,98 @@ export default function LocationInput() {
   const handleTripTypeChange = (type: 'oneWay' | 'roundTrip') => {
     setTripType(type);
   };
-const handleSubmit = () => {
-  let query: Record<string, string> = {};
 
-  if (tripType === 'oneWay') {
-    query = {
+  const calculatePrice = () => {
+    const totalPax = adults + children;
+    let basePrice = 0;
+    
+    // Get base price based on pickup location and number of passengers
+    if (pickupLocation && totalPax > 0) {
+      const priceMap = basePrices[pickupLocation];
+      if (priceMap) {
+        if (totalPax <= 12) {
+          basePrice = priceMap[totalPax];
+        } else {
+          // For 12+ passengers, use the price for 12 passengers
+          basePrice = priceMap[12];
+        }
+      }
+    }
+
+    // Apply Champagny supplement if destination is Champagny en Vanoise
+    if (destinationLocation === 'Champagny en Vanoise') {
+      basePrice += 50;
+    }
+
+    // Calculate supplements based on date and time
+    let supplements = 0;
+    let supplementDetails: string[] = [];
+    
+    if (selectedDate) {
+      const date = new Date(selectedDate);
+      const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+      
+      // Weekend supplements
+      if (dayOfWeek === 6) { // Saturday
+        supplements += basePrice * 0.2;
+        supplementDetails.push('Saturday +20%');
+      } else if (dayOfWeek === 0) { // Sunday
+        supplements += basePrice * 0.15;
+        supplementDetails.push('Sunday +15%');
+      }
+      
+      // Peak period supplements
+      const peakPeriods = [
+        { start: new Date('2025-12-19'), end: new Date('2026-01-06'), supplement: 0.3, name: 'Christmas/New Year +30%' },
+        { start: new Date('2026-02-07'), end: new Date('2026-02-07'), supplement: 0.3, name: 'February Peak +30%' },
+        { start: new Date('2026-02-12'), end: new Date('2026-02-23'), supplement: 0.2, name: 'February Holidays +20%' },
+        { start: new Date('2026-02-28'), end: new Date('2026-02-28'), supplement: 0.1, name: 'February Weekend +10%' },
+        { start: new Date('2026-03-27'), end: new Date('2026-04-12'), supplement: 0.3, name: 'Easter +30%' },
+      ];
+      
+      for (const period of peakPeriods) {
+        if (date >= period.start && date <= period.end) {
+          supplements += basePrice * period.supplement;
+          supplementDetails.push(period.name);
+          break; // Only apply one peak period supplement
+        }
+      }
+    }
+    
+    // Time-based supplements
+    if (selectedTime) {
+      const [hours] = selectedTime.split(':').map(Number);
+      
+      // Flight departure time supplements (assuming this is for pickup time)
+      if (hours <= 11) {
+        supplements += basePrice * 0.1;
+        supplementDetails.push('Early departure (≤11:00) +10%');
+      } else if (hours >= 19) {
+        supplements += basePrice * 0.1;
+        supplementDetails.push('Late departure (≥19:00) +10%');
+      }
+      
+      // Flight arrival time supplements (assuming this is for pickup time)
+      if (hours >= 17) {
+        supplements += basePrice * 0.15;
+        supplementDetails.push('Late arrival (≥17:00) +15%');
+      }
+    }
+    
+    const totalPrice = basePrice + supplements;
+    
+    return {
+      basePrice: parseFloat(basePrice.toFixed(2)),
+      supplements: parseFloat(supplements.toFixed(2)),
+      totalPrice: parseFloat(totalPrice.toFixed(2)),
+      supplementDetails,
+    };
+  };
+
+  const handleSubmit = () => {
+    const priceDetails = calculatePrice();
+    
+    let query: Record<string, string> = {
       tripType,
       pickupLocation,
       destinationLocation,
@@ -87,26 +187,27 @@ const handleSubmit = () => {
       selectedTime,
       adults: adults.toString(),
       children: children.toString(),
+      basePrice: priceDetails.basePrice.toString(),
+      supplements: priceDetails.supplements.toString(),
+      totalPrice: priceDetails.totalPrice.toString(),
+      supplementDetails: JSON.stringify(priceDetails.supplementDetails),
     };
-  } else if (tripType === 'roundTrip') {
-    query = {
-      tripType,
-      pickupLocation,
-      destinationLocation,
-      selectedDate,
-      selectedTime,
-      returnDate,
-      returnTime,
-      adults: adults.toString(),
-      children: children.toString(),
-    };
-  }
 
-  const params = new URLSearchParams(query).toString();
-  router.push(`/journey?${params}`);
-};
+    if (tripType === 'roundTrip') {
+      query.returnDate = returnDate;
+      query.returnTime = returnTime;
+      
+      // Calculate return price (same as outward for simplicity, or could recalculate)
+      const returnPriceDetails = calculatePrice();
+      query.returnBasePrice = returnPriceDetails.basePrice.toString();
+      query.returnSupplements = returnPriceDetails.supplements.toString();
+      query.returnTotalPrice = returnPriceDetails.totalPrice.toString();
+      query.returnSupplementDetails = JSON.stringify(returnPriceDetails.supplementDetails);
+    }
 
-
+    const params = new URLSearchParams(query).toString();
+    router.push(`/journey?${params}`);
+  };
 
   useEffect(() => {
     if (!pickupLocation && pickupLocations.length > 0) {
@@ -121,13 +222,12 @@ const handleSubmit = () => {
       const month = String(today.getMonth() + 1).padStart(2, '0');
       const day = String(today.getDate()).padStart(2, '0');
       setSelectedDate(`${year}-${month}-${day}`);
-      // setReturnDate(`${year}-${month}-${day}`);
     }
   }, [pickupLocation, destinationLocation, selectedDate]);
 
   return (
     <div className="relative flex items-center justify-center">
-      <div className="bg-white p-4 rounded-xl shadow-lg md:w-auto w-full md:min-w-4xl pt-12">
+      <div className="bg-white p-4 rounded-xl md:shadow-lg md:w-auto w-full md:min-w-4xl pt-12">
         {/* Trip Type Tabs */}
         <div className="flex absolute -top-6 bg-textprimary rounded-full p-1 mb-6 w-fit overflow-hidden">
           <button

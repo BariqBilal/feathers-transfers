@@ -12,57 +12,98 @@ function BookingSummaryContent() {
   const router = useRouter();
 
   // Extract all the parameters from the URL
-  const tripType = searchParams.get('tripType');
-  const pickupLocation = searchParams.get('pickupLocation');
-  const destinationLocation = searchParams.get('destinationLocation');
-  const selectedDate = searchParams.get('selectedDate');
-  const selectedTime = searchParams.get('selectedTime');
-  const returnDate = searchParams.get('returnDate');
-  const returnTime = searchParams.get('returnTime');
-  const adults = searchParams.get('adults');
-  const children = searchParams.get('children');
+  const tripType = searchParams.get('tripType') || 'oneWay';
+  const pickupLocation = searchParams.get('pickupLocation') || '';
+  const destinationLocation = searchParams.get('destinationLocation') || '';
+  const selectedDate = searchParams.get('selectedDate') || '';
+  const selectedTime = searchParams.get('selectedTime') || '';
+  const returnDate = searchParams.get('returnDate') || '';
+  const returnTime = searchParams.get('returnTime') || '';
+  const adults = searchParams.get('adults') || '2';
+  const children = searchParams.get('children') || '0';
+
+  // Pricing information
+  const basePrice = parseFloat(searchParams.get('basePrice') || '0');
+  const supplements = parseFloat(searchParams.get('supplements') || '0');
+  const totalPrice = parseFloat(searchParams.get('totalPrice') || '0');
+  const supplementDetails = JSON.parse(searchParams.get('supplementDetails') || '[]');
+  
+  // Return journey pricing (if applicable)
+  const returnBasePrice = parseFloat(searchParams.get('returnBasePrice') || '0');
+  const returnSupplements = parseFloat(searchParams.get('returnSupplements') || '0');
+  const returnTotalPrice = parseFloat(searchParams.get('returnTotalPrice') || '0');
+  const returnSupplementDetails = JSON.parse(searchParams.get('returnSupplementDetails') || '[]');
+
+  // Format date for display
+  const formatDisplayDate = (dateString: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  // Format price for display
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('fr-FR', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2
+    }).format(price);
+  };
 
   // For background image
   const bgImage = '/hero.jpg';
 
-  // Journey 1 details (using defaults for demonstration if params are not set)
+  // Journey 1 details
   const journey1 = {
-    route: `${pickupLocation || 'Plagne 1800'} → ${destinationLocation || 'Geneva Airport'}`,
-    departureDate: selectedDate || '27th Dec 25',
-    departureTime: selectedTime || '16h00',
-    passengers: `${adults || 2} Adults, ${children || 0} Children`,
-    price: '549.81€',
+    route: `${pickupLocation} → ${destinationLocation}`,
+    departureDate: formatDisplayDate(selectedDate),
+    departureTime: selectedTime,
+    passengers: `${adults} Adults, ${children} Children`,
+    basePrice: formatPrice(basePrice),
+    supplements: formatPrice(supplements),
+    totalPrice: formatPrice(totalPrice),
+    supplementDetails,
   };
 
   // Journey 2 details for round trips (if available)
-  const journey2 = returnDate
-    ? {
-        route: `${destinationLocation || 'Geneva Airport'} → ${pickupLocation || 'Plagne 1800'}`,
-        departureDate: returnDate,
-        departureTime: returnTime,
-        passengers: `${adults || 2} Adults, ${children || 0} Children`,
-        price: '549.81€',
-      }
-    : null;
+  const journey2 = tripType === 'roundTrip' ? {
+    route: `${destinationLocation} → ${pickupLocation}`,
+    departureDate: formatDisplayDate(returnDate),
+    departureTime: returnTime,
+    passengers: `${adults} Adults, ${children} Children`,
+    basePrice: formatPrice(returnBasePrice),
+    supplements: formatPrice(returnSupplements),
+    totalPrice: formatPrice(returnTotalPrice),
+    supplementDetails: returnSupplementDetails,
+  } : null;
 
-  // Calculate total price
-  const totalAmount = journey2 ? (parseFloat(journey1.price) + parseFloat(journey2.price)).toFixed(2) + '€' : journey1.price;
+  // Calculate total amount
+  const totalAmount = journey2 
+    ? formatPrice(totalPrice + returnTotalPrice)
+    : formatPrice(totalPrice);
 
   // State for terms and conditions checkbox
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // Handle form submission (placeholder for now)
-  const handleSubmit = (e: any) => {
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreedToTerms) {
-      console.log('Please agree to the Terms and Conditions.');
+      alert('Please agree to the Terms and Conditions.');
       return;
     }
+    // Here you would typically send the booking data to your backend
     console.log('Booking submitted!', {
       journey1,
       journey2,
       totalAmount,
     });
+    // Redirect to confirmation page or show success message
+    // router.push('/booking-confirmation');
   };
 
   return (
@@ -71,7 +112,7 @@ function BookingSummaryContent() {
       <Image src={bgImage} alt="Background Image" layout="fill" objectFit="cover" className="z-0" />
 
       {/* Main Content Container */}
-      <div className="relative z-10 bg-white bg-opacity-95 rounded-lg shadow-xl w-full max-w-6xl mx-auto ">
+      <div className="relative z-10 bg-white bg-opacity-95 rounded-lg shadow-xl w-full max-w-6xl mx-auto">
         {/* Header Bar */}
         <div className="bg-[#3B82F6] p-4 sm:p-5 rounded-t-lg text-center">
           <h1 className="text-white text-xl sm:text-2xl font-bold">Booking Summary</h1>
@@ -84,7 +125,8 @@ function BookingSummaryContent() {
             {/* Journey 1 Card */}
             <div className="text-gray-800 md:border border-gray-300 rounded-xl md:p-6 p-2 md:shadow-sm">
               <h2 className="text-lg sm:text-xl font-bold mb-1">Journey No 1</h2>
-              <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Booking Summary Journey #1</h3>
+              <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Outward Journey</h3>
+              
               <div className="flex items-center mb-2">
                 <MdLocationOn className="text-blue-600 text-xl mr-3" />
                 <p className="text-base sm:text-lg">Route: {journey1.route}</p>
@@ -99,11 +141,34 @@ function BookingSummaryContent() {
               </div>
               <div className="flex items-center mb-2">
                 <FaUsers className="text-blue-600 text-xl mr-3" />
-                <p className="text-base sm:text-lg">No Passengers: {journey1.passengers}</p>
+                <p className="text-base sm:text-lg">Passengers: {journey1.passengers}</p>
               </div>
-              <div className="flex items-center mb-4">
-                <FaEuroSign className="text-blue-600 text-xl mr-3" />
-                <p className="text-base sm:text-lg">Price: {journey1.price}</p>
+
+              {/* Pricing Details */}
+              <div className="mt-4 border-t pt-4">
+                <h3 className="text-lg font-semibold mb-2">Pricing Breakdown</h3>
+                <div className="flex justify-between mb-1">
+                  <span>Base Price:</span>
+                  <span>{journey1.basePrice}</span>
+                </div>
+                {journey1.supplementDetails.length > 0 && (
+                  <div className="mb-2">
+                    <p className="font-medium">Supplements Applied:</p>
+                    <ul className="list-disc pl-5 text-sm">
+                      {journey1.supplementDetails.map((detail: string, index: number) => (
+                        <li key={index}>{detail}</li>
+                      ))}
+                    </ul>
+                    <div className="flex justify-between mt-1">
+                      <span>Total Supplements:</span>
+                      <span>{journey1.supplements}</span>
+                    </div>
+                  </div>
+                )}
+                <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
+                  <span>Total Price:</span>
+                  <span className="text-blue-600">{journey1.totalPrice}</span>
+                </div>
               </div>
             </div>
 
@@ -111,7 +176,8 @@ function BookingSummaryContent() {
             {journey2 && (
               <div className="text-gray-800 md:border border-gray-300 rounded-xl md:p-6 p-2 md:shadow-sm">
                 <h2 className="text-lg sm:text-xl font-bold mb-1">Journey No 2</h2>
-                <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Booking Summary Journey #2</h3>
+                <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Return Journey</h3>
+                
                 <div className="flex items-center mb-2">
                   <MdLocationOn className="text-blue-600 text-xl mr-3" />
                   <p className="text-base sm:text-lg">Route: {journey2.route}</p>
@@ -126,11 +192,34 @@ function BookingSummaryContent() {
                 </div>
                 <div className="flex items-center mb-2">
                   <FaUsers className="text-blue-600 text-xl mr-3" />
-                  <p className="text-base sm:text-lg">No Passengers: {journey2.passengers}</p>
+                  <p className="text-base sm:text-lg">Passengers: {journey2.passengers}</p>
                 </div>
-                <div className="flex items-center mb-4">
-                  <FaEuroSign className="text-blue-600 text-xl mr-3" />
-                  <p className="text-base sm:text-lg">Price: {journey2.price}</p>
+
+                {/* Pricing Details */}
+                <div className="mt-4 border-t pt-4">
+                  <h3 className="text-lg font-semibold mb-2">Pricing Breakdown</h3>
+                  <div className="flex justify-between mb-1">
+                    <span>Base Price:</span>
+                    <span>{journey2.basePrice}</span>
+                  </div>
+                  {journey2.supplementDetails.length > 0 && (
+                    <div className="mb-2">
+                      <p className="font-medium">Supplements Applied:</p>
+                      <ul className="list-disc pl-5 text-sm">
+                        {journey2.supplementDetails.map((detail: string, index: number) => (
+                          <li key={index}>{detail}</li>
+                        ))}
+                      </ul>
+                      <div className="flex justify-between mt-1">
+                        <span>Total Supplements:</span>
+                        <span>{journey2.supplements}</span>
+                      </div>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
+                    <span>Total Price:</span>
+                    <span className="text-blue-600">{journey2.totalPrice}</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -147,7 +236,7 @@ function BookingSummaryContent() {
                   type="text"
                   id="firstName"
                   name="firstName"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
               </div>
@@ -157,7 +246,7 @@ function BookingSummaryContent() {
                   type="text"
                   id="surname"
                   name="surname"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
               </div>
@@ -167,7 +256,7 @@ function BookingSummaryContent() {
                   type="tel"
                   id="mobileNumber"
                   name="mobileNumber"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   placeholder="+44"
                   required
                 />
@@ -178,7 +267,7 @@ function BookingSummaryContent() {
                   type="email"
                   id="emailAddress"
                   name="emailAddress"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
               </div>
@@ -192,7 +281,8 @@ function BookingSummaryContent() {
                 <textarea
                   id="accommodationAddress"
                   name="accommodationAddress"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 ></textarea>
               </div>
               <div className="mb-4">
@@ -201,7 +291,7 @@ function BookingSummaryContent() {
                   type="url"
                   id="accommodationWebsite"
                   name="accommodationWebsite"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
               <div className="mb-4">
@@ -209,7 +299,8 @@ function BookingSummaryContent() {
                 <textarea
                   id="specialRequests"
                   name="specialRequests"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 ></textarea>
               </div>
             </div>
@@ -220,49 +311,83 @@ function BookingSummaryContent() {
             {/* Transfer Recap */}
             <div className="md:border border-gray-300 rounded-xl md:p-6 p-2 md:shadow-sm">
               <h3 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">Transfer Recap</h3>
-              <div className="flex justify-between items-center mb-2">
-                <p className="text-base sm:text-lg text-gray-700">Journey #1</p>
-                <p className="text-base sm:text-lg font-semibold text-gray-800">{journey1.price}</p>
-              </div>
-              {journey2 && (
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-base sm:text-lg text-gray-700">Journey #2</p>
-                  <p className="text-base sm:text-lg font-semibold text-gray-800">{journey2.price}</p>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <p className="text-base sm:text-lg text-gray-700">Journey #1 Base Price</p>
+                  <p className="text-base sm:text-lg font-semibold text-gray-800">{journey1.basePrice}</p>
                 </div>
-              )}
+                {journey1.supplementDetails.length > 0 && (
+                  <div className="flex justify-between items-center">
+                    <p className="text-base sm:text-lg text-gray-700">Journey #1 Supplements</p>
+                    <p className="text-base sm:text-lg font-semibold text-gray-800">{journey1.supplements}</p>
+                  </div>
+                )}
+                <div className="flex justify-between items-center pt-2 border-t">
+                  <p className="text-base sm:text-lg font-medium text-gray-800">Journey #1 Total</p>
+                  <p className="text-base sm:text-lg font-semibold text-blue-600">{journey1.totalPrice}</p>
+                </div>
+
+                {journey2 && (
+                  <>
+                    <div className="flex justify-between items-center pt-4">
+                      <p className="text-base sm:text-lg text-gray-700">Journey #2 Base Price</p>
+                      <p className="text-base sm:text-lg font-semibold text-gray-800">{journey2.basePrice}</p>
+                    </div>
+                    {journey2.supplementDetails.length > 0 && (
+                      <div className="flex justify-between items-center">
+                        <p className="text-base sm:text-lg text-gray-700">Journey #2 Supplements</p>
+                        <p className="text-base sm:text-lg font-semibold text-gray-800">{journey2.supplements}</p>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center pt-2 border-t">
+                      <p className="text-base sm:text-lg font-medium text-gray-800">Journey #2 Total</p>
+                      <p className="text-base sm:text-lg font-semibold text-blue-600">{journey2.totalPrice}</p>
+                    </div>
+                  </>
+                )}
+              </div>
               <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
                 <p className="text-lg sm:text-xl font-bold text-gray-800">Transfer Total</p>
                 <p className="text-lg sm:text-xl font-bold text-blue-600">{totalAmount}</p>
               </div>
             </div>
 
-            {/* Empty column or other content if needed for layout symmetry */}
-            <div className="hidden lg:block"></div>
-          </div>
-
-          {/* Terms and Conditions Checkbox */}
-          <div className="flex items-center mt-6 mb-8">
-            <input
-              type="checkbox"
-              id="termsAndConditions"
-              name="termsAndConditions"
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              checked={agreedToTerms}
-              onChange={(e) => setAgreedToTerms(e.target.checked)}
-            />
-            <label htmlFor="termsAndConditions" className="ml-2 block text-sm text-gray-900">
-              I agree to Terms and Conditions (check box obligatory)
-            </label>
+            {/* Terms and Conditions */}
+            <div className="md:border border-gray-300 rounded-xl md:p-6 p-2 md:shadow-sm">
+              <h3 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">Terms & Conditions</h3>
+              <div className="text-sm text-gray-700 space-y-3">
+                <p>1. All transfers are subject to availability.</p>
+                <p>2. Prices include all taxes and fees.</p>
+                <p>3. Cancellations must be made at least 48 hours prior to the scheduled transfer for a full refund.</p>
+                <p>4. The company is not responsible for delays caused by weather or traffic conditions.</p>
+                <p>5. Children under 12 must be accompanied by an adult.</p>
+              </div>
+              <div className="flex items-center mt-6">
+                <input
+                  type="checkbox"
+                  id="termsAndConditions"
+                  name="termsAndConditions"
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  required
+                />
+                <label htmlFor="termsAndConditions" className="ml-2 block text-sm text-gray-900">
+                  I agree to the Terms and Conditions
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* Submit Button */}
-          <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+          <div className="px-4 pb-4 sm:px-6 sm:pb-6 mt-8">
             <button
               type="submit"
               onClick={handleSubmit}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md transition duration-300 ease-in-out text-lg"
+              disabled={!agreedToTerms}
             >
-              Click Here to request your transfer enquiry
+              {agreedToTerms ? 'Confirm Booking' : 'Please accept Terms & Conditions'}
             </button>
           </div>
         </div>
@@ -270,6 +395,7 @@ function BookingSummaryContent() {
     </div>
   );
 }
+
 export default function BookingSummary() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
