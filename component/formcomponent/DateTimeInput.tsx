@@ -6,13 +6,17 @@ interface DateTimeInputProps {
   time: string; // HH:MM
   onChange: (date: string, time: string) => void;
   placeholder?: string;
+  minDate?: string; // Minimum allowed date (YYYY-MM-DD)
+  minTime?: string; // Minimum allowed time when date === minDate (HH:MM)
 }
 
 const DateTimeInput: React.FC<DateTimeInputProps> = ({ 
   date, 
   time, 
   onChange,
-  placeholder = 'Select Date & Time'
+  placeholder = 'Select Date & Time',
+  minDate,
+  minTime
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
@@ -24,6 +28,25 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const hoursRef = useRef<HTMLDivElement>(null);
   const minutesRef = useRef<HTMLDivElement>(null);
+
+  // Initialize with props
+  useEffect(() => {
+    if (date) setSelectedDate(date);
+    if (time) {
+      const [hour, minute] = time.split(':').map(Number);
+      setSelectedHour(hour);
+      setSelectedMinute(minute);
+    }
+  }, [date, time]);
+
+  // Set initial month view based on selected date or min date
+  useEffect(() => {
+    if (selectedDate) {
+      setCurrentMonth(new Date(selectedDate));
+    } else if (minDate) {
+      setCurrentMonth(new Date(minDate));
+    }
+  }, [selectedDate, minDate]);
 
   // Detect outside clicks
   useEffect(() => {
@@ -64,11 +87,34 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const goToPreviousMonth = () => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
   const goToNextMonth = () => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
 
-  // Generate calendar days
-  const generateCalendarDays = (month: Date) => {
+  // Check if a date is disabled
+  const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Disable dates in the past
+    if (date < today) return true;
+
+    // Disable dates before minDate if specified
+    if (minDate) {
+      const minDateObj = new Date(minDate);
+      minDateObj.setHours(0, 0, 0, 0);
+      if (date < minDateObj) return true;
+    }
+
+    return false;
+  };
+
+  // Check if a time is disabled
+  const isTimeDisabled = (hour: number, minute: number) => {
+    if (!minTime || !minDate || selectedDate !== minDate) return false;
+    
+    const [minHour, minMinute] = minTime.split(':').map(Number);
+    return hour < minHour || (hour === minHour && minute < minMinute);
+  };
+
+  // Generate calendar days
+  const generateCalendarDays = (month: Date) => {
     const startOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
     const endOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0);
     const daysInMonth = endOfMonth.getDate();
@@ -81,7 +127,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       const dayDate = new Date(month.getFullYear(), month.getMonth(), i);
       days.push({
         day: i,
-        isDisabled: dayDate < today
+        isDisabled: isDateDisabled(dayDate)
       });
     }
     return days;
@@ -96,7 +142,22 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       const newDateStr = newDate.toISOString().split('T')[0];
       setSelectedDate(newDateStr);
       setCurrentView('time');
-      onChange(newDateStr, `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`);
+      
+      // Reset time if needed when date changes
+      let hour = selectedHour;
+      let minute = selectedMinute;
+      
+      if (minDate && newDateStr === minDate && minTime) {
+        const [minHour, minMinute] = minTime.split(':').map(Number);
+        if (hour < minHour || (hour === minHour && minute < minMinute)) {
+          hour = minHour;
+          minute = minMinute;
+          setSelectedHour(hour);
+          setSelectedMinute(minute);
+        }
+      }
+      
+      onChange(newDateStr, `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
     }
   };
 
@@ -111,7 +172,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
           selectedDate,
           `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`
         );
-      }, 300); // Debounce for 300ms after scrolling stops
+      }, 300);
     };
   }, [selectedDate, selectedHour, selectedMinute, onChange]);
 
@@ -119,7 +180,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const handleHourScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const index = Math.round(e.currentTarget.scrollTop / 48);
     const hour = index % 24;
-    if (hour !== selectedHour) {
+    if (hour !== selectedHour && !isTimeDisabled(hour, selectedMinute)) {
       setSelectedHour(hour);
       handleTimeChange();
     }
@@ -128,7 +189,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const handleMinuteScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const index = Math.round(e.currentTarget.scrollTop / 48);
     const minute = (index * 5) % 60;
-    if (minute !== selectedMinute) {
+    if (minute !== selectedMinute && !isTimeDisabled(selectedHour, minute)) {
       setSelectedMinute(minute);
       handleTimeChange();
     }
@@ -264,15 +325,19 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                   >
                     {Array.from({ length: 24 * 3 }, (_, i) => {
                       const hour = i % 24;
+                      const disabled = isTimeDisabled(hour, selectedMinute);
                       return (
                         <div
                           key={i}
-                          className={`py-3 text-lg font-medium cursor-pointer ${
-                            hour === selectedHour ? 'text-blue-600 bg-blue-100 rounded-md' : 'text-gray-700'
+                          className={`py-3 text-lg font-medium ${
+                            disabled ? 'text-gray-300 cursor-default' :
+                            hour === selectedHour ? 'text-blue-600 bg-blue-100 rounded-md' : 'text-gray-700 cursor-pointer'
                           }`}
                           onClick={() => {
-                            setSelectedHour(hour);
-                            onChange(selectedDate, `${String(hour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`);
+                            if (!disabled) {
+                              setSelectedHour(hour);
+                              onChange(selectedDate, `${String(hour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`);
+                            }
                           }}
                         >
                           {String(hour).padStart(2, '0')}
@@ -291,15 +356,19 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                   >
                     {Array.from({ length: 12 * 3 }, (_, i) => {
                       const minute = (i * 5) % 60;
+                      const disabled = isTimeDisabled(selectedHour, minute);
                       return (
                         <div
                           key={i}
-                          className={`py-3 text-lg font-medium cursor-pointer ${
-                            minute === selectedMinute ? 'text-blue-600 bg-blue-100 rounded-md' : 'text-gray-700'
+                          className={`py-3 text-lg font-medium ${
+                            disabled ? 'text-gray-300 cursor-default' :
+                            minute === selectedMinute ? 'text-blue-600 bg-blue-100 rounded-md' : 'text-gray-700 cursor-pointer'
                           }`}
                           onClick={() => {
-                            setSelectedMinute(minute);
-                            onChange(selectedDate, `${String(selectedHour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
+                            if (!disabled) {
+                              setSelectedMinute(minute);
+                              onChange(selectedDate, `${String(selectedHour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
+                            }
                           }}
                         >
                           {String(minute).padStart(2, '0')}

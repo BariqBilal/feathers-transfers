@@ -8,8 +8,8 @@ export default function Home() {
   return (
     <div className="">
       <HeroSection
-        height="80vh" 
-        bgImage="/ss.PNG"
+        height="75vh" 
+        bgImage="/hhh.png"
         title="Trusted Transfers to La Plagne Resorts"
         description="Your dedicated specialists for reliable airport and train station transfers across all of La Plagne."
       />

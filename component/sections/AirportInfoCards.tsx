@@ -18,7 +18,7 @@ export default function AirportInfoCards() {
           <div className="bg-blue-50 rounded-lg p-4 text-blue-800 text-sm">
             <h3 className="font-semibold mb-1">Arrival Procedure</h3>
             <p>
-              Exit customs, turn left towards the train station. The Swiss Chalet Restaurant is 100m ahead.
+             Terminal 1 is the bigger of the two terminals and is the terminal that most airlines such as EasyJet and British Airways use. It is most likely that this is the terminal your flight will arrive at.
             </p>
           </div>
         </div>
@@ -36,7 +36,7 @@ export default function AirportInfoCards() {
           <div className="bg-blue-50 rounded-lg p-4 text-blue-800 text-sm">
             <h3 className="font-semibold mb-1">Meeting Point</h3>
             <p>
-              All passengers meet at the Swiss Chalet Restaurant in T1.
+             Terminal 2 is just a short 100m walk from Terminal 1 and is used for charter flights. It is a hangar with not many facilities and at the time of writing, the budget airline Jet2 use it at weekends. 
             </p>
           </div>
         </div>

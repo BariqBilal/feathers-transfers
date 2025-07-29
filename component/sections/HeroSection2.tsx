@@ -10,7 +10,7 @@ interface HeroSectionProps {
 const HeroSection2: React.FC<HeroSectionProps> = ({ height = '100vh', bgImage, title, description }) => {
   return (
     <section
-      className="relative h-full bg-cover bg-center flex flex-col justify-between items-center"
+      className="relative h-full bg-cover bg-center flex flex-col justify-center items-center"
       style={{
         backgroundImage: `url(${bgImage})`,
         height: height,
@@ -19,11 +19,11 @@ const HeroSection2: React.FC<HeroSectionProps> = ({ height = '100vh', bgImage, t
       {/* Dark overlay */}
       <div className="bg-black/50 absolute inset-0"></div>
 
-      {/* Content at the top */}
-      <div className="relative z-10 px-4 sm:px-6 lg:px-8 text-white text-center pt-20">
-        {/* Title and Description: visible only on large screens */}
-        <h1 className="hidden lg:block text-2xl md:text-5xl font-bold mb-4">{title}</h1>
-        <p className="hidden lg:block text-xl sm:text-xl">{description}</p>
+      {/* Content in the center */}
+      <div className="relative z-10 px-6 sm:px-8 lg:px-12 text-white text-center py-20">
+        {/* Title and Description */}
+        <h1 className="text-3xl md:text-5xl font-bold mb-4">{title}</h1>
+        <p className="text-base sm:text-lg md:text-xl max-w-4xl mx-auto">{description}</p>
       </div>
     </section>
   );

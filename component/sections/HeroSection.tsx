@@ -17,17 +17,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ height = '80vh', bgImage, tit
         minHeight: height,
       }}
     >
-      {/* Dark overlay */}
-      <div className="bg-black/50 absolute inset-0"></div>
+      <div className="bg-black/20 absolute inset-0"></div>
 
-      {/* Content at the top */}
-      <div className="relative z-10 px-4 sm:px-6 lg:px-8 text-white text-center pt-32">
-        {/* Title and Description: visible only on large screens */}
-        <h1 className=" lg:block text-2xl md:text-5xl font-bold mb-4">{title}</h1>
-        <p className="hidden lg:block text-xl sm:text-xl">{description}</p>
+      <div className="relative z-10 px-4 sm:px-6 lg:px-8 text-white md:text-center text-left md:pt-32 pt-8">
+        <h1 className=" lg:block text-2xl md:text-5xl font-bold mb-2">{title}</h1>
+        <p className=" lg:block text-md md:text-xl pb-4">{description}</p>
       </div>
 
-      {/* Location input at the bottom, ensures it stays at the bottom of the screen */}
       <div className="relative z-10 w-full md:pb-10 mx-auto mt-auto md:top-20 top-4">
         <LocationInput />
       </div>

@@ -72,11 +72,12 @@ const ContactSection: React.FC = () => {
         title="Contact Us for Your Transfer Needs"
         description="Specialized in La Plagne and Savoie Region Transfers"
       />
-      <section className="bg-white py-16 px-4">
+      <section className="bg-[#F1F6FF] py-16 px-4">
+                    <h2 className="text-3xl font-bold text-gray-800 text-center ">Get in Touch</h2>
+
         <div className="max-w-7xl mx-auto rounded-p-8 md:p-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Get in Touch / Send us a message */}
-          <div className="lg:col-span-1 bg-[#F1F6FF] p-4">
-            <h2 className="text-3xl font-bold text-gray-800 text-center mb-8">Get in Touch</h2>
+          <div className="lg:col-span-1 bg-white p-4">
             <div className="p-6 rounded-md">
               <h3 className="text-xl font-medium text-gray-700 mb-5">Send us a message</h3>
               <form onSubmit={handleSubmit}>
@@ -143,7 +144,7 @@ const ContactSection: React.FC = () => {
           {/* Information We Need & Contact Information */}
           <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Information We Need */}
-            <div className="bg-[#F1F6FF] p-6 rounded-md">
+            <div className="bg-white p-6 rounded-md">
               <h3 className="text-xl font-medium text-gray-700 mb-5">Information We Need</h3>
               <ul className="space-y-3.5 text-gray-700 text-base">
                 <li className="flex items-start">
@@ -199,7 +200,7 @@ const ContactSection: React.FC = () => {
           </div>
 
           {/* Traveling to other Savoie resorts? */}
-          <div className="lg:col-span-3 mt-8 bg-[#F1F6FF] p-6 border border-gray-100 flex items-start">
+          <div className="lg:col-span-3 mt-8 bg-white p-6 border border-gray-100 flex items-start">
             <MapPin className="w-8 h-8 mr-4 text-blue-600 flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Traveling to other Savoie resorts?</h3>

@@ -10,9 +10,10 @@ export default function AirportGeneva(){
    const airportData = {
     title: "Geneva Airport Overview",
     description: [
-      "Geneva Airport is one of Switzerland's principal gateways to the world.",
-      "Situated just four kilometres northwest of the city centre, it serves not only the city and parts of neighbouring France, but it is also the main arrival destination for skiers during the ski season.",
-      "In our opinion, Geneva should be your first choice airport not only due to the large number of daily flights, but principally because it is such a major transfer hub, it very rarely, if ever, gets closed due to bad weather ensuring your flight is very unlikely to be diverted."
+      "The nearest parking to the Terminal 1 is a good ten minutes’ walk away, so to avoid you the inconvenience of hauling your baggage about, your driver will be waiting five minutes away and will come into the short stay pick up and drop off zone to collect you. When you are ready, we ask that yu send a WhatsApp message.",
+      
+      "Lyon Saint-Exupéry Airport serves as the region’s principal portal to Europe and the world at large, blending efficiency and modernity with the timeless elegance of French design. On a good run, the airport is a two-and-a-half-hour transfer to La Plagne.",
+      "The airport’s main terminal, Terminal 1, underwent significant expansion and modernization in 2017. The new extension offers a sleek, contemporary space with soaring glass facades, expansive waiting areas, and a variety of Shops Cafés/Restaurants and Airport lounges. It handles many international and Schengen flights and most flights from the UK arrive at Terminal 1. "
     ],
     imageUrl: "/aa.png",
     imageAlt: "Aerial view of Geneva Airport"
@@ -41,7 +42,7 @@ export default function AirportGeneva(){
         height="50vh" 
         bgImage="/airport4.jpg"
         title="Lyon Saint-Exupéry Airport(LATA Code: LYS)"
-        description="Your Gateway to Switzerland and the Alps"
+        description="Lyon, the vibrant capital of France’s Auvergne-Rhône-Alpes region, is renowned for its rich history, gastronomic heritage, and cultural life. As the third largest city in France, Lyon is a pivotal hub for both tourism and business."
       />
        <AirportDetail
         location='Just 4km northwest of Geneva city centre'
