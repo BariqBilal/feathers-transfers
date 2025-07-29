@@ -10,9 +10,10 @@ export default function AirportGeneva(){
    const airportData = {
     title: "Geneva Airport Overview",
     description: [
-      "Geneva Airport is one of Switzerland's principal gateways to the world.",
-      "Situated just four kilometres northwest of the city centre, it serves not only the city and parts of neighbouring France, but it is also the main arrival destination for skiers during the ski season.",
-      "In our opinion, Geneva should be your first choice airport not only due to the large number of daily flights, but principally because it is such a major transfer hub, it very rarely, if ever, gets closed due to bad weather ensuring your flight is very unlikely to be diverted."
+      "Arrivals at Geneva can get VERY busy on Saturdays during the ski season so to avoid problems, we always meet our Passengers at the Swiss Chalet Restaurant which is well away from the crowds. ",
+
+      "Exit customs, but not the airport terminal, and turn left, heading towards the train station. Walk for no more than 100m and on your left hand side you will see the Swiss Chalet Restaurant where your driver will be waiting for you holding a sign with your name on it.",
+      "Exit the terminal building, turn left and head towards the road. After a short walk of around two hundred metres, you will arrive at T1. Continue straight ahead towards the train station and, as above, about 100 m after arrivals, you will arrive at the Swiss Chalet Restaurant",
     ],
     imageUrl: "/aa.png",
     imageAlt: "Aerial view of Geneva Airport"
@@ -23,7 +24,7 @@ export default function AirportGeneva(){
         height="50vh" 
         bgImage="/airportg.jpg"
         title="Geneva Airport (LATA Code: GVA)"
-        description="Your Gateway to Switzerland and the Alps"
+        description="Geneva Airport is one of Switzerland’s principal gateways to the world. Situated just four kilometres northwest of the city centre, it serves not only the city and parts of neighbouring France, but it is also the main arrival destination for skiers during the ski season. On a good run, Geneva Airport is a two-and-a-half-hour transfer to La Plagne."
       />
        <AirportDetail
         location='Just 4km northwest of Geneva city centre'

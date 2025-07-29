@@ -6,8 +6,8 @@ import PaxSelectorInput from '../formcomponent/PaxSelectorInput';
 import { useRouter } from 'next/navigation';
 
 export default function LocationInput() {
-  const router = useRouter()
-  const [tripType, setTripType] = useState<'oneWay' | 'roundTrip'>('oneWay');
+  const router = useRouter();
+  const [tripType, setTripType] = useState<'oneWay' | 'roundTrip'>('roundTrip');
   const [pickupLocation, setPickupLocation] = useState('');
   const [destinationLocation, setDestinationLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
@@ -17,8 +17,9 @@ export default function LocationInput() {
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [minReturnDate, setMinReturnDate] = useState('');
 
-  // Static list of pickup locations
   const pickupLocations = [
     { value: 'CMF', label: 'Chambery (CMF)' },
     { value: 'GVA', label: 'Geneva Airport (GVA)' },
@@ -31,7 +32,6 @@ export default function LocationInput() {
     { value: 'BSM', label: 'Bourg Saint Maurice Train Station (GARE BSM)' },
   ];
 
-  // Static list of destination locations
   const destinationLocations = [
     { value: 'La Plagne 1800', label: 'La Plagne 1800' },
     { value: 'La Plagne Centre', label: 'La Plagne Centre' },
@@ -49,7 +49,6 @@ export default function LocationInput() {
     { value: 'Other', label: 'Other: Please specify' },
   ];
 
-  // Base prices from the Excel file
   const basePrices: Record<string, Record<number, number>> = {
     'CMF': { 1: 317, 2: 317, 3: 317, 4: 317, 5: 317*1.05, 6: 317*1.04, 7: 317*1.03, 8: 317*1.02, 9: 317*1.8, 10: 317*1.05, 11: 317*1.04, 12: 317*1.03 },
     'GVA': { 1: 360, 2: 360, 3: 360, 4: 360, 5: 360*1.05, 6: 360*1.04, 7: 360*1.03, 8: 360*1.02, 9: 360*1.8, 10: 360*1.05, 11: 360*1.04, 12: 360*1.03 },
@@ -62,13 +61,71 @@ export default function LocationInput() {
     'BSM': { 1: 120, 2: 120, 3: 120, 4: 120, 5: 120*1.05, 6: 120*1.04, 7: 120*1.03, 8: 120*1.02, 9: 120*1.8, 10: 120*1.05, 11: 120*1.04, 12: 120*1.03 },
   };
 
-  // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    // Set minimum return date to selected date
+    if (selectedDate) {
+      setMinReturnDate(selectedDate);
+      
+      // If return date is before selected date, reset it
+      if (returnDate && returnDate < selectedDate) {
+        setReturnDate(selectedDate);
+        
+        // If return date is same as selected date but time is before, reset time
+        if (returnDate === selectedDate && returnTime < selectedTime) {
+          setReturnTime(selectedTime);
+        }
+      }
+    }
+  }, [selectedDate, selectedTime]);
+
+  useEffect(() => {
+    const isValid = (
+      pickupLocation !== '' &&
+      destinationLocation !== '' &&
+      selectedDate !== '' &&
+      selectedTime !== '' &&
+      adults > 0 &&
+      (tripType === 'oneWay' || (
+        returnDate !== '' && 
+        returnTime !== '' &&
+        (returnDate > selectedDate || 
+         (returnDate === selectedDate && returnTime >= selectedTime))
+      ))
+    );
+    setIsFormValid(isValid);
+  }, [
+    pickupLocation,
+    destinationLocation,
+    selectedDate,
+    selectedTime,
+    returnDate,
+    returnTime,
+    adults,
+    tripType
+  ]);
+
+  useEffect(() => {
+    if (!pickupLocation && pickupLocations.length > 0) {
+      setPickupLocation(pickupLocations[1].value); 
+    }
+    if (!destinationLocation && destinationLocations.length > 0) {
+      setDestinationLocation(destinationLocations[4].value); 
+    }
+    if (!selectedDate) {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      setSelectedDate(`${year}-${month}-${day}`);
+    }
+  }, [pickupLocation, destinationLocation, selectedDate]);
 
   const handleDateTimeChange = (date: string, time: string) => {
     setSelectedDate(date);
@@ -93,42 +150,32 @@ export default function LocationInput() {
     const totalPax = adults + children;
     let basePrice = 0;
     
-    // Get base price based on pickup location and number of passengers
     if (pickupLocation && totalPax > 0) {
       const priceMap = basePrices[pickupLocation];
       if (priceMap) {
-        if (totalPax <= 12) {
-          basePrice = priceMap[totalPax];
-        } else {
-          // For 12+ passengers, use the price for 12 passengers
-          basePrice = priceMap[12];
-        }
+        basePrice = totalPax <= 12 ? priceMap[totalPax] : priceMap[12];
       }
     }
 
-    // Apply Champagny supplement if destination is Champagny en Vanoise
     if (destinationLocation === 'Champagny en Vanoise') {
       basePrice += 50;
     }
 
-    // Calculate supplements based on date and time
     let supplements = 0;
     let supplementDetails: string[] = [];
     
     if (selectedDate) {
       const date = new Date(selectedDate);
-      const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+      const dayOfWeek = date.getDay();
       
-      // Weekend supplements
-      if (dayOfWeek === 6) { // Saturday
+      if (dayOfWeek === 6) {
         supplements += basePrice * 0.2;
         supplementDetails.push('Saturday +20%');
-      } else if (dayOfWeek === 0) { // Sunday
+      } else if (dayOfWeek === 0) {
         supplements += basePrice * 0.15;
         supplementDetails.push('Sunday +15%');
       }
       
-      // Peak period supplements
       const peakPeriods = [
         { start: new Date('2025-12-19'), end: new Date('2026-01-06'), supplement: 0.3, name: 'Christmas/New Year +30%' },
         { start: new Date('2026-02-07'), end: new Date('2026-02-07'), supplement: 0.3, name: 'February Peak +30%' },
@@ -141,16 +188,14 @@ export default function LocationInput() {
         if (date >= period.start && date <= period.end) {
           supplements += basePrice * period.supplement;
           supplementDetails.push(period.name);
-          break; // Only apply one peak period supplement
+          break;
         }
       }
     }
     
-    // Time-based supplements
     if (selectedTime) {
       const [hours] = selectedTime.split(':').map(Number);
       
-      // Flight departure time supplements (assuming this is for pickup time)
       if (hours <= 11) {
         supplements += basePrice * 0.1;
         supplementDetails.push('Early departure (≤11:00) +10%');
@@ -159,7 +204,6 @@ export default function LocationInput() {
         supplementDetails.push('Late departure (≥19:00) +10%');
       }
       
-      // Flight arrival time supplements (assuming this is for pickup time)
       if (hours >= 17) {
         supplements += basePrice * 0.15;
         supplementDetails.push('Late arrival (≥17:00) +15%');
@@ -177,6 +221,8 @@ export default function LocationInput() {
   };
 
   const handleSubmit = () => {
+    if (!isFormValid) return;
+    
     const priceDetails = calculatePrice();
     
     let query: Record<string, string> = {
@@ -197,7 +243,6 @@ export default function LocationInput() {
       query.returnDate = returnDate;
       query.returnTime = returnTime;
       
-      // Calculate return price (same as outward for simplicity, or could recalculate)
       const returnPriceDetails = calculatePrice();
       query.returnBasePrice = returnPriceDetails.basePrice.toString();
       query.returnSupplements = returnPriceDetails.supplements.toString();
@@ -209,35 +254,10 @@ export default function LocationInput() {
     router.push(`/journey?${params}`);
   };
 
-  useEffect(() => {
-    if (!pickupLocation && pickupLocations.length > 0) {
-      setPickupLocation(pickupLocations[1].value); 
-    }
-    if (!destinationLocation && destinationLocations.length > 0) {
-      setDestinationLocation(destinationLocations[4].value); 
-    }
-    if (!selectedDate) {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      setSelectedDate(`${year}-${month}-${day}`);
-    }
-  }, [pickupLocation, destinationLocation, selectedDate]);
-
   return (
     <div className="relative flex items-center justify-center">
       <div className="bg-white p-4 rounded-xl md:shadow-lg md:w-auto w-full md:min-w-4xl pt-12">
-        {/* Trip Type Tabs */}
         <div className="flex absolute -top-6 bg-textprimary rounded-full p-1 mb-6 w-fit overflow-hidden">
-          <button
-            onClick={() => handleTripTypeChange('oneWay')}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-              tripType === 'oneWay' ? 'bg-white text-textprimary shadow' : 'text-white'
-            }`}
-          >
-            One way
-          </button>
           <button
             onClick={() => handleTripTypeChange('roundTrip')}
             className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
@@ -246,11 +266,17 @@ export default function LocationInput() {
           >
             Round trip
           </button>
+          <button
+            onClick={() => handleTripTypeChange('oneWay')}
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              tripType === 'oneWay' ? 'bg-white text-textprimary shadow' : 'text-white'
+            }`}
+          >
+            One way
+          </button>
         </div>
 
-        {/* Form Inputs Grid */}
         <div className="flex md:flex-row flex-col gap-3 justify-between">
-          {/* Pickup Location Dropdown */}
           <div className="col-span-1">
             <label className="block text-sm font-medium mb-1 md:hidden">Pickup Location</label>
             <LocationCustom
@@ -262,7 +288,6 @@ export default function LocationInput() {
             />
           </div>
 
-          {/* Destination Location Dropdown */}
           <div className="col-span-1">
             <label className="block text-sm font-medium mb-1 md:hidden">Destination Location</label>
             <LocationCustom
@@ -274,7 +299,6 @@ export default function LocationInput() {
             />
           </div>
 
-          {/* Date and Time Picker */}
           <div className="col-span-1">
             <label className="block text-sm font-medium mb-1 md:hidden">Date & Time</label>
             <DateTimeInput
@@ -285,7 +309,6 @@ export default function LocationInput() {
             />
           </div>
 
-          {/* Return Date & Time Picker for Round Trip (shown for all screens when round trip is selected) */}
           {tripType === 'roundTrip' && (
             <div className="col-span-1">
               <label className="block text-sm font-medium md:hidden mb-1">Return Date & Time</label>
@@ -294,11 +317,12 @@ export default function LocationInput() {
                 time={returnTime}
                 onChange={handleReturnDateTimeChange}
                 placeholder="Select Return Date & Time"
+                minDate={minReturnDate}
+                minTime={returnDate === selectedDate ? selectedTime : undefined}
               />
             </div>
           )}
 
-          {/* Pax Selector (Adults and Children) */}
           <div className="col-span-1">
             <label className="block text-sm font-medium mb-1 md:hidden">Passengers</label>
             <PaxSelectorInput
@@ -308,12 +332,14 @@ export default function LocationInput() {
             />
           </div>
 
-          {/* Book Now Button */}
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
             <button
               onClick={handleSubmit}
+              disabled={!isFormValid}
               className={`bg-blue-600 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 transition-colors duration-200 w-full h-full ${
                 isMobile ? 'text-sm py-2' : ''
+              } ${
+                !isFormValid ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
               }`}
             >
               {isMobile ? 'Book Now' : 'Book Now'}

@@ -1,6 +1,6 @@
 'use client'
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Image from 'next/image';
 
 // Import React Icons
@@ -10,6 +10,7 @@ import { FaUsers, FaEuroSign, FaCar, FaCommentDots, FaSnowflake, FaSkiing, FaSho
 function JourneyPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Extract all the parameters from the URL
   const tripType = searchParams.get('tripType') || 'oneWay';
@@ -24,15 +25,11 @@ function JourneyPageContent() {
 
   // Pricing information
   const basePrice = parseFloat(searchParams.get('basePrice') || '0');
-  const supplements = parseFloat(searchParams.get('supplements') || '0');
   const totalPrice = parseFloat(searchParams.get('totalPrice') || '0');
-  const supplementDetails = JSON.parse(searchParams.get('supplementDetails') || '[]');
   
   // Return journey pricing (if applicable)
   const returnBasePrice = parseFloat(searchParams.get('returnBasePrice') || '0');
-  const returnSupplements = parseFloat(searchParams.get('returnSupplements') || '0');
   const returnTotalPrice = parseFloat(searchParams.get('returnTotalPrice') || '0');
-  const returnSupplementDetails = JSON.parse(searchParams.get('returnSupplementDetails') || '[]');
 
   // Format date for display
   const formatDisplayDate = (dateString: string) => {
@@ -63,10 +60,7 @@ function JourneyPageContent() {
     departureDate: formatDisplayDate(selectedDate),
     departureTime: selectedTime,
     passengers: `${adults} Adults, ${children} Children`,
-    basePrice: formatPrice(basePrice),
-    supplements: formatPrice(supplements),
     totalPrice: formatPrice(totalPrice),
-    supplementDetails,
   };
 
   // Journey 2 details for round trips (if available)
@@ -75,18 +69,30 @@ function JourneyPageContent() {
     departureDate: formatDisplayDate(returnDate),
     departureTime: returnTime,
     passengers: `${adults} Adults, ${children} Children`,
-    basePrice: formatPrice(returnBasePrice),
-    supplements: formatPrice(returnSupplements),
     totalPrice: formatPrice(returnTotalPrice),
-    supplementDetails: returnSupplementDetails,
   } : null;
 
   // State to handle the journey flow
   const [journeyStep, setJourneyStep] = useState(1);
 
   // Handle button click for navigating to the booking summary
-  const handleSelect = () => {
-    // Prepare URL parameters to pass to BookingSummary page
+  const handleSelect = async () => {
+    if (tripType === 'oneWay' || !journey2) {
+      navigateToBookingSummary();
+    } else {
+      if (journeyStep === 1) {
+        setIsLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second loader
+        setJourneyStep(2);
+        setIsLoading(false);
+        window.scrollTo(0, 0); // Scroll to top
+      } else {
+        navigateToBookingSummary();
+      }
+    }
+  };
+
+  const navigateToBookingSummary = () => {
     const params = new URLSearchParams();
     params.append('tripType', tripType);
     params.append('pickupLocation', pickupLocation);
@@ -95,35 +101,28 @@ function JourneyPageContent() {
     params.append('selectedTime', selectedTime);
     params.append('adults', adults);
     params.append('children', children);
-    params.append('basePrice', basePrice.toString());
-    params.append('supplements', supplements.toString());
     params.append('totalPrice', totalPrice.toString());
-    params.append('supplementDetails', JSON.stringify(supplementDetails));
 
     if (tripType === 'roundTrip') {
       params.append('returnDate', returnDate);
       params.append('returnTime', returnTime);
-      params.append('returnBasePrice', returnBasePrice.toString());
-      params.append('returnSupplements', returnSupplements.toString());
       params.append('returnTotalPrice', returnTotalPrice.toString());
-      params.append('returnSupplementDetails', JSON.stringify(returnSupplementDetails));
     }
 
-    if (tripType === 'oneWay' || !journey2) {
-      router.push(`/booking-summary?${params.toString()}`);
-    } else {
-      if (journeyStep === 1) {
-        setJourneyStep(2);
-      } else {
-        router.push(`/booking-summary?${params.toString()}`);
-      }
-    }
+    router.push(`/booking-summary?${params.toString()}`);
   };
 
   return (
     <div className="relative min-h-screen flex justify-center items-center overflow-hidden md:p-8 p-0">
       {/* Background Image */}
       <Image src={bgImage} alt="Background Image" layout="fill" objectFit="cover" className="z-0" />
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-white bg-opacity-70 flex items-center justify-center z-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      )}
 
       {/* Main Content Container */}
       <div className="relative z-10 bg-white bg-opacity-95 rounded-lg shadow-xl w-full max-w-5xl mx-auto">
@@ -158,33 +157,6 @@ function JourneyPageContent() {
                 <p className="text-base sm:text-lg">Passengers: {journey1.passengers}</p>
               </div>
 
-              {/* Pricing Details */}
-              <div className="mt-4 border-t pt-4">
-                <h3 className="text-lg font-semibold mb-2">Pricing Breakdown</h3>
-                <div className="flex justify-between mb-1">
-                  <span>Base Price:</span>
-                  <span>{journey1.basePrice}</span>
-                </div>
-                {journey1.supplementDetails.length > 0 && (
-                  <div className="mb-2">
-                    <p className="font-medium">Supplements Applied:</p>
-                    <ul className="list-disc pl-5 text-sm">
-                      {journey1.supplementDetails.map((detail: string, index: number) => (
-                        <li key={index}>{detail}</li>
-                      ))}
-                    </ul>
-                    <div className="flex justify-between mt-1">
-                      <span>Total Supplements:</span>
-                      <span>{journey1.supplements}</span>
-                    </div>
-                  </div>
-                )}
-                <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
-                  <span>Total Price:</span>
-                  <span className="text-blue-600">{journey1.totalPrice}</span>
-                </div>
-              </div>
-
               {/* Additional Information */}
               <h3 className="text-lg sm:text-xl font-bold mt-6 mb-3 text-gray-800">Additional Information</h3>
               <div className="flex items-start mb-2">
@@ -217,8 +189,9 @@ function JourneyPageContent() {
                   <button
                     onClick={handleSelect}
                     className="bg-blue-600 w-full hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition duration-300 ease-in-out whitespace-nowrap"
+                    disabled={isLoading}
                   >
-                    SELECT
+                    {isLoading ? 'Loading...' : 'SELECT'}
                   </button>
                 </div>
               </div>
@@ -245,33 +218,6 @@ function JourneyPageContent() {
               <div className="flex items-center mb-2">
                 <FaUsers className="text-blue-600 text-xl mr-3" />
                 <p className="text-base sm:text-lg">Passengers: {journey2.passengers}</p>
-              </div>
-
-              {/* Pricing Details */}
-              <div className="mt-4 border-t pt-4">
-                <h3 className="text-lg font-semibold mb-2">Pricing Breakdown</h3>
-                <div className="flex justify-between mb-1">
-                  <span>Base Price:</span>
-                  <span>{journey2.basePrice}</span>
-                </div>
-                {journey2.supplementDetails.length > 0 && (
-                  <div className="mb-2">
-                    <p className="font-medium">Supplements Applied:</p>
-                    <ul className="list-disc pl-5 text-sm">
-                      {journey2.supplementDetails.map((detail: string, index: number) => (
-                        <li key={index}>{detail}</li>
-                      ))}
-                    </ul>
-                    <div className="flex justify-between mt-1">
-                      <span>Total Supplements:</span>
-                      <span>{journey2.supplements}</span>
-                    </div>
-                  </div>
-                )}
-                <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
-                  <span>Total Price:</span>
-                  <span className="text-blue-600">{journey2.totalPrice}</span>
-                </div>
               </div>
 
               {/* Additional Information */}
@@ -306,8 +252,9 @@ function JourneyPageContent() {
                   <button
                     onClick={handleSelect}
                     className="bg-blue-600 w-full hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition duration-300 ease-in-out whitespace-nowrap"
+                    disabled={isLoading}
                   >
-                    SELECT
+                    {isLoading ? 'Loading...' : 'SELECT'}
                   </button>
                 </div>
               </div>
