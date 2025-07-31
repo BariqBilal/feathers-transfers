@@ -4,7 +4,6 @@ import Image from 'next/image';
 const DetailSection: React.FC = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">The Eleven Villages of La Plagne</h1>
       
       <div className="flex flex-col md:flex-row gap-8 mb-12">
         <div className="md:w-1/2">
