@@ -1,4 +1,5 @@
-import HeroSection from "@/component/sections/HeroSection";
+import DetailSection from "@/component/sections/DetaillSection";
+import HeroSection3 from "@/component/sections/HeroSection3";
 import PartnerSection from "@/component/sections/PartnerSection";
 import QuoteSection from "@/component/sections/QueteSection";
 import ServiceSection from "@/component/sections/ServiceSection";
@@ -7,7 +8,7 @@ import Testimonials from "@/component/sections/Testimonials";
 export default function Home() {
   return (
     <div className="">
-      <HeroSection
+      <HeroSection3
         height="75vh" 
         bgImage="/hhh.png"
         title="Trusted Transfers to La Plagne Resorts"
@@ -15,6 +16,7 @@ export default function Home() {
       />
       <ServiceSection/>
       <PartnerSection/>
+      <DetailSection/>
       <QuoteSection/>
       <Testimonials/>
     </div>
