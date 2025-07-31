@@ -1,4 +1,3 @@
-import DetailSection from "@/component/sections/DetaillSection";
 import HeroSection3 from "@/component/sections/HeroSection3";
 import PartnerSection from "@/component/sections/PartnerSection";
 import QuoteSection from "@/component/sections/QueteSection";
@@ -10,13 +9,13 @@ export default function Home() {
     <div className="">
       <HeroSection3
         height="75vh" 
-        bgImage="/hhh.png"
+        bgImage="/ccc.PNG"
         title="Trusted Transfers to La Plagne Resorts"
         description="Your dedicated specialists for reliable airport and train station transfers across all of La Plagne."
       />
       <ServiceSection/>
       <PartnerSection/>
-      <DetailSection/>
+      
       <QuoteSection/>
       <Testimonials/>
     </div>

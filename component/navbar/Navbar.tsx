@@ -14,9 +14,10 @@ export default function Navbar() {
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
     { name: 'Book Now', href: '/book-now' },
+     { name: 'La Plagne', href: '/la-plagne' },
     {
       name: 'Airports we serve',
-      href: '#',
+      href: '',
       dropdownItems: [
         { name: 'Geneva Airport', href: '/airport-geneva' },
         { name: 'Chambery Airport', href: '/chambery-airport' },
@@ -28,7 +29,6 @@ export default function Navbar() {
     { name: 'Contact', href: '/contact' },
   ];
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (openDropdown && dropdownRefs.current[openDropdown]) {
