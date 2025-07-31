@@ -9,7 +9,7 @@ const PartnerSection: React.FC = () => {
         {/* Image Column */}
         <div className="flex justify-center lg:justify-start">
           <Image
-            src="/sec1.PNG" // IMPORTANT: Replace with your actual image path (e.g., /images/la-plagne-ski.jpg)
+            src="/airportg.jpg" // IMPORTANT: Replace with your actual image path (e.g., /images/la-plagne-ski.jpg)
             alt="La Plagne Ski Resort"
             width={600} // Specify the width of the image
             height={400} // Specify the height of the image
@@ -27,14 +27,10 @@ const PartnerSection: React.FC = () => {
             Your Trusted Partner in La Plagne
           </h2>
           <p className="text-gray-700 text-lg leading-relaxed mb-4">
-            We started operating transfers from Les Gets to Geneva in 2004 and since 2007 have been based in
-            La Plagne owning and running an English Pub 'Spitting Feathers' and establishing 'Spitting Feathers
-            Airport Transfers' under the same brand.
+            La Plagne is a collection of eleven small, purpose-built ski resorts and traditional villages located on the edge of the Vanoise National Park. Renowned as a family-friendly resort, it has a good selection of beginner pistes but also some great choices for the more advanced skier or snowboarder.
           </p>
           <p className="text-gray-700 text-lg leading-relaxed">
-            Having sold the pub, now with Feathers Transfers,
-            we have a renewed enthusiasm, a fresh identity and
-            a greater dedication to undertake your transfer.
+           Getting around is easy thanks to free shuttle buses and a great network of ski lifts that connect all the resorts and villages. Some of these links are open at night to help visitors get from their accommodation to the different restaurants, shops and bars in the neighbouring resorts.
           </p>
         </div>
       </div>

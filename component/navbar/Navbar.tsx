@@ -13,6 +13,7 @@ export default function Navbar() {
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
+    { name: 'Book Now', href: '/book-now' },
     {
       name: 'Airports we serve',
       href: '#',

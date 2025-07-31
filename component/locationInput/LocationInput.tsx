@@ -20,33 +20,33 @@ export default function LocationInput() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [minReturnDate, setMinReturnDate] = useState('');
 
-  const pickupLocations = [
-    { value: 'CMF', label: 'Chambery (CMF)' },
-    { value: 'GVA', label: 'Geneva Airport (GVA)' },
-    { value: 'Hotel GVA', label: 'Geneva Hotel' },
-    { value: 'Gen Centre', label: 'Geneva City Centre' },
-    { value: 'LYS', label: 'Lyon (LYS)' },
-    { value: 'Lyon Centre', label: 'Lyon City Centre' },
-    { value: 'GNB', label: 'Grenoble (GNB)' },
-    { value: 'AIME', label: 'Aime Train Station (GARE AIME)' },
-    { value: 'BSM', label: 'Bourg Saint Maurice Train Station (GARE BSM)' },
+ const pickupLocations = [
+    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport' as const, country: 'FR' as const, code: 'CMF' },
+    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport' as const, country: 'CH' as const, code: 'GVA' },
+    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel' as const, country: 'CH' as const },
+    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city' as const, country: 'CH' as const },
+    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport' as const, country: 'FR' as const, code: 'LYS' },
+    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city' as const, country: 'FR' as const },
+    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport' as const, country: 'FR' as const, code: 'GNB' },
+    { value: 'AIME', label: 'Aime Train Station', type: 'station' as const, country: 'FR' as const, code: 'GARE AIME' },
+    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station' as const, country: 'FR' as const, code: 'GARE BSM' },
   ];
 
   const destinationLocations = [
-    { value: 'La Plagne 1800', label: 'La Plagne 1800' },
-    { value: 'La Plagne Centre', label: 'La Plagne Centre' },
-    { value: 'Belle Plagne', label: 'Belle Plagne' },
-    { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote' },
-    { value: 'La Plagne Aime 2000', label: 'La Plagne - Aime 2000' },
-    { value: 'La Plagne Villages', label: 'La Plagne Villages' },
-    { value: 'La Plagne Soleil', label: 'La Plagne Soleil' },
-    { value: 'La Plagne La Roche', label: 'La Plagne La Roche' },
-    { value: 'La Plagne Crete Cote', label: 'La Plagne Crete Cote' },
-    { value: 'La Plagne Montablert', label: 'La Plagne Montablert' },
-    { value: 'Montchavin', label: 'Montchavin' },
-    { value: 'Les Coches', label: 'Les Coches' },
-    { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise' },
-    { value: 'Other', label: 'Other: Please specify' },
+    { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort' as const, country: 'FR' as const },
+    { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne Aime 2000', label: 'La Plagne - Aime 2000', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne Villages', label: 'La Plagne Villages', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne Soleil', label: 'La Plagne Soleil', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne La Roche', label: 'La Plagne La Roche', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne Crete Cote', label: 'La Plagne Crete Cote', type: 'resort' as const, country: 'FR' as const },
+    { value: 'La Plagne Montablert', label: 'La Plagne Montablert', type: 'resort' as const, country: 'FR' as const },
+    { value: 'Montchavin', label: 'Montchavin', type: 'resort' as const, country: 'FR' as const },
+    { value: 'Les Coches', label: 'Les Coches', type: 'resort' as const, country: 'FR' as const },
+    { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort' as const, country: 'FR' as const },
+    { value: 'Other', label: 'Other: Please specify', type: 'other' as const },
   ];
 
   const basePrices: Record<string, Record<number, number>> = {
