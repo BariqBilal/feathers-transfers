@@ -42,13 +42,9 @@ function JourneyPageContent() {
     });
   };
 
-  // Format price for display
+  // Format price for display with dot as decimal separator
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 2
-    }).format(price);
+    return price.toFixed(2).replace(',', '.') + ' €';
   };
 
   // For background image
