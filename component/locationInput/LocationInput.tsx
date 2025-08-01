@@ -14,13 +14,13 @@ export default function LocationInput() {
   const [selectedTime, setSelectedTime] = useState('09:00');
   const [returnDate, setReturnDate] = useState('');
   const [returnTime, setReturnTime] = useState('09:00');
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(1);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [minReturnDate, setMinReturnDate] = useState('');
 
- const pickupLocations = [
+  const pickupLocations = [
     { value: 'CMF', label: 'Chambery (CMF)', type: 'airport' as const, country: 'FR' as const, code: 'CMF' },
     { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport' as const, country: 'CH' as const, code: 'GVA' },
     { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel' as const, country: 'CH' as const },
@@ -49,16 +49,17 @@ export default function LocationInput() {
     { value: 'Other', label: 'Other: Please specify', type: 'other' as const },
   ];
 
-  const basePrices: Record<string, Record<number, number>> = {
-    'CMF': { 1: 317, 2: 317, 3: 317, 4: 317, 5: 317*1.05, 6: 317*1.04, 7: 317*1.03, 8: 317*1.02, 9: 317*1.8, 10: 317*1.05, 11: 317*1.04, 12: 317*1.03 },
-    'GVA': { 1: 360, 2: 360, 3: 360, 4: 360, 5: 360*1.05, 6: 360*1.04, 7: 360*1.03, 8: 360*1.02, 9: 360*1.8, 10: 360*1.05, 11: 360*1.04, 12: 360*1.03 },
-    'Hotel GVA': { 1: 375, 2: 375, 3: 375, 4: 375, 5: 375*1.05, 6: 375*1.04, 7: 375*1.03, 8: 375*1.02, 9: 375*1.8, 10: 375*1.05, 11: 375*1.04, 12: 375*1.03 },
-    'Gen Centre': { 1: 390, 2: 390, 3: 390, 4: 390, 5: 390*1.05, 6: 390*1.04, 7: 390*1.03, 8: 390*1.02, 9: 390*1.8, 10: 390*1.05, 11: 390*1.04, 12: 390*1.03 },
-    'LYS': { 1: 410, 2: 410, 3: 410, 4: 410, 5: 410*1.05, 6: 410*1.04, 7: 410*1.03, 8: 410*1.02, 9: 410*1.8, 10: 410*1.05, 11: 410*1.04, 12: 410*1.03 },
-    'Lyon Centre': { 1: 450, 2: 450, 3: 450, 4: 450, 5: 450*1.05, 6: 450*1.04, 7: 450*1.03, 8: 450*1.02, 9: 450*1.8, 10: 450*1.05, 11: 450*1.04, 12: 450*1.03 },
-    'GNB': { 1: 410, 2: 410, 3: 410, 4: 410, 5: 410*1.05, 6: 410*1.04, 7: 410*1.03, 8: 410*1.02, 9: 410*1.8, 10: 410*1.05, 11: 410*1.04, 12: 410*1.03 },
-    'AIME': { 1: 80, 2: 80, 3: 80, 4: 80, 5: 80*1.05, 6: 80*1.04, 7: 80*1.03, 8: 80*1.02, 9: 80*1.8, 10: 80*1.05, 11: 80*1.04, 12: 80*1.03 },
-    'BSM': { 1: 120, 2: 120, 3: 120, 4: 120, 5: 120*1.05, 6: 120*1.04, 7: 120*1.03, 8: 120*1.02, 9: 120*1.8, 10: 120*1.05, 11: 120*1.04, 12: 120*1.03 },
+  // Exact pricing data from the spreadsheet (1-12 passengers)
+  const pricingData: Record<string, Record<number, number>> = {
+    'CMF': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
+    'GVA': {1: 360, 2: 360, 3: 360, 4: 360, 5: 378, 6: 393.12, 7: 404.91, 8: 413.01, 9: 743.42, 10: 780.59, 11: 811.82, 12: 836.17},
+    'Hotel GVA': {1: 375, 2: 375, 3: 375, 4: 375, 5: 393.75, 6: 409.5, 7: 421.79, 8: 430.22, 9: 774.4, 10: 813.12, 11: 845.64, 12: 871.01},
+    'Gen Centre': {1: 390, 2: 390, 3: 390, 4: 390, 5: 409.5, 6: 425.88, 7: 438.66, 8: 447.43, 9: 805.37, 10: 845.64, 11: 879.47, 12: 905.85},
+    'LYS': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
+    'Lyon Centre': {1: 450, 2: 450, 3: 450, 4: 450, 5: 472.5, 6: 491.4, 7: 506.14, 8: 516.26, 9: 929.28, 10: 975.74, 11: 1014.77, 12: 1045.21},
+    'GNB': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
+    'AIME': {1: 80, 2: 80, 3: 80, 4: 80, 5: 84, 6: 87.36, 7: 89.98, 8: 91.78, 9: 165.2, 10: 173.46, 11: 180.4, 12: 185.82},
+    'BSM': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
   };
 
   useEffect(() => {
@@ -69,15 +70,12 @@ export default function LocationInput() {
   }, []);
 
   useEffect(() => {
-    // Set minimum return date to selected date
     if (selectedDate) {
       setMinReturnDate(selectedDate);
       
-      // If return date is before selected date, reset it
       if (returnDate && returnDate < selectedDate) {
         setReturnDate(selectedDate);
         
-        // If return date is same as selected date but time is before, reset time
         if (returnDate === selectedDate && returnTime < selectedTime) {
           setReturnTime(selectedTime);
         }
@@ -112,19 +110,19 @@ export default function LocationInput() {
   ]);
 
   useEffect(() => {
-    if (!pickupLocation && pickupLocations.length > 0) {
-      setPickupLocation(pickupLocations[1].value); 
-    }
-    if (!destinationLocation && destinationLocations.length > 0) {
-      setDestinationLocation(destinationLocations[4].value); 
-    }
-    if (!selectedDate) {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      setSelectedDate(`${year}-${month}-${day}`);
-    }
+    // if (!pickupLocation && pickupLocations.length > 0) {
+    //   setPickupLocation(pickupLocations[1].value); 
+    // }
+    // if (!destinationLocation && destinationLocations.length > 0) {
+    //   setDestinationLocation(destinationLocations[4].value); 
+    // }
+    // if (!selectedDate) {
+    //   const today = new Date();
+    //   const year = today.getFullYear();
+    //   const month = String(today.getMonth() + 1).padStart(2, '0');
+    //   const day = String(today.getDate()).padStart(2, '0');
+    //   setSelectedDate(`${year}-${month}-${day}`);
+    // }
   }, [pickupLocation, destinationLocation, selectedDate]);
 
   const handleDateTimeChange = (date: string, time: string) => {
@@ -146,70 +144,40 @@ export default function LocationInput() {
     setTripType(type);
   };
 
-  const calculatePrice = () => {
+  const calculatePrice = (date: string, time: string) => {
     const totalPax = adults + children;
     let basePrice = 0;
+    const supplementDetails: string[] = [];
     
-    if (pickupLocation && totalPax > 0) {
-      const priceMap = basePrices[pickupLocation];
-      if (priceMap) {
-        basePrice = totalPax <= 12 ? priceMap[totalPax] : priceMap[12];
-      }
+    if (pickupLocation in pricingData) {
+      const pax = totalPax > 12 ? 12 : totalPax; // For 12+ pax, use 12 pax price
+      basePrice = pricingData[pickupLocation][pax];
+      supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
     }
 
     if (destinationLocation === 'Champagny en Vanoise') {
       basePrice += 50;
+      supplementDetails.push(`Champagny supplement: +€50.00`);
     }
 
     let supplements = 0;
-    let supplementDetails: string[] = [];
-    
-    if (selectedDate) {
-      const date = new Date(selectedDate);
-      const dayOfWeek = date.getDay();
-      
-      if (dayOfWeek === 6) {
-        supplements += basePrice * 0.2;
-        supplementDetails.push('Saturday +20%');
-      } else if (dayOfWeek === 0) {
-        supplements += basePrice * 0.15;
-        supplementDetails.push('Sunday +15%');
-      }
-      
-      const peakPeriods = [
-        { start: new Date('2025-12-19'), end: new Date('2026-01-06'), supplement: 0.3, name: 'Christmas/New Year +30%' },
-        { start: new Date('2026-02-07'), end: new Date('2026-02-07'), supplement: 0.3, name: 'February Peak +30%' },
-        { start: new Date('2026-02-12'), end: new Date('2026-02-23'), supplement: 0.2, name: 'February Holidays +20%' },
-        { start: new Date('2026-02-28'), end: new Date('2026-02-28'), supplement: 0.1, name: 'February Weekend +10%' },
-        { start: new Date('2026-03-27'), end: new Date('2026-04-12'), supplement: 0.3, name: 'Easter +30%' },
-      ];
-      
-      for (const period of peakPeriods) {
-        if (date >= period.start && date <= period.end) {
-          supplements += basePrice * period.supplement;
-          supplementDetails.push(period.name);
-          break;
-        }
+
+    // Apply weekend supplements only (removed all other supplements)
+    if (date) {
+      const departureDate = new Date(date);
+      const dayOfWeek = departureDate.getDay(); // 0 = Sunday, 6 = Saturday
+
+      if (dayOfWeek === 6) { // Saturday
+        const supplement = basePrice * 0.2;
+        supplements += supplement;
+        supplementDetails.push(`Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
+      } else if (dayOfWeek === 0) { // Sunday
+        const supplement = basePrice * 0.15;
+        supplements += supplement;
+        supplementDetails.push(`Sunday supplement: +€${supplement.toFixed(2)} (15%)`);
       }
     }
-    
-    if (selectedTime) {
-      const [hours] = selectedTime.split(':').map(Number);
-      
-      if (hours <= 11) {
-        supplements += basePrice * 0.1;
-        supplementDetails.push('Early departure (≤11:00) +10%');
-      } else if (hours >= 19) {
-        supplements += basePrice * 0.1;
-        supplementDetails.push('Late departure (≥19:00) +10%');
-      }
-      
-      if (hours >= 17) {
-        supplements += basePrice * 0.15;
-        supplementDetails.push('Late arrival (≥17:00) +15%');
-      }
-    }
-    
+
     const totalPrice = basePrice + supplements;
     
     return {
@@ -223,8 +191,9 @@ export default function LocationInput() {
   const handleSubmit = () => {
     if (!isFormValid) return;
     
-    const priceDetails = calculatePrice();
-    
+    const departurePrice = calculatePrice(selectedDate, selectedTime);
+    let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime) : null;
+
     let query: Record<string, string> = {
       tripType,
       pickupLocation,
@@ -233,21 +202,20 @@ export default function LocationInput() {
       selectedTime,
       adults: adults.toString(),
       children: children.toString(),
-      basePrice: priceDetails.basePrice.toString(),
-      supplements: priceDetails.supplements.toString(),
-      totalPrice: priceDetails.totalPrice.toString(),
-      supplementDetails: JSON.stringify(priceDetails.supplementDetails),
+      basePrice: departurePrice.basePrice.toString(),
+      supplements: departurePrice.supplements.toString(),
+      totalPrice: departurePrice.totalPrice.toString(),
+      supplementDetails: JSON.stringify(departurePrice.supplementDetails),
     };
 
-    if (tripType === 'roundTrip') {
+    if (tripType === 'roundTrip' && returnPrice) {
       query.returnDate = returnDate;
       query.returnTime = returnTime;
-      
-      const returnPriceDetails = calculatePrice();
-      query.returnBasePrice = returnPriceDetails.basePrice.toString();
-      query.returnSupplements = returnPriceDetails.supplements.toString();
-      query.returnTotalPrice = returnPriceDetails.totalPrice.toString();
-      query.returnSupplementDetails = JSON.stringify(returnPriceDetails.supplementDetails);
+      query.returnBasePrice = returnPrice.basePrice.toString();
+      query.returnSupplements = returnPrice.supplements.toString();
+      query.returnTotalPrice = returnPrice.totalPrice.toString();
+      query.returnSupplementDetails = JSON.stringify(returnPrice.supplementDetails);
+      query.grandTotal = (departurePrice.totalPrice + returnPrice.totalPrice).toString();
     }
 
     const params = new URLSearchParams(query).toString();
