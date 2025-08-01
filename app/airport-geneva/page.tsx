@@ -15,7 +15,7 @@ export default function AirportGeneva(){
       "Exit customs, but not the airport terminal, and turn left, heading towards the train station. Walk for no more than 100m and on your left hand side you will see the Swiss Chalet Restaurant where your driver will be waiting for you holding a sign with your name on it.",
       "Exit the terminal building, turn left and head towards the road. After a short walk of around two hundred metres, you will arrive at T1. Continue straight ahead towards the train station and, as above, about 100 m after arrivals, you will arrive at the Swiss Chalet Restaurant",
     ],
-    imageUrl: "/aa.png",
+    imageUrl: "/airportg.jpg",
     imageAlt: "Aerial view of Geneva Airport"
   };
     return(

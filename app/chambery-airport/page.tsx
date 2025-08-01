@@ -10,13 +10,13 @@ export default function AirportGeneva(){
    const airportData = {
     title: "Geneva Airport Overview",
     description: [
-      "One of the most fascinating aspects for pilots and aviation fans is the airport’s notoriously challenging approach. Surrounded by mountains and water, Chambéry Airport’s single runway requires pilots to execute precise landings, often in unpredictable weather. ",
+      "Despite its modest size compared to major French airports, Chambéry can handle a surprisingly considerable number of passengers during peak times. It’s small but efficient terminal design, with emphasis on quick transfers, and proximity to local ski resorts mean that travellers can often reach their final destinations faster than if they flew into larger, more congested airports. On a good day, the transfer time to La Plagne is just one-and-a-half hours. ",
 
+      "One of the most fascinating aspects for pilots and aviation fans is the airport’s notoriously challenging approach. Surrounded by mountains and water, Chambéry Airport’s single runway requires pilots to execute precise landings, often in unpredictable weather. ",
       "Fog, crosswinds, and rapidly changing Alpine conditions mean that landings and take-offs demand an elevated level of skill and experience and consequently pilots receive specialized training to operate safely at Chambéry. ",
-      "As a result, flights can be diverted during particularly adverse weather and the airport is sometimes even closed. We therefore strongly advise you to have adequate travel insurance to cover costs should this happen to you.",
     
     ],
-    imageUrl: "/aa.png",
+    imageUrl: "/airport2.jpg",
     imageAlt: "Aerial view of Geneva Airport"
   };
 
