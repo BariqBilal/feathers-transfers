@@ -8,12 +8,12 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function AirportGeneva(){
    const airportData = {
-    title: "Geneva Airport Overview",
+    title: "Lyon Saint-Exupéry Airport",
     description: [
-      "The nearest parking to the Terminal 1 is a good ten minutes’ walk away, so to avoid you the inconvenience of hauling your baggage about, your driver will be waiting five minutes away and will come into the short stay pick up and drop off zone to collect you. When you are ready, we ask that yu send a WhatsApp message.",
-      
       "Lyon Saint-Exupéry Airport serves as the region’s principal portal to Europe and the world at large, blending efficiency and modernity with the timeless elegance of French design. On a good run, the airport is a two-and-a-half-hour transfer to La Plagne.",
-      "The airport’s main terminal, Terminal 1, underwent significant expansion and modernization in 2017. The new extension offers a sleek, contemporary space with soaring glass facades, expansive waiting areas, and a variety of Shops Cafés/Restaurants and Airport lounges. It handles many international and Schengen flights and most flights from the UK arrive at Terminal 1. "
+      
+      "The airport’s main terminal, Terminal 1, underwent significant expansion and modernization in 2017. The new extension offers a sleek, contemporary space with soaring glass facades, expansive waiting areas, and a variety of Shops Cafés/Restaurants and Airport lounges. It handles many international and Schengen flights and most flights from the UK arrive at Terminal 1.",
+      "The nearest parking to the Terminal 1 is a good ten minutes’ walk away, so to avoid you the inconvenience of hauling your baggage about, your driver will be waiting five minutes away and will come into the short stay pick up and drop off zone to collect you. When you are ready, we ask that yu send a WhatsApp message."
     ],
     imageUrl: "/aa.png",
     imageAlt: "Aerial view of Geneva Airport"
@@ -58,8 +58,8 @@ export default function AirportGeneva(){
        <ProcedureSection sectionTitle="Procedure Steps" steps={stepsData} />
        <div style={{ padding: '20px' }}>
       <InfoCard
-        title="Traveling from Chambery Airport"
-        description="Chambery Airport is one of only three Category C airports in France whose runway can only be landed on by experienced pilots who have had specific simulator training on airports with a challenging approach."
+        title="Lyon Saint-Exupéry Airport"
+        description="The airport hosts a winter festival each year, celebrating the start of the ski season with live music, local food, and family activities !"
         icon={<FaMapMarkerAlt size={24} />} 
       />
     </div>

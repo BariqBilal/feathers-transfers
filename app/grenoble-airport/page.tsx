@@ -8,13 +8,13 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function GrenobleAirport(){
    const airportData = {
-    title: "Geneva Airport Overview",
+    title: "Grenoble Alpes–Isère Airport Overview",
     description: [
       "The airport consists of a single main passenger terminal building, making navigation through it straightforward. The terminal is designed to handle both arrivals and departures efficiently, and its compact size ensures minimal walking distances and at the time of writing, EasyJet Ryanair British Airways Jet2 WizzAir along with TUI Thomas Cook all operate flights into Grenoble.",
       
       "At Grenoble airport we meet all our Passengers in the short term carpark « P0» (P Zero) Once you have collected all your luggage, have perhaps used the bathroom (as we say above, transfer time to La Plagne is a minimum of two-and-a-half-hours but can be considerably longer on peak weeks), please WhatsApp your driver who will be waiting outside the airport five minutes away. "
     ],
-    imageUrl: "/aa.png",
+    imageUrl: "/airport3.PNG",
     imageAlt: "Aerial view of Geneva Airport"
   };
   const stepsData = [

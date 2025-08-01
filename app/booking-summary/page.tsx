@@ -245,7 +245,7 @@ function BookingSummaryContent() {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="+44"
+                    placeholder=""
                     required
                   />
                 </div>
@@ -279,17 +279,8 @@ function BookingSummaryContent() {
                 ></textarea>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="mb-4">
-                  <label htmlFor="accommodationWebsite" className="block text-sm font-medium text-gray-700 mb-1">Accommodation Website</label>
-                  <input
-                    type="url"
-                    id="accommodationWebsite"
-                    name="accommodationWebsite"
-                    value={formData.accommodationWebsite}
-                    onChange={handleInputChange}
-                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
+                
+                  
                 <div className="mb-4">
                   <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
                   <textarea
