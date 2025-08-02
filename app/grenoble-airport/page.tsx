@@ -14,7 +14,7 @@ export default function GrenobleAirport(){
       
       "At Grenoble airport we meet all our Passengers in the short term carpark « P0» (P Zero) Once you have collected all your luggage, have perhaps used the bathroom (as we say above, transfer time to La Plagne is a minimum of two-and-a-half-hours but can be considerably longer on peak weeks), please WhatsApp your driver who will be waiting outside the airport five minutes away. "
     ],
-    imageUrl: "/airport3.PNG",
+    imageUrl: "/last.jpeg",
     imageAlt: "Aerial view of Geneva Airport"
   };
   const stepsData = [
@@ -38,7 +38,7 @@ export default function GrenobleAirport(){
         <>
           <HeroSection2
         height="50vh" 
-        bgImage="/airport3.PNG"
+        bgImage="/last.jpeg"
         title="Grenoble Alpes-Isère Airport (LATA Code: GNB)"
         description="Grenoble Airport is located about forty kilometres northwest of the city and serves as a key gateway to the French Alps. Especially popular with travellers headed for ski resorts during the winter season, this airport offers a range of facilities designed to enhance passenger comfort, convenience, and efficiency. On a good run, GNB is a two-and-a-half-hour transfer to La Plagne."
       />
