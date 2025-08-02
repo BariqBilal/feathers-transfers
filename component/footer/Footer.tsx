@@ -23,8 +23,8 @@ const contactInfo = [
   },
   { 
     icon: <Mail className="h-4 w-4 mr-2 text-blue-100" />, 
-    text: 'transfers@spitting-feathers.com',
-    href: 'mailto:transfers@spitting-feathers.com'
+    text: 'info@featherstransfers.com',
+    href: 'mailto:info@featherstransfers.com'
   },
   { 
     icon: <MapPin className="h-4 w-4 mr-2 text-blue-100" />, 
@@ -134,9 +134,7 @@ export default function Footer() {
           <p className="text-sm text-blue-100">
             &copy; {new Date().getFullYear()} Feathers Transfers. All rights reserved.
           </p>
-          <p className="text-xs text-blue-200 mt-1">
-            Specializing in winter transfers with two dedicated vehicles serving La Plagne and surrounding areas.
-          </p>
+         
         </div>
       </div>
     </footer>

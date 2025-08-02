@@ -5,6 +5,14 @@ import DateTimeInput from '../formcomponent/DateTimeInput';
 import PaxSelectorInput from '../formcomponent/PaxSelectorInput';
 import { useRouter } from 'next/navigation';
 
+type LocationOption = {
+  value: string;
+  label: string;
+  type: 'airport' | 'hotel' | 'city' | 'station' | 'resort' | 'other';
+  country?: 'FR' | 'CH';
+  code?: string;
+};
+
 export default function LocationInput() {
   const router = useRouter();
   const [tripType, setTripType] = useState<'oneWay' | 'roundTrip'>('roundTrip');
@@ -19,37 +27,41 @@ export default function LocationInput() {
   const [isMobile, setIsMobile] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [minReturnDate, setMinReturnDate] = useState('');
+  const [isSwapping, setIsSwapping] = useState(false);
 
-  const pickupLocations = [
-    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport' as const, country: 'FR' as const, code: 'CMF' },
-    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport' as const, country: 'CH' as const, code: 'GVA' },
-    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel' as const, country: 'CH' as const },
-    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city' as const, country: 'CH' as const },
-    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport' as const, country: 'FR' as const, code: 'LYS' },
-    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city' as const, country: 'FR' as const },
-    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport' as const, country: 'FR' as const, code: 'GNB' },
-    { value: 'AIME', label: 'Aime Train Station', type: 'station' as const, country: 'FR' as const, code: 'GARE AIME' },
-    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station' as const, country: 'FR' as const, code: 'GARE BSM' },
+  // Keep original location arrays separate from current state
+  const originalPickupLocations: LocationOption[] = [
+    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
+    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
+    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
+    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
+    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
+    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
+    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
+    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
+    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'GARE BSM' },
   ];
 
-  const destinationLocations = [
-    { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort' as const, country: 'FR' as const },
-    { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne Aime 2000', label: 'La Plagne - Aime 2000', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne Villages', label: 'La Plagne Villages', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne Soleil', label: 'La Plagne Soleil', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne La Roche', label: 'La Plagne La Roche', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne Crete Cote', label: 'La Plagne Crete Cote', type: 'resort' as const, country: 'FR' as const },
-    { value: 'La Plagne Montablert', label: 'La Plagne Montablert', type: 'resort' as const, country: 'FR' as const },
-    { value: 'Montchavin', label: 'Montchavin', type: 'resort' as const, country: 'FR' as const },
-    { value: 'Les Coches', label: 'Les Coches', type: 'resort' as const, country: 'FR' as const },
-    { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort' as const, country: 'FR' as const },
-    { value: 'Other', label: 'Other: Please specify', type: 'other' as const },
+  const originalDestinationLocations: LocationOption[] = [
+    { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort', country: 'FR' },
+    { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Aime 2000', label: 'La Plagne - Aime 2000', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Villages', label: 'La Plagne Villages', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Soleil', label: 'La Plagne Soleil', type: 'resort', country: 'FR' },
+    { value: 'La Plagne La Roche', label: 'La Plagne La Roche', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Crete Cote', label: 'La Plagne Crete Cote', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Montablert', label: 'La Plagne Montablert', type: 'resort', country: 'FR' },
+    { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
+    { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
+    { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
+    { value: 'Other', label: 'Other: Please specify', type: 'other' },
   ];
 
-  // Exact pricing data from the spreadsheet (1-12 passengers)
+  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(originalPickupLocations);
+  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(originalDestinationLocations);
+
   const pricingData: Record<string, Record<number, number>> = {
     'CMF': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
     'GVA': {1: 360, 2: 360, 3: 360, 4: 360, 5: 378, 6: 393.12, 7: 404.91, 8: 413.01, 9: 743.42, 10: 780.59, 11: 811.82, 12: 836.17},
@@ -61,6 +73,9 @@ export default function LocationInput() {
     'AIME': {1: 80, 2: 80, 3: 80, 4: 80, 5: 84, 6: 87.36, 7: 89.98, 8: 91.78, 9: 165.2, 10: 173.46, 11: 180.4, 12: 185.82},
     'BSM': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
   };
+
+  // Map of valid pickup locations for pricing
+  const validPickupLocations = new Set(Object.keys(pricingData));
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -109,22 +124,6 @@ export default function LocationInput() {
     tripType
   ]);
 
-  useEffect(() => {
-    // if (!pickupLocation && pickupLocations.length > 0) {
-    //   setPickupLocation(pickupLocations[1].value); 
-    // }
-    // if (!destinationLocation && destinationLocations.length > 0) {
-    //   setDestinationLocation(destinationLocations[4].value); 
-    // }
-    // if (!selectedDate) {
-    //   const today = new Date();
-    //   const year = today.getFullYear();
-    //   const month = String(today.getMonth() + 1).padStart(2, '0');
-    //   const day = String(today.getDate()).padStart(2, '0');
-    //   setSelectedDate(`${year}-${month}-${day}`);
-    // }
-  }, [pickupLocation, destinationLocation, selectedDate]);
-
   const handleDateTimeChange = (date: string, time: string) => {
     setSelectedDate(date);
     setSelectedTime(time);
@@ -144,34 +143,114 @@ export default function LocationInput() {
     setTripType(type);
   };
 
-  const calculatePrice = (date: string, time: string) => {
+  const handleSwapLocations = async () => {
+    setIsSwapping(true);
+    
+    // Add a small delay for the animation
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    // Swap the values
+    const tempLocation = pickupLocation;
+    setPickupLocation(destinationLocation);
+    setDestinationLocation(tempLocation);
+    
+    // Swap the options
+    const tempLocations = [...pickupLocations];
+    setPickupLocations([...destinationLocations]);
+    setDestinationLocations(tempLocations);
+    
+    setIsSwapping(false);
+  };
+
+  // Helper function to find the airport/station location from both pickup and destination
+  const findAirportOrStationLocation = (fromLocation: string, toLocation: string): string | null => {
+    const allOriginalPickupValues = originalPickupLocations.map(loc => loc.value);
+    
+    // Check if fromLocation is an original pickup location (airport/station)
+    if (allOriginalPickupValues.includes(fromLocation)) {
+      return fromLocation;
+    }
+    
+    // Check if toLocation is an original pickup location (airport/station)
+    if (allOriginalPickupValues.includes(toLocation)) {
+      return toLocation;
+    }
+    
+    return null;
+  };
+
+  // Helper function to find the resort location from both pickup and destination
+  const findResortLocation = (fromLocation: string, toLocation: string): string | null => {
+    const allOriginalDestinationValues = originalDestinationLocations.map(loc => loc.value);
+    
+    // Check if fromLocation is an original destination location (resort)
+    if (allOriginalDestinationValues.includes(fromLocation)) {
+      return fromLocation;
+    }
+    
+    // Check if toLocation is an original destination location (resort)
+    if (allOriginalDestinationValues.includes(toLocation)) {
+      return toLocation;
+    }
+    
+    return null;
+  };
+
+  const calculatePrice = (date: string, time: string, fromLocation: string, toLocation: string) => {
     const totalPax = adults + children;
     let basePrice = 0;
     const supplementDetails: string[] = [];
     
-    if (pickupLocation in pricingData) {
-      const pax = totalPax > 12 ? 12 : totalPax; // For 12+ pax, use 12 pax price
-      basePrice = pricingData[pickupLocation][pax];
-      supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+    // Find the airport/station location regardless of direction
+    const airportLocation = findAirportOrStationLocation(fromLocation, toLocation);
+    const resortLocation = findResortLocation(fromLocation, toLocation);
+    
+    // Get the correct pricing key based on the airport/station location
+    let pricingKey = airportLocation;
+    
+    if (pricingKey) {
+      // Handle special location mappings
+      if (pricingKey === 'Hotel GVA' || pricingKey === 'Gen Centre') {
+        // These should use their own pricing, not map to GVA
+        // Keep the original key
+      } else if (pricingKey === 'Lyon Centre') {
+        // This should use its own pricing, not map to LYS
+        // Keep the original key
+      }
+      
+      if (validPickupLocations.has(pricingKey)) {
+        const pax = totalPax > 12 ? 12 : totalPax;
+        basePrice = pricingData[pricingKey][pax];
+        supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+      } else {
+        // Fallback for unmapped locations
+        basePrice = 300;
+        supplementDetails.push(`Default base price: €${basePrice.toFixed(2)}`);
+      }
+    } else {
+      // If no airport/station location found, use default
+      basePrice = 300;
+      supplementDetails.push(`Default base price: €${basePrice.toFixed(2)}`);
     }
 
-    if (destinationLocation === 'Champagny en Vanoise') {
+    // Apply destination supplements based on the resort location
+    if (resortLocation === 'Champagny en Vanoise') {
       basePrice += 50;
       supplementDetails.push(`Champagny supplement: +€50.00`);
     }
 
     let supplements = 0;
 
-    // Apply weekend supplements only (removed all other supplements)
+    // Apply time-based supplements
     if (date) {
       const departureDate = new Date(date);
-      const dayOfWeek = departureDate.getDay(); // 0 = Sunday, 6 = Saturday
+      const dayOfWeek = departureDate.getDay();
 
-      if (dayOfWeek === 6) { // Saturday
+      if (dayOfWeek === 6) {
         const supplement = basePrice * 0.2;
         supplements += supplement;
         supplementDetails.push(`Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
-      } else if (dayOfWeek === 0) { // Sunday
+      } else if (dayOfWeek === 0) {
         const supplement = basePrice * 0.15;
         supplements += supplement;
         supplementDetails.push(`Sunday supplement: +€${supplement.toFixed(2)} (15%)`);
@@ -191,8 +270,8 @@ export default function LocationInput() {
   const handleSubmit = () => {
     if (!isFormValid) return;
     
-    const departurePrice = calculatePrice(selectedDate, selectedTime);
-    let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime) : null;
+    const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
+    let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
 
     let query: Record<string, string> = {
       tripType,
@@ -245,7 +324,7 @@ export default function LocationInput() {
         </div>
 
         <div className="flex md:flex-row flex-col gap-3 justify-between">
-          <div className="col-span-1">
+          <div className={`col-span-1 transition-opacity duration-200 ${isSwapping ? 'opacity-50' : 'opacity-100'}`}>
             <label className="block text-sm font-medium mb-1 md:hidden">Pickup Location</label>
             <LocationCustom
               id="pickup-location"
@@ -256,7 +335,22 @@ export default function LocationInput() {
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="flex items-center justify-center">
+            <button 
+              onClick={handleSwapLocations}
+              disabled={isSwapping}
+              className={`bg-gray-200 hover:bg-gray-300 rounded-full p-2 transition-all duration-200 ${
+                isSwapping ? 'animate-spin' : ''
+              }`}
+              aria-label="Swap locations"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+            </button>
+          </div>
+
+          <div className={`col-span-1 transition-opacity duration-200 ${isSwapping ? 'opacity-50' : 'opacity-100'}`}>
             <label className="block text-sm font-medium mb-1 md:hidden">Destination Location</label>
             <LocationCustom
               id="destination-location"

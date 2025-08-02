@@ -8,7 +8,7 @@ import { FaMapMarkerAlt } from "react-icons/fa";
 
 export default function AirportGeneva(){
    const airportData = {
-    title: "Geneva Airport Overview",
+    title: "Chambery Airport Overview",
     description: [
       "Despite its modest size compared to major French airports, Chambéry can handle a surprisingly considerable number of passengers during peak times. It’s small but efficient terminal design, with emphasis on quick transfers, and proximity to local ski resorts mean that travellers can often reach their final destinations faster than if they flew into larger, more congested airports. On a good day, the transfer time to La Plagne is just one-and-a-half hours. ",
 

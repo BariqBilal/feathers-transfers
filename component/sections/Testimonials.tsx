@@ -1,69 +1,45 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image" // Image is imported but not used in the provided code snippet. Keeping it for completeness if it's used elsewhere.
+import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useInView } from "react-intersection-observer"
 
-
-// Testimonial data
+// Updated testimonial data
 const testimonials = [
   {
     id: 1,
-    initial: "J",
-    name: "James",
-    date: "07 Sept 2024",
+    initial: "K",
+    name: "Kerry M",
+    date: "March 2025",
     rating: 5,
-    comment:
-      "Absolutely flawless experience with OKTaxis. The chauffeur was on time, courteous, and the Mercedes I rode in was spotless and comfortable. I travel often for business, and this was by far the best airport transfer I’ve had in Manchester.",
+    comment: "Really efficient service from Anna and Tim. Great communication, competitively priced, friendly manner and punctual. Will always use when visiting this area. Highly recommend",
   },
   {
     id: 2,
-    initial: "L",
-    name: "Layla",
-    date: "06 April 2024",
+    initial: "F",
+    name: "Fiona T",
+    date: "Jan 2024",
     rating: 5,
-    comment:
-      "OKTaxis made my journey from Liverpool to the airport completely stress-free. The driver tracked my flight, greeted me inside the terminal, and even helped with my luggage. Super professional and reliable!",
+    comment: "Excellent transfer service. Professional, reliable, good local knowledge and better value for money than many of the other transfer services available. Would definitely use again.",
   },
   {
     id: 3,
-    initial: "R",
-    name: "Ravi",
-    date: "02 Feb 2024",
+    initial: "J",
+    name: "Jonathan A",
+    date: "March 2023",
     rating: 5,
-    comment:
-      "Booked a chauffeur for a corporate event in Manchester and was thoroughly impressed. The BMW was immaculate and the driver knew the best routes to avoid traffic. Will definitely use OKTaxis again for all my executive travel needs.",
+    comment: "Excellent and affordable transfer company, no need to think twice.",
   },
   {
     id: 4,
-    initial: "E",
-    name: "Emily",
-    date: "20 Oct 2023",
+    initial: "D",
+    name: "Daniil M",
+    date: "Dec 2019",
     rating: 5,
-    comment:
-      "We booked OKTaxis for a family airport transfer from Liverpool, and everything went perfectly. Our driver was professional and friendly, the vehicle was luxurious and spacious, and we arrived right on time. Outstanding service!",
-  },
-  {
-    id: 5,
-    initial: "O",
-    name: "Oliver",
-    date: "12 Jan 2024",
-    rating: 5,
-    comment:
-      "I use OKTaxis regularly for my airport commutes and the service has always been top-tier. The chauffeurs are polite, well-dressed, and always punctual. I love the peace of mind knowing I’ll get where I need to be, on time and in comfort.",
-  },
-  {
-    id: 6,
-    initial: "S",
-    name: "Sofia",
-    date: "15 Nov 2023",
-    rating: 5,
-    comment:
-      "From the moment I booked with OKTaxis, everything was handled smoothly. The booking was easy, the pricing was transparent, and the Audi I travelled in was stunning. Will recommend to anyone looking for a luxury ride in Manchester or Liverpool.",
+    comment: "Simply the best transfer option for a ski trip that I have seen so far. They managed not only to take us to and from the airport for a very reasonable price, but also to quickly rearrange the itinerary when one of the flights was delayed. I am always very happy to see people doing their business not just for money but also to make their customers happy. I would totally recommend",
   },
 ];
-
 
 export default function Testimonials() {
   const [startIndex, setStartIndex] = useState(0)
@@ -117,7 +93,7 @@ export default function Testimonials() {
     return Array.from({ length: count }).map((_, i) => (
       <svg
         key={i}
-        className="h-2 lg:h-4 w-2 lg:w-4 fill-blue-600 text-blue-600" // Changed fill-brand and text-brand to fill-blue-600 and text-blue-600 for consistency
+        className="h-2 lg:h-4 w-2 lg:w-4 fill-blue-600 text-blue-600"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
       >
@@ -131,7 +107,7 @@ export default function Testimonials() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="mb-8 flex flex-col items-start md:flex-row md:items-center md:justify-between">
           <div
-            className={`mb-6 md:mb-0 ${inView ? 'opacity-100' : 'opacity-0'}`} // Control opacity with class for easier debugging
+            className={`mb-6 md:mb-0 ${inView ? 'opacity-100' : 'opacity-0'}`}
             style={{
               animation: inView ? "fadeInUp 0.6s ease-out forwards" : "none",
             }}
@@ -142,7 +118,6 @@ export default function Testimonials() {
               Customers <span className="text-blue-600">say</span>
             </h2>
           </div>
-          {/* Added a placeholder div here to ensure proper closing if original content was meant to be here */}
           <div></div> 
         </div> 
 
@@ -152,7 +127,6 @@ export default function Testimonials() {
               <div
                 key={`${testimonial.id}-${index}`}
                 className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md"
-                // Removed opacity:0 from style and added it to class for better control
                 style={{
                   animation: inView ? `fadeInUp 0.6s ease-out forwards ${index * 0.1 + 0.3}s` : "none",
                 }}

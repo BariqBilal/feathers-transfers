@@ -6,7 +6,7 @@ export default function BookNow() {
     <>
       <HeroSection
         height="75vh"
-        bgImage="/hhh.png"
+        bgImage="/ccc.PNG"
         title="Book Your Transfer Now!"
         description="Secure your transfer to La Plagne Resorts today with our fast, reliable, and comfortable."
       />

@@ -171,32 +171,43 @@ const ContactSection: React.FC = () => {
             </div>
 
             {/* Contact Information */}
-            <div className="bg-[#F1F6FF] p-6 rounded-md">
-              <h3 className="text-xl font-medium text-gray-700 mb-5">Contact Information</h3>
-              <ul className="space-y-4 text-gray-700 text-base">
-                <li className="flex items-start">
-                  <Phone className="w-6 h-6 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold text-gray-800">Phone</span>
-                    <p className="text-gray-700">+33-6-79-52-49-59</p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <Mail className="w-6 h-6 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold text-gray-800">Email</span>
-                    <p className="text-blue-600 hover:underline"><a href="mailto:info@featherstransfers.com">info@featherstransfers.com</a></p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <MapPin className="w-6 h-6 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold text-gray-800">Location</span>
-                    <p className="text-gray-700">La Plagne Bellecote, Savoie, France</p>
-                  </div>
-                </li>
-              </ul>
-            </div>
+          <div className="bg-[#F1F6FF] p-6 rounded-md">
+  <h3 className="text-xl font-medium text-gray-700 mb-5">Contact Information</h3>
+  <ul className="space-y-4 text-gray-700 text-base">
+    <li className="flex items-start">
+      <Phone className="w-6 h-6 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+      <div className="space-y-2">
+        <span className="font-semibold text-gray-800">Phone</span>
+        <div className="flex flex-col space-y-2">
+          <a href="tel:+33679524959" className="flex items-center text-gray-700 hover:text-blue-600">
+            <Phone className="h-4 w-4 mr-2 text-blue-500" />
+            Tim: +33 6 79 52 49 59
+          </a>
+          <a href="tel:+33620909025" className="flex items-center text-gray-700 hover:text-blue-600">
+            <Phone className="h-4 w-4 mr-2 text-blue-500" />
+            Anna: +33 6 20 90 90 25
+          </a>
+        </div>
+      </div>
+    </li>
+    <li className="flex items-start">
+      <Mail className="w-6 h-6 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+      <div>
+        <span className="font-semibold text-gray-800">Email</span>
+        <p className="text-blue-600 hover:underline">
+          <a href="mailto:info@featherstransfers.com">info@featherstransfers.com</a>
+        </p>
+      </div>
+    </li>
+    <li className="flex items-start">
+      <MapPin className="w-6 h-6 mr-3 text-blue-500 flex-shrink-0 mt-0.5" />
+      <div>
+        <span className="font-semibold text-gray-800">Location</span>
+        <p className="text-gray-700">La Plagne Bellecote, Savoie, France</p>
+      </div>
+    </li>
+  </ul>
+</div>
           </div>
 
           {/* Traveling to other Savoie resorts? */}

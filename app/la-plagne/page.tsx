@@ -6,7 +6,7 @@ export default function LaPplange() {
         <>
             <HeroSection2
                 height="50vh"
-                bgImage="/contact.jpg"
+                bgImage="/la=plange.PNG"
                 title="The Eleven Villages of La Plagne"
                 description="Specialized in La Plagne and Savoie Region Transfers"
             />
