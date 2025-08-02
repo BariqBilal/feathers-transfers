@@ -48,7 +48,7 @@ function JourneyPageContent() {
   };
 
   // For background image
-  const bgImage = '/hero.jpg';
+  const bgImage = '/ccc.PNG';
 
   // Journey 1 details
   const journey1 = {

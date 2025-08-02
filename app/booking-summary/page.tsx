@@ -46,7 +46,7 @@ function BookingSummaryContent() {
   };
 
   // For background image
-  const bgImage = '/hero.jpg';
+  const bgImage = '/ccc.PNG';
 
   // Calculate total amount
   const totalAmount = tripType === 'roundTrip' 
