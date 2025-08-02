@@ -16,7 +16,7 @@ export default function AirportGeneva(){
       "Fog, crosswinds, and rapidly changing Alpine conditions mean that landings and take-offs demand an elevated level of skill and experience and consequently pilots receive specialized training to operate safely at Chambéry. ",
     
     ],
-    imageUrl: "/airport2.jpg",
+    imageUrl: "/Chambery-Savoie-Aeroport.jpg",
     imageAlt: "Aerial view of Geneva Airport"
   };
 
@@ -41,7 +41,7 @@ export default function AirportGeneva(){
         <>
           <HeroSection2
         height="50vh" 
-        bgImage="/airport2.jpg"
+        bgImage="/Chambery-Savoie-Aeroport.jpg"
         title="Chambery Airport (LATA Code: CMF) "
         description="Chambery Airport, officially known as Chambéry Savoie Mont Blanc Airport is situated in the heart of the picturesque Savoie region of France."
       />
