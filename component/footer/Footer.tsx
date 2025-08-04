@@ -1,6 +1,6 @@
 import React from 'react';
 import { Phone, Mail, MapPin } from 'lucide-react';
-import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Facebook, Twitter, Instagram } from 'lucide-react';
 import Link from 'next/link';
 
 const quickLinks = [
@@ -48,16 +48,14 @@ const socialLinks = [
     href: 'https://www.instagram.com/featherstransfers',
     name: 'Instagram'
   },
- 
 ];
 
 const airportInfo = [
-  'Lyon Airport (LYS)',
-  'Geneva Airport (GVA)',
-  'Grenoble Airport (GNB)',
-  'Chambery Airport (CMF)'
+  { name: 'Lyon Airport (LYS)', href: '/lyon-airport' },
+  { name: 'Geneva Airport (GVA)', href: '/airport-geneva' },
+  { name: 'Grenoble Airport (GNB)', href: '/grenoble-airport' },
+  { name: 'Chambery Airport (CMF)', href: '/chambery-airport' }
 ];
-
 export default function Footer() {
   return (
     <footer className="bg-primary text-white py-10 font-inter">
@@ -65,11 +63,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1">
             <h3 className="text-xl font-bold mb-4">Feathers Transfers</h3>
-            <p className="text-sm text-blue-100 mb-4">
-              Your trusted transfer service in La Plagne, specializing in airport and train station transfers to all eleven resorts.
+            <p className="text-sm text-blue-100 text-justify mb-4">
+             Your trusted transfer service based in La Plagne, specialising in airport and train station transfers to all eleven resorts.
             </p>
-            <p className="text-sm text-blue-100">
-              Operating during winter ski season (December to April) from the third largest ski resort in the world.
+            <p className="text-sm text-blue-100 text-justify">
+             Operating during winter ski season (December to April) from the third largest ski area in the world.
             </p>
           </div>
 
@@ -124,7 +122,11 @@ export default function Footer() {
             <h4 className="text-md font-semibold mb-2">Serving Airports:</h4>
             <ul className="text-sm text-blue-100 space-y-1">
               {airportInfo.map((airport, index) => (
-                <li key={index}>{airport}</li>
+                <li key={index}>
+                  <Link href={airport.href} className="text-blue-100 hover:underline">
+                    {airport.name}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
@@ -134,7 +136,6 @@ export default function Footer() {
           <p className="text-sm text-blue-100">
             &copy; {new Date().getFullYear()} Feathers Transfers. All rights reserved.
           </p>
-         
         </div>
       </div>
     </footer>

@@ -9,7 +9,7 @@ const PartnerSection: React.FC = () => {
         {/* Image Column */}
         <div className="flex justify-center lg:justify-start">
           <Image
-            src="/airportg.jpg" // IMPORTANT: Replace with your actual image path (e.g., /images/la-plagne-ski.jpg)
+            src="/aboutsec.jpg" // IMPORTANT: Replace with your actual image path (e.g., /images/la-plagne-ski.jpg)
             alt="La Plagne Ski Resort"
             width={600} // Specify the width of the image
             height={400} // Specify the height of the image
@@ -26,10 +26,10 @@ const PartnerSection: React.FC = () => {
           <h2 className="text-4xl font-semibold text-gray-800 mb-6 font-inter">
             Your Trusted Partner in La Plagne
           </h2>
-          <p className="text-gray-700 text-lg leading-relaxed mb-4">
+          <p className="text-gray-700 text-justify text-lg leading-relaxed mb-4">
             La Plagne is a collection of eleven small, purpose-built ski resorts and traditional villages located on the edge of the Vanoise National Park. Renowned as a family-friendly resort, it has a good selection of beginner pistes but also some great choices for the more advanced skier or snowboarder.
           </p>
-          <p className="text-gray-700 text-lg leading-relaxed">
+          <p className="text-gray-700 text-lg text-justify leading-relaxed">
            Getting around is easy thanks to free shuttle buses and a great network of ski lifts that connect all the resorts and villages. Some of these links are open at night to help visitors get from their accommodation to the different restaurants, shops and bars in the neighbouring resorts.
           </p>
         </div>

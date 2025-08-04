@@ -8,12 +8,12 @@ const CommitmentSection: React.FC = () => {
     {
       icon: Snowflake,
       title: "New Snow Tires",
-      description: "All vehicles fitted with new snow tires each winter",
+      description: "All vehicles fitted with new snow tires each winter Should read",
     },
     {
       icon: UserCheck,
       title: "Experienced Drivers",
-      description: "Drivers trained in snow chain application",
+      description: "Used to driving in winter conditions and trained in snow chain application",
     },
     {
       icon: BatteryCharging,

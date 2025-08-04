@@ -10,10 +10,11 @@ export default function AirportGeneva(){
    const airportData = {
     title: "Chambery Airport Overview",
     description: [
-      "Despite its modest size compared to major French airports, Chambéry can handle a surprisingly considerable number of passengers during peak times. It’s small but efficient terminal design, with emphasis on quick transfers, and proximity to local ski resorts mean that travellers can often reach their final destinations faster than if they flew into larger, more congested airports. On a good day, the transfer time to La Plagne is just one-and-a-half hours. ",
+      "The arrival procedure is very simple at Chambery Airport as it is very small. Once you have all your baggage, exit the arrivals terminal where you will find your driver holding a sign with your name on it.",
 
-      "One of the most fascinating aspects for pilots and aviation fans is the airport’s notoriously challenging approach. Surrounded by mountains and water, Chambéry Airport’s single runway requires pilots to execute precise landings, often in unpredictable weather. ",
-      "Fog, crosswinds, and rapidly changing Alpine conditions mean that landings and take-offs demand an elevated level of skill and experience and consequently pilots receive specialized training to operate safely at Chambéry. ",
+      "Poular airlines such as <a href='https://www.jet2.com/'>Jet2</a> and <a href='https://www.britishairways.com/travel/home/public/en_pk/'>British Airways</a> offer flights to Chambery. The british Tour Operator <a href='https://www.crystalski.co.uk/'>Crystal Ski Holidays</a> offer many flight into Chambery Airport during the ski season.",
+
+      "Chambéry Airport France is the closest airport to the major ski resorts in the Savoie and thus, in theory, has the shortest transfer to the ski resorts. However, be warned the airport can sometimes close due to fog from the Lac du Bourget which is situated at the southern end of the runway.",
     
     ],
     imageUrl: "/Chambery-Savoie-Aeroport.jpg",
@@ -42,11 +43,11 @@ export default function AirportGeneva(){
           <HeroSection2
         height="50vh" 
         bgImage="/Chambery-Savoie-Aeroport.jpg"
-        title="Chambery Airport (LATA Code: CMF) "
+        title="Chambery Airport (IATA Code: CMF)"
         description="Chambery Airport, officially known as Chambéry Savoie Mont Blanc Airport is situated in the heart of the picturesque Savoie region of France."
       />
        <AirportDetail
-        location='Just 4km northwest of Geneva city centre'
+        location='At the southern end of Lac du Bourget'
         transferTime='2.5 hours to La Plagne'
         amenities='Free Wi-Fi available throughout'
       />
@@ -59,9 +60,10 @@ export default function AirportGeneva(){
        <ProcedureSection sectionTitle="Procedure Steps" steps={stepsData} />
         <div style={{ padding: '20px' }}>
       <InfoCard
-        title="Traveling from Chambery Airport"
-        description="Chambery Airport is one of only three Category C airports in France whose runway can only be landed on by experienced pilots who have had specific simulator training on airports with a challenging approach!"
+        title="Chambery Airport – Did you know ?"
+        description="Chambery Airport is one of only three Category C airports in France whose runway can only be landed on by experienced pilots who have had specific simulator training on airports with a challenging approach. Enjoy the view !"
         icon={<FaMapMarkerAlt size={24} />} 
+        
       />
     </div>
     

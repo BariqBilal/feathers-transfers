@@ -21,13 +21,13 @@ const AdditionalTipsSection: React.FC = () => {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <Plane className="w-6 h-6 text-blue-600 mr-3 flex-shrink-0 mt-1" />
-                <p className="text-gray-700 text-base leading-relaxed">
+                <p className="text-gray-700 text-base leading-relaxed text-justify">
                   Transfers typically take a minimum of 2.5 hours - plan accordingly and avoid excessive alcohol consumption before travel.
                 </p>
               </li>
               <li className="flex items-start">
                 <Plane className="w-6 h-6 text-blue-600 mr-3 flex-shrink-0 mt-1" />
-                <p className="text-gray-700 text-base leading-relaxed">
+                <p className="text-gray-700 text-base leading-relaxed text-justify">
                   Consider travel insurance to cover extra expenses from flight delays or cancellations.
                 </p>
               </li>

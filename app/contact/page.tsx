@@ -39,7 +39,7 @@ const ContactSection: React.FC = () => {
       if (response.status === 200) {
         setSubmitStatus({
           success: true,
-          message: 'Your message has been sent successfully!'
+          message: 'Your message has been sent successfully. We will get back to you asap.'
         });
         // Reset form
         setFormData({
@@ -70,7 +70,7 @@ const ContactSection: React.FC = () => {
         height="50vh" 
         bgImage="/contact.jpg"
         title="Contact Us for Your Transfer Needs"
-        description="Specialized in La Plagne and Savoie Region Transfers"
+        description="Specialised in La Plagne and Savoie Region Transfers"
       />
       <section className="bg-[#F1F6FF] py-16 px-4">
                     <h2 className="text-3xl font-bold text-gray-800 text-center ">Get in Touch</h2>
@@ -219,7 +219,7 @@ const ContactSection: React.FC = () => {
                 We are more than happy to quote for other resorts in the Savoie region of France. To get a tailored quote to a resort other than that of La Plagne, please send an email to:
               </p>
               <p className="text-blue-600 font-medium hover:underline">
-                <a href="mailto:transfers@splitting-feathers.com">transfers@splitting-feathers.com</a>
+                <a href="mailto:info@featherstransfers.com">info@featherstransfers.com</a>
               </p>
             </div>
           </div>

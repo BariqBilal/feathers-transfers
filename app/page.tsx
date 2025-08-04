@@ -10,7 +10,7 @@ export default function Home() {
       <HeroSection3
         height="75vh" 
         bgImage="/ccc.PNG"
-        title="Trusted Transfers to La Plagne Resorts"
+        title="Trusted Transfers to all La Plagne Resorts"
         description="Your dedicated specialists for reliable airport and train station transfers across all of La Plagne."
       />
       <ServiceSection/>

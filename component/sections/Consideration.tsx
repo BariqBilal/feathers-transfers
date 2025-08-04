@@ -20,7 +20,7 @@ const Consideration: React.FC = () => {
                 <h3 className="text-xl font-semibold text-gray-800">Travel Sickness Prevention</h3>
               </div>
               <p className="text-gray-700 text-base leading-relaxed">
-                The altitude resorts are situated at the top of a hill climb. You will gain 1,800m in altitude. We strongly advise you to prepare your party members and count down/up the bends to eliminate car sickness.
+The high altitude resorts of La Plagne are accessed via a steep drive of switch back bends. We strongly advise you not to look at screens during this journey and kids are encouraged to count down/up the bends to avoid car sickness
               </p>
             </div>
 
@@ -47,11 +47,11 @@ const Consideration: React.FC = () => {
                 </li>
                 <li className="flex items-start">
                   <Clock className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
-                  <p className="text-gray-700 text-base">Chambery Airport features an Italian Restaurant called Italoria with convenient dining options.</p>
+                  <p className="text-gray-700 text-base">At the entrance to Chambery Airport there is an Italian Restaurant called <a className='underline text-blue-500' href="https://www.italoria.fr/italoria-voglans/"> Italoria</a> serving some fabulous dishes.</p>
                 </li>
                 <li className="flex items-start">
                   <Clock className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
-                  <p className="text-gray-700 text-base">Grenoble has a supermarket, cafe and various food options at the entrance.</p>
+                  <p className="text-gray-700 text-base">Grenoble Airport has a supermarket, McDonalds, Cafe and various food options a short walk from the terminal building.</p>
                 </li>
               </ul>
             </div>

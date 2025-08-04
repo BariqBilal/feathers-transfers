@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/component/navbar/Navbar";
 import Footer from "@/component/footer/Footer";
+import { Phone } from "lucide-react"; // Import the WhatsApp icon
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +30,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar/>
+        <Navbar />
         {children}
-        <Footer/>
+        <Footer />
+
+        {/* WhatsApp Icon */}
+        <a
+          href="https://wa.me/+33679524959" 
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-4 right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-colors"
+          aria-label="Chat with us on WhatsApp"
+        >
+          <Phone size={30} /> 
+        </a>
       </body>
     </html>
   );
