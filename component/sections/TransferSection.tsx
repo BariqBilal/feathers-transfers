@@ -46,7 +46,7 @@ const TransferSection: React.FC = () => {
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 text-base leading-relaxed">
+              <p className="text-gray-600 text-base leading-relaxed text-justify">
                 {service.description}
               </p>
             </div>

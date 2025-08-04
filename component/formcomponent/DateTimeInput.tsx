@@ -265,7 +265,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
           {currentView === 'date' ? (
             <div className="p-4">
               <div className="flex justify-between items-center mb-4">
-                <button onClick={goToPreviousMonth} className="p-2 rounded-full hover:bg-gray-200">
+                <button onClick={goToPreviousMonth} className="p-2 text-black rounded-full hover:bg-gray-200">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                   </svg>
@@ -273,7 +273,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                 <span className="text-lg font-medium">
                   {currentMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
-                <button onClick={goToNextMonth} className="p-2 rounded-full hover:bg-gray-200">
+                <button onClick={goToNextMonth} className="p-2 rounded-full text-black hover:bg-gray-200">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                   </svg>
@@ -290,7 +290,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                     {dayObj ? (
                       <button
                         className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors
-                          ${dayObj.isDisabled ? 'text-gray-300 cursor-default' : 
+                          ${dayObj.isDisabled ? 'text-gray-800 cursor-default' : 
                             selectedDate === `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(dayObj.day).padStart(2, '0')}`
                               ? 'bg-blue-600 text-white'
                               : 'text-gray-900 hover:bg-gray-200'}`}

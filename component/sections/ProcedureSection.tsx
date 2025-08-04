@@ -6,7 +6,7 @@ import { FileText, Car, CheckCircle } from 'lucide-react'; // Importing icons fr
 interface Step {
   icon: React.ReactNode; // Can be a Lucide icon component or any ReactNode
   stepTitle: string;
-  description: string;
+  description: React.ReactNode; // Description can now be a ReactNode to support <a> tags
 }
 
 // Interface for the main ProcedureSection component props
@@ -42,9 +42,9 @@ const ProcedureSection: React.FC<ProcedureSectionProps> = ({ sectionTitle, steps
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 text-base leading-relaxed">
+              <div className="text-gray-600 text-base leading-relaxed">
                 {step.description}
-              </p>
+              </div>
             </div>
           ))}
         </div>

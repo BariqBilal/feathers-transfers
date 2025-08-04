@@ -23,17 +23,17 @@ export default function AirportGeneva(){
   {
     icon: <FileText className="w-8 h-8" />,
     stepTitle: 'Step 1: Documentation',
-    description: 'Complete all necessary paperwork for the procedure before starting.'
+    description: 'The nearest parking to the Terminal 1 is a good ten minutes’ walk away, so to avoid you the inconvenience of hauling your baggage about, your driver will be waiting five minutes away and will come into the short stay pick up and drop off zone to collect you. '
   },
   {
     icon: <Car className="w-8 h-8" />,
     stepTitle: 'Step 2: Vehicle Inspection',
-    description: 'Ensure the vehicle passes the required safety inspection.'
+    description: 'When you have collected all your luggage and are ready to go, we ask that you walk out to the car park (not the one with taxis and buses) and then send your driver a WhatsApp message. He or she will then come in to collect you.'
   },
   {
     icon: <CheckCircle className="w-8 h-8" />,
     stepTitle: 'Step 3: Final Approval',
-    description: 'Submit for final approval after all checks are complete.'
+    description: 'Situated on the outskirts of lyon, the airport has direct motorway access ensuring a speedy getaway towards the alps '
   },
 ];
     return(
@@ -41,11 +41,11 @@ export default function AirportGeneva(){
           <HeroSection2
         height="50vh" 
         bgImage="/airport4.jpg"
-        title="Lyon Saint-Exupéry Airport(LATA Code: LYS)"
+        title="Lyon Saint-Exupéry Airport (IATA Code: LYS)"
         description="Lyon, the vibrant capital of France’s Auvergne-Rhône-Alpes region, is renowned for its rich history, gastronomic heritage, and cultural life. As the third largest city in France, Lyon is a pivotal hub for both tourism and business."
       />
        <AirportDetail
-        location='Just 4km northwest of Geneva city centre'
+        location='25kms east of Lyon in the town of Colombier-Saugnieu'
         transferTime='2.5 hours to La Plagne'
         amenities='Free Wi-Fi available throughout'
       />
@@ -58,7 +58,7 @@ export default function AirportGeneva(){
        <ProcedureSection sectionTitle="Procedure Steps" steps={stepsData} />
        <div style={{ padding: '20px' }}>
       <InfoCard
-        title="Lyon Saint-Exupéry Airport"
+        title="Lyon Saint-Exupéry Airport – did you know ?"
         description="The airport hosts a winter festival each year, celebrating the start of the ski season with live music, local food, and family activities !"
         icon={<FaMapMarkerAlt size={24} />} 
       />

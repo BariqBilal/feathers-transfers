@@ -6,7 +6,7 @@ import React from 'react';
 const QuoteSection: React.FC = () => {
   const router = useRouter()
   return (
-    <section className="bg-white py-16 px-4"> {/* White background for the section */}
+    <section className="bg-white py-16 px-4"> 
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Quick Quote Card */}
         <div className="bg-white p-8 rounded-lg shadow-md border border-gray-100 flex flex-col items-center text-center">
@@ -22,7 +22,7 @@ const QuoteSection: React.FC = () => {
         {/* Full Booking Card */}
         
         <div className="bg-white p-8 rounded-lg shadow-md border border-gray-100 flex flex-col items-center text-center">
-          <h3 className="text-2xl font-semibold text-gray-800 mb-4">Full Booking</h3>
+          <h3 className="text-2xl font-semibold text-gray-800 mb-4">Online Booking</h3>
           <p className="text-gray-600 text-base leading-relaxed mb-6">
             If you have all your travel details, including party size, and want an exact price
           </p>

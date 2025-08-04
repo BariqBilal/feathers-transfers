@@ -135,7 +135,7 @@ const QuoteSystem = () => {
       return;
     }
 
-    details.push(`Base price for ${totalPax} passengers from ${pickupLocations.find(l => l.value === pickupLocation)?.label}: €${basePrice.toFixed(2)}`);
+    details.push(`Best price for ${totalPax} passengers from ${pickupLocations.find(l => l.value === pickupLocation)?.label}: €${basePrice.toFixed(2)}`);
 
     // Check if destination is Champagny en Vanoise
     if (destinationLocation === 'Champagny en Vanoise') {
@@ -175,7 +175,7 @@ const QuoteSystem = () => {
       if (returnDayOfWeek === 6) { // Saturday
         const supplement = returnPrice * 0.2;
         returnPrice *= 1.2;
-        details.push(`Return Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
+        // details.push(`Return Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
       } else if (returnDayOfWeek === 0) { // Sunday
         const supplement = returnPrice * 0.15;
         returnPrice *= 1.15;
@@ -234,7 +234,7 @@ const QuoteSystem = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 md:min-w-md xs:w-full mx-auto">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">QuickQuote</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Quick Quote – for an idea of price</h2>
 
       <div className="flex gap-3 mb-4">
             <button
@@ -343,7 +343,7 @@ const QuoteSystem = () => {
             <>
               <div className="mb-4">
                 <div className="text-xl font-bold text-blue-600">
-                  Total Price: €{price.toFixed(2)}
+                  Price starting from: €{price.toFixed(2)}
                 </div>
                 {tripType === 'roundTrip' && (
                   <div className="text-sm text-gray-600">

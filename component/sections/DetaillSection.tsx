@@ -17,13 +17,11 @@ const DetailSection: React.FC = () => {
           />
         </div>
         <div className="md:w-1/2">
-          <p className="text-lg mb-4">
-            From purpose-built hubs with buzzing après ski scenes to quiet, tree-lined hamlets ideal for young families. 
-            Each La Plagne village offers something a little different.
+          <p className="text-lg mb-4 text-justify">
+            La Plagne is a collection of twelve small, purpose-built high altitude ski resorts and traditional villages located on the edge of the Vanoise National Park. Renowned as a family-friendly resort, it has a good selection of beginner pistes but also some great choices for the more advanced skier or snowboarder. In addition, La Plagne is part of the famous Paradiski ski area, linked to Les Arcs by the Vanoise Express cable car.
           </p>
-          <p className="text-lg">
-            Here is a quick overview of all 11 villages – their vibe, location, altitude, and what they're best known for – 
-            so you can quickly narrow down the best base for your ski trip.
+          <p className="text-lg text-justify">
+            All resorts have a good choice of ski in ski out apartments, chalets and hotels, restaurants and nightlife. Getting around is easy thanks to free shuttle buses and a great network of ski lifts that connect the high altitude resorts and villages. Some of these links are open at night to help visitors get from their accommodation to the different restaurants, shops and bars in the neighbouring resorts. Feathers Transfers can also be pre-booked to take/collect your party for a night out. 
           </p>
         </div>
       </div>
@@ -33,7 +31,7 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">1. Plagne Centre</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1970m</p>
-          <p>
+          <p className='text-justify'>
             As the name suggests, it's at the heart of La Plagne. Think of it as the hub where many of the ski lifts, 
             shops, and restaurants are located. It's bustling and convenient for everything.
           </p>
@@ -43,7 +41,7 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">2. Plagne 1800</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1800m</p>
-          <p>
+          <p className='text-justify'>
             A bit quieter than Plagne Centre, it's set a little lower on the mountain. It has a more traditional alpine feel 
             and is great for families looking for a serene retreat, with the largest selection of ski chalets rather than 
             residencies and apartments.
@@ -54,10 +52,8 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">3. Plagne Aime 2000</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 2000m</p>
-          <p>
-            One of the highest La Plagne villages. Known for its 'distinctive' architecture, it offers breathtaking views 
-            and direct access to the slopes. The main thing with this village is not to confuse it with Aime La Plagne, 
-            which is the village at the foot of La Plagne Mountain, where the train station is.
+          <p className='text-justify'>
+            One of the highest of La Plagne’s villages, known for its 'brutalist' architecture, offering breathtaking views of Mont Blanc and direct access to the slopes. Avoid confusing it with Aime La Plagne, which is the village at the bottom of the valley where the train arrives and you begin your climb up to La Plagne.
           </p>
         </div>
 
@@ -65,9 +61,8 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">4. Plagne Soleil</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 2050m</p>
-          <p>
-            Sitting at about 2050 metres, these two villages are sunny, with a cosy and inviting atmosphere. 
-            They're interconnected and offer ski-in/ski-out accommodation.
+          <p className='text-justify'>
+            Sitting at about 2050 metres and the last born resort of La Plagne, it has pleasant architecture with a cosy and inviting atmosphere. Plagne Soleil offers true ski-in-ski-out accommodation.
           </p>
         </div>
 
@@ -75,9 +70,8 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">5. Plagne Villages</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 2050m</p>
-          <p>
-            Sitting at about 2050 metres, these two villages are sunny, with a cosy and inviting atmosphere. 
-            They're interconnected and offer ski-in/ski-out accommodation.
+          <p className='text-justify'>
+           Sitting at about 2050 metres, Plagne Villages has its own particular charm. Perhaps quieter than the other resorts of La Plagne it provides edge of the piste accommodation with a charming smaller village feel.
           </p>
         </div>
 
@@ -85,8 +79,8 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">6. Plagne Bellecôte</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1930m</p>
-          <p>
-            A dynamic spot with an outdoor heated swimming pool. Its where you will find the home base of Feathers Transfers.
+          <p className='text-justify'>
+           A dynamic spot with perhaps the best access to all the slopes in La Plagne. New for season 25/26 is a speedy 10 person gondola whisking you up to the Roche de Moi via the Col de Forcle. There is also easy access to Les Arcs is via a speedy 8 person chairlift to the top of the Arpette.
           </p>
         </div>
 
@@ -94,7 +88,7 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">7. Belle Plagne</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 2050m</p>
-          <p>
+          <p className='text-justify'>
             One of the most picturesque parts of La Plagne, Belle Plagne is known for its beautiful Savoyard architecture 
             and family-friendly vibe.
           </p>
@@ -104,7 +98,7 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">8. Montchavin</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1250m</p>
-          <p>
+          <p className='text-justify'>
             Nestling on the edge of the forest, Montchavin is a traditional village that offers a mix of old-world charm 
             and modern ski facilities. It's a gem for those who love quaint settings.
           </p>
@@ -114,7 +108,7 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">9. Les Coches</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1450m</p>
-          <p>
+          <p className='text-justify'>
             Close to Montchavin, Les Coches is a newer development but retains a charming, village-like feel. It's an 
             excellent base for families, with access to both La Plagne and Les Arcs thanks to the Vanoise Express.
           </p>
@@ -124,7 +118,7 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">10. Champagny en Vanoise</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1250m</p>
-          <p>
+          <p className='text-justify'>
             This village offers a different perspective on La Plagne, with access to the Paradiski area and its own distinct 
             character. It's particularly popular with those who enjoy off-piste skiing and the tranquillity of the Vanoise 
             National Park.
@@ -135,7 +129,7 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">11. Plagne Montalbert</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1350m</p>
-          <p>
+          <p className='text-justify'>
             Located on the edge of the forest, it's another village that blends modern ski facilities with the charm of 
             traditional alpine architecture. It's a bit quieter, perfect for those who want to escape the hustle and bustle.
           </p>
@@ -145,11 +139,8 @@ const DetailSection: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-2">12. La Roche</h2>
           <p className="text-gray-600 mb-2"><strong>Altitude:</strong> 1550m</p>
-          <p>
-            La Roche is home to the finish line of the Olympic bobsleigh track, adding a touch of adrenaline-fueled history 
-            to your ski holiday. Perfect for those seeking both adventure and a taste of the authentic Alpine lifestyle, 
-            La Roche provides a quieter base with all the essentials for a memorable stay in the mountains. But there is 
-            only an hourly bus and eating out is limited in the 'village'.
+          <p className='text-justify'>
+           La Roche is home to the finish line of the Olympic bobsleigh track, adding a touch of adrenaline-fueled history to your ski holiday. Perfect for those seeking both adventure and a taste of the authentic Alpine lifestyle, La Roche provides a quieter base with all the essentials for a memorable stay in the mountains.  
           </p>
         </div>
       </div>

@@ -7,17 +7,17 @@ const ServiceSection: React.FC = () => {
     {
       icon: Plane,
       title: "Airport Transfers",
-      description: "Reliable transfers from Geneva and Lyon airports to La Plagne.",
+      description: "Reliable transfers from Geneva, Lyon, Grenoble & Chambery airports to all of La Plagne.",
     },
     {
       icon: Train,
       title: "Train Station Transfers",
-      description: "Convenient connections from major train stations to your resort.",
+      description: "Convenient connections from the train stations of Moutiers, Aime and Bourg St Maurice to all resorts of La Plagne",
     },
     {
       icon: Car,
       title: "Local Transport",
-      description: "Flexible local transport services within La Plagne.",
+      description: "Flexible around resort transfers for nights out and emergency hospital trips but not for patients !",
     },
   ];
 

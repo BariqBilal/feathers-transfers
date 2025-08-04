@@ -8,12 +8,12 @@ const FeatureSection: React.FC = () => {
     {
       icon: GrGraphQl,
       title: "Local Expertise",
-      description: "30 years of experience in the French Alps",
+      description: "30 years association with La Plagne",
     },
     {
       icon: GrSecure,
       title: "Local Advantage",
-      description: "73 (Savoie) registered vehicles with special access rights",
+      description: "73 (Savoie) registered vehicles allowing access to back roads on peak weeks.",
     },
     {
       icon: Car,
