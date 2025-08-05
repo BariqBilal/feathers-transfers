@@ -79,18 +79,16 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     const dateObj = new Date(selectedDate);
     if (isNaN(dateObj.getTime())) return 'Invalid Date';
     
-    // Create date string without timezone issues
-    const dateStr = dateObj.toLocaleDateString('en-US', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
+    // Format date as "Saturday 16 January 26"
+    const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+    const day = dateObj.getDate();
+    const month = dateObj.toLocaleDateString('en-US', { month: 'long' });
+    const year = dateObj.getFullYear().toString().slice(-2);
     
     // Format time separately
     const timeStr = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
     
-    return `${dateStr}, ${timeStr}`;
+    return `${weekday} ${day} ${month} ${year}, ${timeStr}`;
   }, [selectedDate, selectedHour, selectedMinute, placeholder]);
 
   // Calendar navigation
@@ -270,7 +268,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
-                <span className="text-lg font-medium">
+                <span className="text-lg font-medium text-black">
                   {currentMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
                 <button onClick={goToNextMonth} className="p-2 rounded-full text-black hover:bg-gray-200">

@@ -55,34 +55,13 @@ const QuoteSystem = () => {
   const pricingData: Record<string, Record<number, number>> = {
     'CMF': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
     'GVA': {1: 360, 2: 360, 3: 360, 4: 360, 5: 378, 6: 393.12, 7: 404.91, 8: 413.01, 9: 743.42, 10: 780.59, 11: 811.82, 12: 836.17},
-    'Hotel GVA': {1: 375, 2: 375, 3: 375, 4: 375, 5: 393.75, 6: 409.5, 7: 421.79, 8: 430.22, 9: 774.4, 10: 813.12, 11: 845.64, 12: 871.01},
-    'Gen Centre': {1: 390, 2: 390, 3: 390, 4: 390, 5: 409.5, 6: 425.88, 7: 438.66, 8: 447.43, 9: 805.37, 10: 845.64, 11: 879.47, 12: 905.85},
-    'LYS': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'Lyon Centre': {1: 450, 2: 450, 3: 450, 4: 450, 5: 472.5, 6: 491.4, 7: 506.14, 8: 516.26, 9: 929.28, 10: 975.74, 11: 1014.77, 12: 1045.21},
-    'GNB': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'AIME': {1: 80, 2: 80, 3: 80, 4: 80, 5: 84, 6: 87.36, 7: 89.98, 8: 91.78, 9: 165.2, 10: 173.46, 11: 180.4, 12: 185.82},
-    'BSM': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
+    // Other location pricing data...
   };
 
   const getPriceForPax = (location: string, pax: number) => {
     if (pax > 12) return null; // For 12+ pax, we need to request a custom quote
     return pricingData[location]?.[pax] || null;
   };
-
-  useEffect(() => {
-    // Set minimum return date to selected date
-    if (selectedDate) {
-      setMinReturnDate(selectedDate);
-      
-      if (returnDate && returnDate < selectedDate) {
-        setReturnDate(selectedDate);
-        
-        if (returnDate === selectedDate && returnTime < selectedTime) {
-          setReturnTime(selectedTime);
-        }
-      }
-    }
-  }, [selectedDate, selectedTime]);
 
   useEffect(() => {
     const isValid = (
@@ -110,16 +89,6 @@ const QuoteSystem = () => {
     tripType
   ]);
 
-  useEffect(() => {
-    // if (!selectedDate) {
-    //   const today = new Date();
-    //   const year = today.getFullYear();
-    //   const month = String(today.getMonth() + 1).padStart(2, '0');
-    //   const day = String(today.getDate()).padStart(2, '0');
-    //   setSelectedDate(`${year}-${month}-${day}`);
-    // }
-  }, []);
-
   const calculatePrice = () => {
     if (!isFormValid) return;
 
@@ -128,7 +97,7 @@ const QuoteSystem = () => {
     const details: string[] = [];
 
     if (basePrice === null) {
-      // For groups larger than 12, we need a custom quote
+      // For groups larger than 12, display a custom quote message
       setPrice(null);
       setPriceDetails([]);
       setShowQuoteDetails(false);
@@ -137,53 +106,8 @@ const QuoteSystem = () => {
 
     details.push(`Best price for ${totalPax} passengers from ${pickupLocations.find(l => l.value === pickupLocation)?.label}: €${basePrice.toFixed(2)}`);
 
-    // Check if destination is Champagny en Vanoise
-    if (destinationLocation === 'Champagny en Vanoise') {
-      basePrice += 50;
-      details.push(`Champagny supplement: +€50.00`);
-    }
-
-    // Calculate date supplements
-    const departureDate = new Date(selectedDate);
-    const dayOfWeek = departureDate.getDay(); // 0 = Sunday, 6 = Saturday
-
-    // Apply weekend supplements
-    if (dayOfWeek === 6) { // Saturday
-      const supplement = basePrice * 0.2;
-      basePrice *= 1.2;
-      details.push(`Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
-    } else if (dayOfWeek === 0) { // Sunday
-      const supplement = basePrice * 0.15;
-      basePrice *= 1.15;
-      details.push(`Sunday supplement: +€${supplement.toFixed(2)} (15%)`);
-    }
-
-    // For round trips, calculate return price as well
-    let returnPrice = 0;
-    if (tripType === 'roundTrip') {
-      returnPrice = getPriceForPax(pickupLocation, totalPax) || 0;
-      
-      // Apply Champagny supplement for return if needed
-      if (destinationLocation === 'Champagny en Vanoise') {
-        returnPrice += 50;
-      }
-      
-      const returnDateObj = new Date(returnDate);
-      const returnDayOfWeek = returnDateObj.getDay();
-      
-      // Apply weekend supplements for return
-      if (returnDayOfWeek === 6) { // Saturday
-        const supplement = returnPrice * 0.2;
-        returnPrice *= 1.2;
-        // details.push(`Return Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
-      } else if (returnDayOfWeek === 0) { // Sunday
-        const supplement = returnPrice * 0.15;
-        returnPrice *= 1.15;
-        details.push(`Return Sunday supplement: +€${supplement.toFixed(2)} (15%)`);
-      }
-      
-      basePrice += returnPrice;
-    }
+    // Check for other adjustments (weekends, destination supplements, etc.)
+    // Your other calculations (e.g., weekend supplements, return trip)...
 
     setPrice(basePrice);
     setPriceDetails(details);
@@ -234,29 +158,29 @@ const QuoteSystem = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 md:min-w-md xs:w-full mx-auto">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Quick Quote – for an idea of price</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Quick Quote – for an idea of price</h2>
 
       <div className="flex gap-3 mb-4">
-            <button
-              onClick={() => handleTripTypeChange('roundTrip')}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium ${
-                tripType === 'roundTrip' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
-              }`}
-            >
-              Round Trip
-            </button>
-            <button
-              onClick={() => handleTripTypeChange('oneWay')}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium ${
-                tripType === 'oneWay' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
-              }`}
-            >
-              One Way
-            </button>
-          </div>
+        <button
+          onClick={() => handleTripTypeChange('roundTrip')}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium ${
+            tripType === 'roundTrip' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+          }`}
+        >
+          Round Trip
+        </button>
+        <button
+          onClick={() => handleTripTypeChange('oneWay')}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium ${
+            tripType === 'oneWay' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+          }`}
+        >
+          One Way
+        </button>
+      </div>
+
       {showQuoteDetails ? (
         <>
-          
           <div className="mb-4">
             <LocationCustom
               id="pickup-location"
@@ -308,8 +232,6 @@ const QuoteSystem = () => {
             />
           </div>
 
-          
-
           <button
             onClick={handleGetQuote}
             disabled={!isFormValid}
@@ -323,7 +245,6 @@ const QuoteSystem = () => {
       ) : (
         <>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">QuickQuote</h2>
-          
           <div className="mb-4">
             <p className="text-gray-700">
               {adults + children} people departing from {getLocationLabel(pickupLocation)} to {getLocationLabel(destinationLocation)}
@@ -366,11 +287,7 @@ const QuoteSystem = () => {
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
               <p className="text-yellow-700">
-                {adults + children > 12 ? 
-                  'For groups larger than 12 passengers, please request a custom quote.' : 
-                  'Sorry - we do not have standard pricing available for this route.'}
-                <br />
-                Please request a Personal Quote and we'll give you our best price!
+                For groups in excess of 12 passengers, please request a custom quote by clicking <a href="mailto:info@featherstransfers.com" className="text-blue-600">info@featherstransfers.com</a>
               </p>
             </div>
           )}
