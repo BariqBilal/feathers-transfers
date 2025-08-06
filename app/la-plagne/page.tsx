@@ -6,7 +6,7 @@ export default function LaPplange() {
         <>
             <HeroSection2
                 height="50vh"
-                bgImage="/la=plange.PNG"
+                bgImage="/ccc.PNG"
                 title="The Twelve Villages of La Plagne"
                 description="Paradiski, Savoie, France"
             />

@@ -64,7 +64,7 @@ export default function Transfer(){
         <>
           <HeroSection2
             height="50vh" 
-            bgImage="/hero.jpg"
+            bgImage="/ccc.PNG"
             title="Our Transfer Travelling Advice"
             description="Arranging your airport transfer is a vital step in ensuring your ski trip begins and ends without a hitch."
           />

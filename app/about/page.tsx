@@ -8,7 +8,7 @@ export default function About(){
         <>
          <HeroSection2
         height="50vh" 
-        bgImage="/about.PNG"
+        bgImage="/ccc.PNG"
         title="Our Story in the French Alps"
         description="Three decades of excellence in mountain transport and hospitality"
       />
