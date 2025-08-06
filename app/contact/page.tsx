@@ -68,7 +68,7 @@ const ContactSection: React.FC = () => {
     <>
       <HeroSection2
         height="50vh" 
-        bgImage="/contact.jpg"
+        bgImage="/ccc.PNG"
         title="Contact Us for Your Transfer Needs"
         description="Specialised in La Plagne and Savoie Region Transfers"
       />
@@ -76,7 +76,6 @@ const ContactSection: React.FC = () => {
                     <h2 className="text-3xl font-bold text-gray-800 text-center ">Get in Touch</h2>
 
         <div className="max-w-7xl mx-auto rounded-p-8 md:p-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Get in Touch / Send us a message */}
           <div className="lg:col-span-1 bg-white p-4">
             <div className="p-6 rounded-md">
               <h3 className="text-xl font-medium text-gray-700 mb-5">Send us a message</h3>

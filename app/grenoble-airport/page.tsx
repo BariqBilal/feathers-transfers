@@ -33,7 +33,7 @@ export default function GrenobleAirport(){
     stepTitle: "Confirm Selection",
     description: (
       <>
-       Grenoble is a small airport, not much more than a hangar really, but it does boast two restaurants <a href="https://www.grenoble-airport.com/en/services/le-sequoia" className="text-blue-500 hover:underline"> Le Sequoia </a> and <a className="text-blue-500 hover:underline" href="https://www.grenoble-airport.com/en/services/tribs"> Trib's Snack Bar</a>
+       Grenoble is a small airport, not much more than a hangar really, but it does boast two restaurants <a href="https://www.grenoble-airport.com/en/services/le-sequoia" target="_blank" className="text-blue-500 hover:underline"> Le Sequoia </a> and <a className="text-blue-500 hover:underline" href="https://www.grenoble-airport.com/en/services/tribs" target="_blank"> Trib's Snack Bar</a>
       </>
     ),
   },

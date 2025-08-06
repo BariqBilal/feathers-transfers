@@ -47,7 +47,7 @@ The high altitude resorts of La Plagne are accessed via a steep drive of switch 
                 </li>
                 <li className="flex items-start">
                   <Clock className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
-                  <p className="text-gray-700 text-base">At the entrance to Chambery Airport there is an Italian Restaurant called <a className='underline text-blue-500' href="https://www.italoria.fr/italoria-voglans/"> Italoria</a> serving some fabulous dishes.</p>
+                  <p className="text-gray-700 text-base">At the entrance to Chambery Airport there is an Italian Restaurant called <a target="_blank" className='underline text-blue-500' href="https://www.italoria.fr/italoria-voglans/"> Italoria</a> serving some fabulous dishes.</p>
                 </li>
                 <li className="flex items-start">
                   <Clock className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />

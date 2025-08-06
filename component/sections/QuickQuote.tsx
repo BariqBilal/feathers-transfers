@@ -514,7 +514,7 @@ const QuoteSystem = () => {
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
               <p className="text-yellow-700">
-                For groups in excess of 12 passengers, please request a custom quote by clicking <a href="mailto:info@featherstransfers.com" className="text-blue-600">info@featherstransfers.com</a>
+                For groups in excess of 12 passengers, please request a custom quote by clicking <a target="_blank" href="mailto:info@featherstransfers.com" className="text-blue-600">info@featherstransfers.com</a>
               </p>
             </div>
           )}
