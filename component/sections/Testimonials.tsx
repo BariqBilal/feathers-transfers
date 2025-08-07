@@ -114,12 +114,12 @@ export default function Testimonials() {
           >
             <p className="text-sm uppercase tracking-wider text-gray-500">TESTIMONIALS</p>
             <h2 className="text-3xl font-bold md:text-4xl">
-              What Our <span className="text-blue-600">Enchanted</span> <br className="md:hidden" />
-              Customers <span className="text-blue-600">say</span>
+              What Our  <span className="text-blue-600">Satisfied </span> <br className="md:hidden" />
+              Customers<span className="text-blue-600">Say</span>
             </h2>
           </div>
-          <div></div> 
-        </div> 
+          <div></div>
+        </div>
 
         <div className="relative">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

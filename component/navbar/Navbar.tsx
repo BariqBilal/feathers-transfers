@@ -8,16 +8,16 @@ import Link from 'next/link';
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const dropdownRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
+  const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'About Us', href: '/about' },
     { name: 'Book Now', href: '/book-now' },
-     { name: 'La Plagne', href: '/la-plagne' },
+    { name: 'La Plagne', href: '/la-plagne' },
+    { name: 'Useful Links', href: '/link-page' },
     {
-      name: 'Airports We Serve ',
-      href: '',
+      name: 'Airports We Serve',
       dropdownItems: [
         { name: 'Geneva Airport', href: '/airport-geneva' },
         { name: 'Chambery Airport', href: '/chambery-airport' },
@@ -37,19 +37,16 @@ export default function Navbar() {
         }
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [openDropdown]);
 
-  // Close dropdown when scrolling
   useEffect(() => {
     const handleScroll = () => {
       setOpenDropdown(null);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -57,120 +54,59 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white shadow-sm font-inter">
+    <nav className="bg-white shadow-sm font-inter sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <div className="flex-shrink-0 flex items-center gap-2">
-            <div className="flex flex-col">
-              <span className="text-gray-800 text-xl font-bold">
-                Feathers Transfers
-              </span>
-              <span className="text-blue-600 text-xs mt-[-2px]">
-                Your Destination | Our Dedication
-              </span>
-            </div>
+        <div className="flex justify-between items-center h-16">
+          {/* Logo + Brand */}
+          <div className="flex items-center gap-3">
             <Image
               src="/Logo.png"
               alt="Feathers Transfers Logo"
-              width={80}
-              height={80}
-              className="mr-2 hidden md:block"
+              width={50}
+              height={50}
+              className="object-contain"
             />
-          </div>
-
-          <div className="hidden md:block z-50">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {navItems.map((item) =>
-                item.dropdownItems ? (
-                  <div 
-                    key={item.name}
-                    className="relative"
-                    ref={(el: any) => (dropdownRefs.current[item.name] = el)}
-                    onMouseEnter={() => setOpenDropdown(item.name)}
-                    onMouseLeave={() => setOpenDropdown(null)}
-                  >
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setOpenDropdown(openDropdown === item.name ? null : item.name);
-                      }}
-                      className="text-textprimary hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center"
-                    >
-                      {item.name}
-                      <ChevronDown
-                        className={`ml-1 h-4 w-4 transform transition-transform duration-200 ${
-                          openDropdown === item.name ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </button>
-                    {openDropdown === item.name && (
-                      <div className="absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                        {item.dropdownItems.map((dropdownItem) => (
-                          <Link
-                            key={dropdownItem.name}
-                            href={dropdownItem.href}
-                            className="block px-4 py-2 text-sm text-textprimary hover:bg-gray-100 hover:text-primary"
-                            onClick={() => setOpenDropdown(null)}
-                          >
-                            {dropdownItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="text-textprimary hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    {item.name}
-                  </Link>
-                )
-              )}
+            <div>
+              <span className="text-gray-800 text-lg font-bold">
+                Feathers Transfers
+              </span>
+              <div className="text-blue-600 text-xs">
+                Your Destination | Our Dedication
+              </div>
             </div>
           </div>
 
-          <div className="-mr-2 flex md:hidden">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-            >
-              <span className="sr-only">Open main menu</span>
-              <Menu className="h-6 w-6" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {isMobileMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex space-x-6 items-center">
             {navItems.map((item) =>
               item.dropdownItems ? (
-                <div key={item.name} className="relative">
+                <div
+                  key={item.name}
+                  className="relative"
+                  ref={(el) => {
+                    dropdownRefs.current[item.name] = el;
+                  }}
+                  onMouseEnter={() => setOpenDropdown(item.name)}
+                  onMouseLeave={() => setOpenDropdown(null)}
+                >
                   <button
-                    onClick={() => setOpenDropdown(openDropdown === item.name ? null : item.name)}
-                    className="block w-full text-left text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium flex items-center justify-between"
+                    className="text-gray-700 hover:text-blue-600 text-sm font-medium flex items-center"
                   >
                     {item.name}
                     <ChevronDown
-                      className={`ml-1 h-5 w-5 transform transition-transform duration-200 ${
+                      className={`ml-1 h-4 w-4 transition-transform duration-200 ${
                         openDropdown === item.name ? 'rotate-180' : ''
                       }`}
                     />
                   </button>
                   {openDropdown === item.name && (
-                    <div className="pl-6 pr-2 pt-1 pb-1 space-y-1">
+                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md z-20">
                       {item.dropdownItems.map((dropdownItem) => (
                         <Link
                           key={dropdownItem.name}
                           href={dropdownItem.href}
-                          className="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-sm font-medium"
-                          onClick={() => {
-                            setOpenDropdown(null);
-                            setIsMobileMenuOpen(false);
-                          }}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setOpenDropdown(null)}
                         >
                           {dropdownItem.name}
                         </Link>
@@ -182,14 +118,74 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="block text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md text-base font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-700 hover:text-blue-600 text-sm font-medium"
                 >
                   {item.name}
                 </Link>
               )
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-gray-700 hover:text-blue-600 focus:outline-none"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden px-4 pb-4">
+          {navItems.map((item) =>
+            item.dropdownItems ? (
+              <div key={item.name} className="mb-2">
+                <button
+                  onClick={() =>
+                    setOpenDropdown(openDropdown === item.name ? null : item.name)
+                  }
+                  className="w-full text-left text-gray-700 font-medium py-2 flex justify-between items-center"
+                >
+                  {item.name}
+                  <ChevronDown
+                    className={`h-5 w-5 transition-transform duration-200 ${
+                      openDropdown === item.name ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openDropdown === item.name && (
+                  <div className="ml-4 space-y-1">
+                    {item.dropdownItems.map((dropdownItem) => (
+                      <Link
+                        key={dropdownItem.name}
+                        href={dropdownItem.href}
+                        className="block text-sm text-gray-600 hover:text-blue-600 py-1"
+                        onClick={() => {
+                          setOpenDropdown(null);
+                          setIsMobileMenuOpen(false);
+                        }}
+                      >
+                        {dropdownItem.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="block text-gray-700 hover:text-blue-600 py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            )
+          )}
         </div>
       )}
     </nav>

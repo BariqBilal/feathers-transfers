@@ -8,6 +8,7 @@ interface DateTimeInputProps {
   placeholder?: string;
   minDate?: string; // Minimum allowed date (YYYY-MM-DD)
   minTime?: string; // Minimum allowed time when date === minDate (HH:MM)
+  showTimeAfterDate?: boolean; // Whether to show time picker after date selection
 }
 
 const DateTimeInput: React.FC<DateTimeInputProps> = ({ 
@@ -16,7 +17,8 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   onChange,
   placeholder = 'Select Date & Time',
   minDate,
-  minTime
+  minTime,
+  showTimeAfterDate = true // Default to true for backward compatibility
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
@@ -79,17 +81,20 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     const dateObj = new Date(selectedDate);
     if (isNaN(dateObj.getTime())) return 'Invalid Date';
     
-    // Format date as "Saturday 16 January 26"
+    // Format date as "Saturday, 16 January 2025"
     const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
     const day = dateObj.getDate();
     const month = dateObj.toLocaleDateString('en-US', { month: 'long' });
-    const year = dateObj.getFullYear().toString().slice(-2);
+    const year = dateObj.getFullYear();
     
-    // Format time separately
-    const timeStr = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
+    // Format time separately if showTimeAfterDate is true or time is already selected
+    if (showTimeAfterDate || time) {
+      const timeStr = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
+      return `${weekday}, ${day} ${month} ${year}, ${timeStr}`;
+    }
     
-    return `${weekday} ${day} ${month} ${year}, ${timeStr}`;
-  }, [selectedDate, selectedHour, selectedMinute, placeholder]);
+    return `${weekday}, ${day} ${month} ${year}`;
+  }, [selectedDate, selectedHour, selectedMinute, placeholder, showTimeAfterDate, time]);
 
   // Calendar navigation
   const goToPreviousMonth = () => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
@@ -154,7 +159,12 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       const newDateStr = `${year}-${month}-${dayStr}`;
       
       setSelectedDate(newDateStr);
-      setCurrentView('time');
+      
+      if (showTimeAfterDate) {
+        setCurrentView('time');
+      } else {
+        setShowDropdown(false);
+      }
       
       // Reset time if needed when date changes
       let hour = selectedHour;
@@ -240,7 +250,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
         }}
       >
         <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 002 2z" />
         </svg>
         {displayDateTime}
       </button>
@@ -303,6 +313,16 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                   </div>
                 ))}
               </div>
+              {!showTimeAfterDate && (
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => setShowDropdown(false)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    Done
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="p-4">
@@ -322,8 +342,8 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                 <div className="text-lg font-medium mb-2">
                   {selectedDate && new Date(selectedDate).toLocaleDateString('en-US', {
                     weekday: 'short',
-                    month: 'short',
-                    day: 'numeric'
+                    day: 'numeric',
+                    month: 'short'
                   })}
                 </div>
                 
