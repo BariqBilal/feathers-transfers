@@ -11,6 +11,7 @@ type LocationOption = {
   type: 'airport' | 'hotel' | 'city' | 'station' | 'resort' | 'other';
   country?: 'FR' | 'CH';
   code?: string;
+  disabled?: boolean;
 };
 
 const QuoteSystem = () => {
@@ -33,20 +34,6 @@ const QuoteSystem = () => {
 
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
-    // Resorts
-    { value: 'Plagne 1800', label: 'Plagne 1800', type: 'resort', country: 'FR' },
-    { value: 'Plagne Centre', label: 'Plagne Centre', type: 'resort', country: 'FR' },
-    { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Aime 2000', label: 'La Plagne Aime 2000', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Villages', label: 'La Plagne Villages', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Soleil', label: 'La Plagne Soleil', type: 'resort', country: 'FR' },
-    { value: 'La Plagne La Roche', label: 'La Plagne La Roche', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Crete Cote', label: 'La Plagne Crête Cote', type: 'resort', country: 'FR' },
-    { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
-    { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
-    { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-    
     // Airports
     { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
     { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
@@ -62,25 +49,63 @@ const QuoteSystem = () => {
     { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
     { value: 'BSM', label: 'Bourg St Maurice Train station', type: 'station', country: 'FR', code: 'GARE BSM' },
     
+    // Resorts
+    { value: 'Plagne 1800', label: 'Plagne 1800', type: 'resort', country: 'FR' },
+    { value: 'Plagne Centre', label: 'Plagne Centre', type: 'resort', country: 'FR' },
+    { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Aime 2000', label: 'La Plagne Aime 2000', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Villages', label: 'La Plagne Villages', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Soleil', label: 'La Plagne Soleil', type: 'resort', country: 'FR' },
+    { value: 'La Plagne La Roche', label: 'La Plagne La Roche', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Crete Cote', label: 'La Plagne Crête Cote', type: 'resort', country: 'FR' },
+    { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
+    { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
+    { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
+    
     // Other
     { value: 'Other', label: 'Other Resort', type: 'other' }
   ];
 
-  // Get filtered locations for each dropdown
-  const getFilteredLocations = (currentValue: string, oppositeValue: string) => {
-    return allLocations.map(loc => ({
-      ...loc,
-      disabled: loc.value === oppositeValue && oppositeValue !== ''
-    }));
+  // Function to organize locations for pickup (Airports, Hotels/Cities, Stations first, then Resorts)
+  const getPickupLocations = (currentValue: string, oppositeValue: string) => {
+    const categoriesOrder = ['airport', 'hotel', 'city', 'station', 'resort', 'other'];
+    const grouped = allLocations.reduce((acc, loc) => {
+      if (!acc[loc.type]) acc[loc.type] = [];
+      acc[loc.type].push({
+        ...loc,
+        disabled: loc.value === oppositeValue && oppositeValue !== ''
+      });
+      return acc;
+    }, {} as Record<string, LocationOption[]>);
+    
+    // Sort according to our preferred order
+    return categoriesOrder.flatMap(type => grouped[type] || []);
   };
 
-  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
-  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
+  // Function to organize locations for destination (Resorts first, then others)
+  const getDestinationLocations = (currentValue: string, oppositeValue: string) => {
+    const categoriesOrder = ['resort', 'airport', 'hotel', 'city', 'station', 'other'];
+    const grouped = allLocations.reduce((acc, loc) => {
+      if (!acc[loc.type]) acc[loc.type] = [];
+      acc[loc.type].push({
+        ...loc,
+        disabled: loc.value === oppositeValue && oppositeValue !== ''
+      });
+      return acc;
+    }, {} as Record<string, LocationOption[]>);
+    
+    // Sort according to our preferred order
+    return categoriesOrder.flatMap(type => grouped[type] || []);
+  };
+
+  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(getPickupLocations('', ''));
+  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(getDestinationLocations('', ''));
 
   // Update filtered locations when values change
   useEffect(() => {
-    setPickupLocations(getFilteredLocations(pickupLocation, destinationLocation));
-    setDestinationLocations(getFilteredLocations(destinationLocation, pickupLocation));
+    setPickupLocations(getPickupLocations(pickupLocation, destinationLocation));
+    setDestinationLocations(getDestinationLocations(destinationLocation, pickupLocation));
   }, [pickupLocation, destinationLocation]);
 
   // Exact pricing data from the spreadsheet
@@ -245,13 +270,13 @@ const QuoteSystem = () => {
       pickupLocation !== '' &&
       destinationLocation !== '' &&
       selectedDate !== '' &&
-      selectedTime !== '' &&
+      // selectedTime !== '' &&
       adults > 0 &&
       (tripType === 'oneWay' || (
         returnDate !== '' && 
-        returnTime !== '' &&
+        // returnTime !== '' &&
         (returnDate > selectedDate || 
-         (returnDate === selectedDate && returnTime >= selectedTime))
+         (returnDate === selectedDate))
       ))
     );
     setIsFormValid(isValid);

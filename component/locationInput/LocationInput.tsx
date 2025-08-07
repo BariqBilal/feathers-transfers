@@ -11,6 +11,7 @@ type LocationOption = {
   type: 'airport' | 'hotel' | 'city' | 'station' | 'resort' | 'other';
   country?: 'FR' | 'CH';
   code?: string;
+  disabled?: boolean;
 };
 
 export default function LocationInput() {
@@ -31,6 +32,17 @@ export default function LocationInput() {
 
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
+    // Airports and stations
+    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
+    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
+    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
+    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
+    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
+    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
+    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
+    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
+    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'GARE BSM' },
+    
     // Resorts
     { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort', country: 'FR' },
     { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort', country: 'FR' },
@@ -46,36 +58,63 @@ export default function LocationInput() {
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
     
-    // Airports and stations
-    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
-    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
-    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
-    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
-    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
-    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
-    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
-    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'GARE BSM' },
-    
     // Other
     { value: 'Other', label: 'Other Resort', type: 'other' }
   ];
 
-  // Get filtered locations for each dropdown
-  const getFilteredLocations = (currentValue: string, oppositeValue: string) => {
-    return allLocations.map(loc => ({
-      ...loc,
-      disabled: loc.value === oppositeValue && oppositeValue !== ''
-    }));
+  // Function to organize locations for pickup (Airports, Hotels/Cities, Stations first, then Resorts)
+  const getPickupLocations = (currentValue: string, oppositeValue: string) => {
+    const categoriesOrder = ['airport', 'hotel', 'city', 'station', 'resort', 'other'];
+    const grouped = allLocations.reduce((acc, loc) => {
+      if (!acc[loc.type]) acc[loc.type] = [];
+      acc[loc.type].push({
+        ...loc,
+        disabled: loc.value === oppositeValue && oppositeValue !== ''
+      });
+      return acc;
+    }, {} as Record<string, LocationOption[]>);
+    
+    // Sort according to our preferred order
+    return categoriesOrder.flatMap(type => grouped[type] || []);
   };
 
-  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
-  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
+  // Function to organize locations for destination (Resorts first, then others)
+  const getDestinationLocations = (currentValue: string, oppositeValue: string) => {
+    const categoriesOrder = ['resort', 'airport', 'hotel', 'city', 'station', 'other'];
+    const grouped = allLocations.reduce((acc, loc) => {
+      if (!acc[loc.type]) acc[loc.type] = [];
+      acc[loc.type].push({
+        ...loc,
+        disabled: loc.value === oppositeValue && oppositeValue !== ''
+      });
+      return acc;
+    }, {} as Record<string, LocationOption[]>);
+    
+    // Sort according to our preferred order
+    return categoriesOrder.flatMap(type => grouped[type] || []);
+  };
+
+  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>([]);
+  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>([]);
+
+  // Initialize with first location selected for pickup
+  useEffect(() => {
+    const initialPickupLocations = getPickupLocations('', '');
+    const initialDestinationLocations = getDestinationLocations('', '');
+    
+    setPickupLocations(initialPickupLocations);
+    setDestinationLocations(initialDestinationLocations);
+    
+    // Auto-select the first pickup location if none is selected
+    if (!pickupLocation && initialPickupLocations.length > 0) {
+      setPickupLocation(initialPickupLocations[0].value);
+    }
+  }, []);
 
   // Update filtered locations when values change
   useEffect(() => {
-    setPickupLocations(getFilteredLocations(pickupLocation, destinationLocation));
-    setDestinationLocations(getFilteredLocations(destinationLocation, pickupLocation));
+    setPickupLocations(getPickupLocations(pickupLocation, destinationLocation));
+    setDestinationLocations(getDestinationLocations(destinationLocation, pickupLocation));
   }, [pickupLocation, destinationLocation]);
 
   const pricingData: Record<string, Record<number, number>> = {

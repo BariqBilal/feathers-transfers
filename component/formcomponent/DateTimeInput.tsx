@@ -18,7 +18,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   placeholder = 'Select Date & Time',
   minDate,
   minTime,
-  showTimeAfterDate = true // Default to true for backward compatibility
+  showTimeAfterDate = true
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
@@ -53,6 +53,9 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       setCurrentMonth(new Date(selectedDate));
     } else if (minDate) {
       setCurrentMonth(new Date(minDate));
+    } else {
+      // Default to current month if no date is selected
+      setCurrentMonth(new Date());
     }
   }, [selectedDate, minDate]);
 
@@ -97,10 +100,23 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   }, [selectedDate, selectedHour, selectedMinute, placeholder, showTimeAfterDate, time]);
 
   // Calendar navigation
-  const goToPreviousMonth = () => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
-  const goToNextMonth = () => setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
+  const goToPreviousMonth = () => {
+    const prevMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+    // Only allow navigation to months that have selectable dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const firstDayOfPrevMonth = new Date(prevMonth.getFullYear(), prevMonth.getMonth(), 1);
+    
+    if (firstDayOfPrevMonth >= today) {
+      setCurrentMonth(prevMonth);
+    }
+  };
 
-  // Check if a date is disabled
+  const goToNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+
+  // Check if a date is disabled (previous dates and days)
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -180,7 +196,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
         }
       }
       
-      onChange(newDateStr, `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`);
+      onChange(newDateStr, ``);
     }
   };
 
@@ -273,7 +289,11 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
           {currentView === 'date' ? (
             <div className="p-4">
               <div className="flex justify-between items-center mb-4">
-                <button onClick={goToPreviousMonth} className="p-2 text-black rounded-full hover:bg-gray-200">
+                <button 
+                  onClick={goToPreviousMonth} 
+                  className="p-2 text-black rounded-full hover:bg-gray-200"
+                  disabled={isDateDisabled(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                   </svg>
@@ -298,7 +318,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                     {dayObj ? (
                       <button
                         className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors
-                          ${dayObj.isDisabled ? 'text-gray-800 cursor-default' : 
+                          ${dayObj.isDisabled ? 'text-gray-400 cursor-default' : 
                             selectedDate === `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(dayObj.day).padStart(2, '0')}`
                               ? 'bg-blue-600 text-white'
                               : 'text-gray-900 hover:bg-gray-200'}`}
