@@ -29,20 +29,9 @@ export default function LocationInput() {
   const [minReturnDate, setMinReturnDate] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
 
-  // Keep original location arrays separate from current state
-  const originalPickupLocations: LocationOption[] = [
-    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
-    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
-    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
-    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
-    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
-    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
-    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
-    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'GARE BSM' },
-  ];
-
-  const originalDestinationLocations: LocationOption[] = [
+  // All locations that can be selected in either pickup or destination
+  const allLocations: LocationOption[] = [
+    // Resorts
     { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort', country: 'FR' },
     { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort', country: 'FR' },
     { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort', country: 'FR' },
@@ -56,11 +45,38 @@ export default function LocationInput() {
     { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-    { value: 'Other', label: 'Other: Please specify', type: 'other' },
+    
+    // Airports and stations
+    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
+    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
+    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
+    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
+    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
+    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
+    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
+    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
+    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'GARE BSM' },
+    
+    // Other
+    { value: 'Other', label: 'Other Resort', type: 'other' }
   ];
 
-  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(originalPickupLocations);
-  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(originalDestinationLocations);
+  // Get filtered locations for each dropdown
+  const getFilteredLocations = (currentValue: string, oppositeValue: string) => {
+    return allLocations.map(loc => ({
+      ...loc,
+      disabled: loc.value === oppositeValue && oppositeValue !== ''
+    }));
+  };
+
+  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
+  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
+
+  // Update filtered locations when values change
+  useEffect(() => {
+    setPickupLocations(getFilteredLocations(pickupLocation, destinationLocation));
+    setDestinationLocations(getFilteredLocations(destinationLocation, pickupLocation));
+  }, [pickupLocation, destinationLocation]);
 
   const pricingData: Record<string, Record<number, number>> = {
     'CMF': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
@@ -74,7 +90,7 @@ export default function LocationInput() {
     'BSM': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
   };
 
-  // Map of valid pickup locations for pricing
+  // Map of valid pickup locations for pricing (airports and stations)
   const validPickupLocations = new Set(Object.keys(pricingData));
 
   useEffect(() => {
@@ -154,46 +170,22 @@ export default function LocationInput() {
     setPickupLocation(destinationLocation);
     setDestinationLocation(tempLocation);
     
-    // Swap the options
-    const tempLocations = [...pickupLocations];
-    setPickupLocations([...destinationLocations]);
-    setDestinationLocations(tempLocations);
-    
     setIsSwapping(false);
   };
 
-  // Helper function to find the airport/station location from both pickup and destination
-  const findAirportOrStationLocation = (fromLocation: string, toLocation: string): string | null => {
-    const allOriginalPickupValues = originalPickupLocations.map(loc => loc.value);
+  // Check if both locations are resorts
+  const isResortToResort = (fromLocation: string, toLocation: string): boolean => {
+    const fromLocationObj = allLocations.find(loc => loc.value === fromLocation);
+    const toLocationObj = allLocations.find(loc => loc.value === toLocation);
     
-    // Check if fromLocation is an original pickup location (airport/station)
-    if (allOriginalPickupValues.includes(fromLocation)) {
-      return fromLocation;
-    }
-    
-    // Check if toLocation is an original pickup location (airport/station)
-    if (allOriginalPickupValues.includes(toLocation)) {
-      return toLocation;
-    }
-    
-    return null;
+    return fromLocationObj?.type === 'resort' && toLocationObj?.type === 'resort';
   };
 
-  // Helper function to find the resort location from both pickup and destination
-  const findResortLocation = (fromLocation: string, toLocation: string): string | null => {
-    const allOriginalDestinationValues = originalDestinationLocations.map(loc => loc.value);
-    
-    // Check if fromLocation is an original destination location (resort)
-    if (allOriginalDestinationValues.includes(fromLocation)) {
-      return fromLocation;
-    }
-    
-    // Check if toLocation is an original destination location (resort)
-    if (allOriginalDestinationValues.includes(toLocation)) {
-      return toLocation;
-    }
-    
-    return null;
+  // Check if at least one location is an airport/station
+  const hasPricedLocation = (fromLocation: string, toLocation: string): boolean => {
+    const fromIsPriced = validPickupLocations.has(fromLocation);
+    const toIsPriced = validPickupLocations.has(toLocation);
+    return fromIsPriced || toIsPriced;
   };
 
   const calculatePrice = (date: string, time: string, fromLocation: string, toLocation: string) => {
@@ -201,40 +193,28 @@ export default function LocationInput() {
     let basePrice = 0;
     const supplementDetails: string[] = [];
     
-    // Find the airport/station location regardless of direction
-    const airportLocation = findAirportOrStationLocation(fromLocation, toLocation);
-    const resortLocation = findResortLocation(fromLocation, toLocation);
+    // Check if we can price this journey
+    const fromIsPriced = validPickupLocations.has(fromLocation);
+    const toIsPriced = validPickupLocations.has(toLocation);
+    const pricedLocation = fromIsPriced ? fromLocation : (toIsPriced ? toLocation : null);
     
-    // Get the correct pricing key based on the airport/station location
-    let pricingKey = airportLocation;
-    
-    if (pricingKey) {
-      // Handle special location mappings
-      if (pricingKey === 'Hotel GVA' || pricingKey === 'Gen Centre') {
-        // These should use their own pricing, not map to GVA
-        // Keep the original key
-      } else if (pricingKey === 'Lyon Centre') {
-        // This should use its own pricing, not map to LYS
-        // Keep the original key
-      }
-      
-      if (validPickupLocations.has(pricingKey)) {
-        const pax = totalPax > 12 ? 12 : totalPax;
-        basePrice = pricingData[pricingKey][pax];
-        supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
-      } else {
-        // Fallback for unmapped locations
-        basePrice = 300;
-        supplementDetails.push(`Default base price: €${basePrice.toFixed(2)}`);
-      }
-    } else {
-      // If no airport/station location found, use default
-      basePrice = 300;
-      supplementDetails.push(`Default base price: €${basePrice.toFixed(2)}`);
+    if (!pricedLocation) {
+      return {
+        basePrice: 0,
+        supplements: 0,
+        totalPrice: 0,
+        supplementDetails: ['Price not available online - please contact us for a quote'],
+        canPrice: false
+      };
     }
 
-    // Apply destination supplements based on the resort location
-    if (resortLocation === 'Champagny en Vanoise') {
+    // Get the correct pricing
+    const pax = totalPax > 12 ? 12 : totalPax;
+    basePrice = pricingData[pricedLocation][pax];
+    supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+
+    // Apply destination supplements for Champagny
+    if (toLocation === 'Champagny en Vanoise') {
       basePrice += 50;
       supplementDetails.push(`Champagny supplement: +€50.00`);
     }
@@ -264,14 +244,27 @@ export default function LocationInput() {
       supplements: parseFloat(supplements.toFixed(2)),
       totalPrice: parseFloat(totalPrice.toFixed(2)),
       supplementDetails,
+      canPrice: true
     };
   };
 
   const handleSubmit = () => {
     if (!isFormValid) return;
     
+    // Check if this is a resort-to-resort transfer
+    if (isResortToResort(pickupLocation, destinationLocation)) {
+      router.push('/contact');
+      return;
+    }
+
     const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
     let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
+
+    // If we can't price either leg, redirect to contact page
+    if (!departurePrice.canPrice || (tripType === 'roundTrip' && returnPrice && !returnPrice.canPrice)) {
+      router.push('/contact');
+      return;
+    }
 
     let query: Record<string, string> = {
       tripType,

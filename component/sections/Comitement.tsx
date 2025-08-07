@@ -7,8 +7,8 @@ const CommitmentSection: React.FC = () => {
   const commitments = [
     {
       icon: Snowflake,
-      title: "New Snow Tires",
-      description: "All vehicles fitted with new snow tires each winter Should read",
+      title: "New Snow Tyres",
+      description: "All vehicles fitted with new snow tyres each winter Should read",
     },
     {
       icon: UserCheck,
@@ -23,7 +23,7 @@ const CommitmentSection: React.FC = () => {
     {
       icon: CheckCircle,
       title: "Reliable Transfers",
-      description: "Exceptional reliability and personalized service",
+      description: "Exceptional reliability and Personalised service",
     },
   ];
 

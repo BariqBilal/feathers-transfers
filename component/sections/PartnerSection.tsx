@@ -27,7 +27,7 @@ const PartnerSection: React.FC = () => {
             Your Trusted Partner in La Plagne
           </h2>
           <p className="text-gray-700 text-justify text-lg leading-relaxed mb-4">
-            La Plagne is a collection of eleven small, purpose-built ski resorts and traditional villages located on the edge of the Vanoise National Park. Renowned as a family-friendly resort, it has a good selection of beginner pistes but also some great choices for the more advanced skier or snowboarder.
+            La Plagne is a collection of twelve small, purpose-built ski resorts and traditional villages located on the edge of the Vanoise National Park. Renowned as a family-friendly resort, it has a good selection of beginner pistes but also some great choices for the more advanced skier or snowboarder.
           </p>
           <p className="text-gray-700 text-lg text-justify leading-relaxed">
            Getting around is easy thanks to free shuttle buses and a great network of ski lifts that connect all the resorts and villages. Some of these links are open at night to help visitors get from their accommodation to the different restaurants, shops and bars in the neighbouring resorts.

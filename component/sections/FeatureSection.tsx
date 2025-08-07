@@ -18,7 +18,7 @@ const FeatureSection: React.FC = () => {
     {
       icon: Car,
       title: "Premium Service",
-      description: "Personalized attention and exceptional reliability",
+      description: "Personalised attention and exceptional reliability",
     },
   ];
 

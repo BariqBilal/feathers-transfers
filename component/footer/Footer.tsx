@@ -4,7 +4,7 @@ import { Facebook, Twitter, Instagram } from 'lucide-react';
 import Link from 'next/link';
 
 const quickLinks = [
-  { name: 'Services', href: '/services' },
+  { name: 'Useful Links', href: '/link-page' },
   { name: 'About Us', href: '/about' },
   { name: 'Book Now', href: '/book-now' },
   { name: 'Contact', href: '/contact' },
@@ -64,7 +64,7 @@ export default function Footer() {
           <div className="col-span-1">
             <h3 className="text-xl font-bold mb-4">Feathers Transfers</h3>
             <p className="text-sm text-blue-100 text-justify mb-4">
-             Your trusted transfer service based in La Plagne, specialising in airport and train station transfers to all eleven resorts.
+             Your trusted transfer service based in La Plagne, specialising in airport and train station transfers to all twelve resorts.
             </p>
             <p className="text-sm text-blue-100 text-justify">
              Operating during winter ski season (December to April) from the third largest ski area in the world.

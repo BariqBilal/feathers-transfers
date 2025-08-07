@@ -31,38 +31,57 @@ const QuoteSystem = () => {
   const [priceDetails, setPriceDetails] = useState<string[]>([]);
   const [isSwapping, setIsSwapping] = useState(false);
 
-  // Keep original location arrays separate from current state
-  const originalPickupLocations: LocationOption[] = [
-    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
-    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
-    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
-    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
-    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
-    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
-    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
-    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'GARE BSM' },
-  ];
-
-  const originalDestinationLocations: LocationOption[] = [
-    { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort', country: 'FR' },
+  // All locations that can be selected in either pickup or destination
+  const allLocations: LocationOption[] = [
+    // Resorts
+    { value: 'Plagne 1800', label: 'Plagne 1800', type: 'resort', country: 'FR' },
+    { value: 'Plagne Centre', label: 'Plagne Centre', type: 'resort', country: 'FR' },
     { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort', country: 'FR' },
     { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Aime 2000', label: 'La Plagne - Aime 2000', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Aime 2000', label: 'La Plagne Aime 2000', type: 'resort', country: 'FR' },
     { value: 'La Plagne Villages', label: 'La Plagne Villages', type: 'resort', country: 'FR' },
     { value: 'La Plagne Soleil', label: 'La Plagne Soleil', type: 'resort', country: 'FR' },
     { value: 'La Plagne La Roche', label: 'La Plagne La Roche', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Crete Cote', label: 'La Plagne Crete Cote', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Montablert', label: 'La Plagne Montablert', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Crete Cote', label: 'La Plagne Crête Cote', type: 'resort', country: 'FR' },
     { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-    { value: 'Other', label: 'Other: Please specify', type: 'other' },
+    
+    // Airports
+    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
+    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
+    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
+    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
+    
+    // Hotels and cities
+    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
+    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
+    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
+    
+    // Stations
+    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
+    { value: 'BSM', label: 'Bourg St Maurice Train station', type: 'station', country: 'FR', code: 'GARE BSM' },
+    
+    // Other
+    { value: 'Other', label: 'Other Resort', type: 'other' }
   ];
 
-  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(originalPickupLocations);
-  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(originalDestinationLocations);
+  // Get filtered locations for each dropdown
+  const getFilteredLocations = (currentValue: string, oppositeValue: string) => {
+    return allLocations.map(loc => ({
+      ...loc,
+      disabled: loc.value === oppositeValue && oppositeValue !== ''
+    }));
+  };
+
+  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
+  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(getFilteredLocations('', ''));
+
+  // Update filtered locations when values change
+  useEffect(() => {
+    setPickupLocations(getFilteredLocations(pickupLocation, destinationLocation));
+    setDestinationLocations(getFilteredLocations(destinationLocation, pickupLocation));
+  }, [pickupLocation, destinationLocation]);
 
   // Exact pricing data from the spreadsheet
   const pricingData: Record<string, Record<number, number>> = {
@@ -77,7 +96,7 @@ const QuoteSystem = () => {
     'BSM': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
   };
 
-  // Map of valid pickup locations for pricing
+  // Map of valid pickup locations for pricing (airports and stations)
   const validPickupLocations = new Set(Object.keys(pricingData));
 
   const handleSwapLocations = async () => {
@@ -91,45 +110,20 @@ const QuoteSystem = () => {
     setPickupLocation(destinationLocation);
     setDestinationLocation(tempLocation);
     
-    // Swap the options
-    const tempLocations = [...pickupLocations];
-    setPickupLocations([...destinationLocations]);
-    setDestinationLocations(tempLocations);
-    
     setIsSwapping(false);
   };
 
-  // Helper function to find the airport/station location from both pickup and destination
-  const findAirportOrStationLocation = (fromLocation: string, toLocation: string): string | null => {
-    const allOriginalPickupValues = originalPickupLocations.map(loc => loc.value);
-    
-    // Check if fromLocation is an original pickup location (airport/station)
-    if (allOriginalPickupValues.includes(fromLocation)) {
-      return fromLocation;
-    }
-    
-    // Check if toLocation is an original pickup location (airport/station)
-    if (allOriginalPickupValues.includes(toLocation)) {
-      return toLocation;
-    }
-    
-    return null;
+  // Check if at least one location is an airport/station
+  const hasPricedLocation = (fromLocation: string, toLocation: string): boolean => {
+    const fromIsPriced = validPickupLocations.has(fromLocation);
+    const toIsPriced = validPickupLocations.has(toLocation);
+    return fromIsPriced || toIsPriced;
   };
 
-  // Helper function to find the resort location from both pickup and destination
-  const findResortLocation = (fromLocation: string, toLocation: string): string | null => {
-    const allOriginalDestinationValues = originalDestinationLocations.map(loc => loc.value);
-    
-    // Check if fromLocation is an original destination location (resort)
-    if (allOriginalDestinationValues.includes(fromLocation)) {
-      return fromLocation;
-    }
-    
-    // Check if toLocation is an original destination location (resort)
-    if (allOriginalDestinationValues.includes(toLocation)) {
-      return toLocation;
-    }
-    
+  // Helper to find the airport/station location
+  const findPricedLocation = (fromLocation: string, toLocation: string): string | null => {
+    if (validPickupLocations.has(fromLocation)) return fromLocation;
+    if (validPickupLocations.has(toLocation)) return toLocation;
     return null;
   };
 
@@ -138,31 +132,26 @@ const QuoteSystem = () => {
     let basePrice = 0;
     const supplementDetails: string[] = [];
     
-    // Find the airport/station location regardless of direction
-    const airportLocation = findAirportOrStationLocation(fromLocation, toLocation);
-    const resortLocation = findResortLocation(fromLocation, toLocation);
+    // Check if we can price this journey
+    const pricedLocation = findPricedLocation(fromLocation, toLocation);
     
-    // Get the correct pricing key based on the airport/station location
-    let pricingKey = airportLocation;
-    
-    if (pricingKey) {
-      if (validPickupLocations.has(pricingKey)) {
-        const pax = totalPax > 12 ? 12 : totalPax;
-        basePrice = pricingData[pricingKey][pax];
-        supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
-      } else {
-        // Fallback for unmapped locations
-        basePrice = 300;
-        supplementDetails.push(`Default base price: €${basePrice.toFixed(2)}`);
-      }
-    } else {
-      // If no airport/station location found, use default
-      basePrice = 300;
-      supplementDetails.push(`Default base price: €${basePrice.toFixed(2)}`);
+    if (!pricedLocation) {
+      return {
+        basePrice: 0,
+        supplements: 0,
+        totalPrice: 0,
+        supplementDetails: ['Price not available online - please contact us for a quote'],
+        canPrice: false
+      };
     }
 
-    // Apply destination supplements based on the resort location
-    if (resortLocation === 'Champagny en Vanoise') {
+    // Get the correct pricing
+    const pax = totalPax > 12 ? 12 : totalPax;
+    basePrice = pricingData[pricedLocation][pax];
+    supplementDetails.push(`Best price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+
+    // Apply destination supplements for Champagny
+    if (toLocation === 'Champagny en Vanoise') {
       basePrice += 50;
       supplementDetails.push(`Champagny supplement: +€50.00`);
     }
@@ -192,12 +181,22 @@ const QuoteSystem = () => {
       supplements: parseFloat(supplements.toFixed(2)),
       totalPrice: parseFloat(totalPrice.toFixed(2)),
       supplementDetails,
+      canPrice: true
     };
   };
 
   // Auto-calculate price when form values change
   useEffect(() => {
     if (isFormValid && !showQuoteDetails) {
+      const totalPax = adults + children;
+      
+      // Check if group is larger than 12
+      if (totalPax > 12) {
+        setPrice(null);
+        setPriceDetails(['For groups in excess of 12 passengers, please request a custom quote by clicking info@featherstransfers.com']);
+        return;
+      }
+
       const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
       let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
       
@@ -210,7 +209,7 @@ const QuoteSystem = () => {
         allDetails.push(...returnPrice.supplementDetails);
       }
       
-      setPrice(totalPrice);
+      setPrice(departurePrice.canPrice && (tripType === 'oneWay' || (returnPrice?.canPrice ?? true)) ? totalPrice : null);
       setPriceDetails(allDetails);
     }
   }, [
@@ -275,7 +274,7 @@ const QuoteSystem = () => {
     // Check if group is larger than 12
     if (totalPax > 12) {
       setPrice(null);
-      setPriceDetails([]);
+      setPriceDetails(['For groups in excess of 12 passengers, please request a custom quote by clicking info@featherstransfers.com']);
       setShowQuoteDetails(false);
       return;
     }
@@ -292,13 +291,19 @@ const QuoteSystem = () => {
       allDetails.push(...returnPrice.supplementDetails);
     }
     
-    setPrice(totalPrice);
+    setPrice(departurePrice.canPrice && (tripType === 'oneWay' || (returnPrice?.canPrice ?? true)) ? totalPrice : null);
     setPriceDetails(allDetails);
     setShowQuoteDetails(false);
   };
 
   const handleBookNow = () => {
     if (!isFormValid) return;
+    
+    if (price === null) {
+      // Redirect to contact page if price isn't available
+      router.push('/contact');
+      return;
+    }
     
     const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
     let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
@@ -355,7 +360,6 @@ const QuoteSystem = () => {
   };
 
   const getLocationLabel = (value: string) => {
-    const allLocations = [...originalPickupLocations, ...originalDestinationLocations];
     return allLocations.find(loc => loc.value === value)?.label || value;
   };
 
@@ -433,6 +437,7 @@ const QuoteSystem = () => {
               <DateTimeInput
                 date={selectedDate}
                 time={selectedTime}
+                showTimeAfterDate={false}
                 onChange={handleDateTimeChange}
                 placeholder="Departure Date"
               />
@@ -441,6 +446,7 @@ const QuoteSystem = () => {
               <div className="md:col-span-1">
                 <DateTimeInput
                   date={returnDate}
+                  showTimeAfterDate={false}
                   time={returnTime}
                   onChange={handleReturnDateTimeChange}
                   placeholder="Return Date"
@@ -491,7 +497,7 @@ const QuoteSystem = () => {
             <>
               <div className="mb-4">
                 <div className="text-xl font-bold text-blue-600">
-                  Price starting from: €{price.toFixed(2)}
+                  Price starting from: €{price?.toFixed(2)}
                 </div>
                 {tripType === 'roundTrip' && (
                   <div className="text-sm text-gray-600">
@@ -513,9 +519,32 @@ const QuoteSystem = () => {
             </>
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-              <p className="text-yellow-700">
-                For groups in excess of 12 passengers, please request a custom quote by clicking <a target="_blank" href="mailto:info@featherstransfers.com" className="text-blue-600">info@featherstransfers.com</a>
-              </p>
+              <div className="text-yellow-700">
+                {priceDetails.length > 0 ? (
+                  <>
+                    <p>{priceDetails[0]}</p>
+                    {priceDetails[0].includes('For groups in excess of 12 passengers') ? (
+                      <p className="mt-2">
+                        Please contact us at{' '}
+                        <a href="mailto:info@featherstransfers.com" className="text-blue-600 underline">
+                          info@featherstransfers.com
+                        </a>
+                      </p>
+                    ) : (
+                      <p className="mt-2">
+                        Please <a href="/contact" className="text-blue-600 underline">contact us</a> for a custom quote.
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p>
+                    For groups in excess of 12 passengers, please request a custom quote by clicking{' '}
+                    <a href="mailto:info@featherstransfers.com" className="text-blue-600 underline">
+                      info@featherstransfers.com
+                    </a>
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -524,7 +553,7 @@ const QuoteSystem = () => {
               onClick={handleBookNow}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors"
             >
-              {price !== null ? 'Book Now' : 'Get a Personal Quote'}
+              {price !== null ? 'Book Now' : 'Contact Us'}
             </button>
             <button
               onClick={handleChangeDetails}

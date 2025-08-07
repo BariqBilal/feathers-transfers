@@ -10,11 +10,11 @@ export default function AirportGeneva(){
    const airportData = {
     title: "Chambery Airport Overview",
     description: [
-      "The arrival procedure is very simple at Chambery Airport as it is very small. Once you have all your baggage, exit the arrivals terminal where you will find your driver holding a sign with your name on it.",
+      "Despite its modest size compared to other French airports, <a href='https://www.chambery-airport.com/en'>Chambéry Savoie Mont Blanc Airport</a>",
 
-      "Poular airlines such as <a href='https://www.jet2.com/'>Jet2</a> and <a href='https://www.britishairways.com/travel/home/public/en_pk/'>British Airways</a> offer flights to Chambery. The british Tour Operator <a href='https://www.crystalski.co.uk/'>Crystal Ski Holidays</a> offer many flight into Chambery Airport during the ski season.",
+      "It’s small but efficient terminal design, with emphasis on a speedy transit and its proximity to local ski resorts mean that travellers can often reach their final destinations faster than if they flew into larger, more congested airports. ",
 
-      "Chambéry Airport France is the closest airport to the major ski resorts in the Savoie and thus, in theory, has the shortest transfer to the ski resorts. However, be warned the airport can sometimes close due to fog from the Lac du Bourget which is situated at the southern end of the runway.",
+      "One of the most fascinating aspects for pilots and aviation fans is the airport’s notoriously challenging approach. Surrounded by mountains and water, the airports single runway requires pilots to execute precise landings, often in unpredictable weather. Fog, crosswinds, and rapidly changing Alpine conditions all demand an elevated level of piloting skill. ",
     
     ],
     imageUrl: "/Chambery-Savoie-Aeroport.jpg",
@@ -25,7 +25,7 @@ export default function AirportGeneva(){
   {
     icon: <FileText className="w-8 h-8" />,
     stepTitle: 'Step 1: Documentation',
-    description: 'Complete all necessary paperwork for the procedure before starting.'
+    description: 'The arrival procedure is very simple at Chambery as it is a very small airport. Once you have all your baggage, exit the arrivals terminal where you will find your driver holding a sign with your name on it.'
   },
   {
     icon: <Car className="w-8 h-8" />,
@@ -48,7 +48,7 @@ export default function AirportGeneva(){
       />
        <AirportDetail
         location='At the southern end of Lac du Bourget'
-        transferTime='2.5 hours to La Plagne'
+        transferTime='1.5hours to La Plagne'
         amenities='Free Wi-Fi available throughout'
       />
       <AirportOverview
@@ -57,7 +57,7 @@ export default function AirportGeneva(){
         imageUrl={airportData.imageUrl}
         imageAlt={airportData.imageAlt}
       />
-       <ProcedureSection sectionTitle="Procedure Steps" steps={stepsData} />
+       <ProcedureSection sectionTitle="Arrival Proceedure at Chambery Airport" steps={stepsData} />
         <div style={{ padding: '20px' }}>
       <InfoCard
         title="Chambery Airport – Did you know ?"
