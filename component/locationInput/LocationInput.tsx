@@ -94,8 +94,22 @@ export default function LocationInput() {
     return categoriesOrder.flatMap(type => grouped[type] || []);
   };
 
-  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>(getPickupLocations('', ''));
-  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>(getDestinationLocations('', ''));
+  const [pickupLocations, setPickupLocations] = useState<LocationOption[]>([]);
+  const [destinationLocations, setDestinationLocations] = useState<LocationOption[]>([]);
+
+  // Initialize with first location selected for pickup
+  useEffect(() => {
+    const initialPickupLocations = getPickupLocations('', '');
+    const initialDestinationLocations = getDestinationLocations('', '');
+    
+    setPickupLocations(initialPickupLocations);
+    setDestinationLocations(initialDestinationLocations);
+    
+    // Auto-select the first pickup location if none is selected
+    if (!pickupLocation && initialPickupLocations.length > 0) {
+      setPickupLocation(initialPickupLocations[0].value);
+    }
+  }, []);
 
   // Update filtered locations when values change
   useEffect(() => {
