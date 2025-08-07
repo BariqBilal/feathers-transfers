@@ -16,7 +16,7 @@ export default function Navbar() {
     { name: 'Book Now', href: '/book-now' },
      { name: 'La Plagne', href: '/la-plagne' },
     {
-      name: 'Airports we serve',
+      name: 'Airports We Serve ',
       href: '',
       dropdownItems: [
         { name: 'Geneva Airport', href: '/airport-geneva' },
@@ -26,7 +26,7 @@ export default function Navbar() {
       ],
     },
     { name: 'Transfer Advice', href: '/transfer-advice' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Contact Us', href: '/contact' },
   ];
 
   useEffect(() => {

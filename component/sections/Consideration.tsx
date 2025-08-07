@@ -53,6 +53,10 @@ The high altitude resorts of La Plagne are accessed via a steep drive of switch 
                   <Clock className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
                   <p className="text-gray-700 text-base">Grenoble Airport has a supermarket, McDonalds, Cafe and various food options a short walk from the terminal building.</p>
                 </li>
+                <li className="flex items-start">
+                  <Clock className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                  <p className="text-gray-700 text-base">Lyon Airport has ATMs, VIP lounges, a pharmacy, numerous charging points for your electric devices and free Wi-Fi access throughout the terminals. Luggage trolleys in the car parks and around the terminals are also available and free.</p>
+                </li>
               </ul>
             </div>
           </div>
