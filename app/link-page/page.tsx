@@ -8,17 +8,7 @@ export default function Links() {
           <ul className="space-y-2">
             <li>
               <a 
-                href="https://www.la-plagne.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                La Plagne Paradiski
-              </a>
-            </li>
-            <li>
-              <a 
-                href="https://www.thatslaplagne.co.uk" 
+                href="https://thatslaplagne.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -34,7 +24,7 @@ export default function Links() {
           <ul className="space-y-2">
             <li>
               <a 
-                href="https://www.example.com/carroley-b1" 
+                href="https://www.papvacances.fr/annonce/location-appartement-la-plagne-tarentaise-8-r208103504" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -44,7 +34,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.example.com/carroley-b2" 
+                href="https://www.papvacances.fr/annonce/location-appartement-la-plagne-tarentaise-8-r207902283" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -54,7 +44,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.example.com/glaciers-1" 
+                href="https://www.papvacances.fr/annonce/location-appartement-la-plagne-tarentaise-6-r207703874" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -64,7 +54,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.example.com/glaciers-2" 
+                href="https://www.papvacances.fr/annonce/location-appartement-la-plagne-tarentaise-6-r209304910" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -74,7 +64,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.example.com/residence-3000" 
+                href="https://www.papvacances.fr/annonce/location-appartement-la-plagne-tarentaise-r208607739" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -84,17 +74,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.pistepads.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                Piste Pads accommodation to rent in La Plagne
-              </a>
-            </li>
-            <li>
-              <a 
-                href="https://www.lovelychaletcompany.com" 
+                href="https://www.thelovelychaletcompany.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -104,7 +84,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.alpoholics.com" 
+                href="https://www.alpoholics.co.uk/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -120,22 +100,12 @@ export default function Links() {
           <ul className="space-y-2">
             <li>
               <a 
-                href="https://www.reflexski.com" 
+                href="https://www.reflex-skischool.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
               >
                 Reflex Ski School La Plagne
-              </a>
-            </li>
-            <li>
-              <a 
-                href="https://www.parkhero.co.uk" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                Compare and Book Airport Parking Online Easily with Parkhero
               </a>
             </li>
           </ul>
@@ -146,7 +116,7 @@ export default function Links() {
           <ul className="space-y-2">
             <li>
               <a 
-                href="https://www.la-plagne.com/en/discover/magic-pool" 
+                href="https://en.la-plagne.com/explore-the-multitude-of-activities-on-offer/enjoy-la-plagne-in-all-weather/swimming-pools/magic-pool-swimming-pool" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -156,7 +126,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.lebonnetlaplagne.com" 
+                href="https://www.afterski-lebonnet.fr/accueil" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -166,7 +136,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.carlina-hotel.com" 
+                href="https://en.carlina-belleplagne.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -176,7 +146,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.w2050.com" 
+                href="https://w2050-belleplagne.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
@@ -186,7 +156,7 @@ export default function Links() {
             </li>
             <li>
               <a 
-                href="https://www.labodegalaplagne.com" 
+                href="https://www.labodegabelleplagne.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"

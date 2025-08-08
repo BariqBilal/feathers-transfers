@@ -23,7 +23,7 @@ const CommitmentSection: React.FC = () => {
     {
       icon: CheckCircle,
       title: "Reliable Transfers",
-      description: "Exceptional reliability and Personalised service",
+      description: "Exceptional reliability and personalised service",
     },
   ];
 

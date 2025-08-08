@@ -27,7 +27,7 @@ const AboutSection: React.FC = () => {
             Our Alpine Journey
           </h2>
           <p className="text-gray-700 text-justify text-lg leading-relaxed mb-4">
-          With a love of France and particularly its spectacular mountains, we have been based in the French Alps for thirty years. During this time, we have been running Travel and Tourism companies: an apartment rental business (pre Air BnB!), catered chalets, property renovations and hotel management.
+          With a love of France and particularly its spectacular mountains, we have been based in the French Alps for thirty years. During this time, we have been running Travel and Tourism companies, an apartment rental business (pre Air BnB), catered chalets, property renovations, hotel management and of course Airport Transfers.
           </p>
           <p className="text-gray-700 text-lg text-justify leading-relaxed mb-4">
           When the opportunity came to sell our Spitting Feathers Après Ski Bar in La Plagne Bellecote, we jumped at the chance to concentrate solely on airport transfers and out of this has been born 'Feathers Transfers.

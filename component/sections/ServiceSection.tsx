@@ -45,7 +45,7 @@ const ServiceSection: React.FC = () => {
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 text-base leading-relaxed">
+              <p className="text-gray-600 text-base text-justify leading-relaxed">
                 {service.description}
               </p>
             </div>
