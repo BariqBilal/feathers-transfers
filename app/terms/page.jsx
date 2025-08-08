@@ -1,7 +1,7 @@
 export default function Terms() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Airport Transfers Terms & Conditions</h1>
+      <h1 className="text-3xl font-bold text-center mb-8">Feathers Transfers Terms & Conditions</h1>
       
       <div className="prose prose-lg max-w-none">
         <p className="mb-6">

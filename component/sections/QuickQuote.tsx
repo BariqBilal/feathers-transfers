@@ -63,8 +63,13 @@ const QuoteSystem = () => {
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
     
-    // Other
-    { value: 'Other', label: 'Other Resort', type: 'other' }
+    // Other - Changed as requested
+    { 
+      value: 'other-resort', 
+      label: 'For other resorts please contact info@featherstransfers.com', 
+      type: 'other',
+      disabled: true 
+    }
   ];
 
   // Function to organize locations for pickup (Airports, Hotels/Cities, Stations first, then Resorts)
@@ -215,7 +220,7 @@ const QuoteSystem = () => {
     if (isFormValid && !showQuoteDetails) {
       const totalPax = adults + children;
       
-      // Check if group is larger than 12
+      // Check if group is larger than 12 - Updated message as requested
       if (totalPax > 12) {
         setPrice(null);
         setPriceDetails(['For groups in excess of 12 passengers, please request a custom quote by clicking info@featherstransfers.com']);
@@ -270,11 +275,9 @@ const QuoteSystem = () => {
       pickupLocation !== '' &&
       destinationLocation !== '' &&
       selectedDate !== '' &&
-      // selectedTime !== '' &&
       adults > 0 &&
       (tripType === 'oneWay' || (
         returnDate !== '' && 
-        // returnTime !== '' &&
         (returnDate > selectedDate || 
          (returnDate === selectedDate))
       ))
@@ -296,7 +299,7 @@ const QuoteSystem = () => {
     
     const totalPax = adults + children;
     
-    // Check if group is larger than 12
+    // Check if group is larger than 12 - Updated message as requested
     if (totalPax > 12) {
       setPrice(null);
       setPriceDetails(['For groups in excess of 12 passengers, please request a custom quote by clicking info@featherstransfers.com']);
@@ -388,10 +391,24 @@ const QuoteSystem = () => {
     return allLocations.find(loc => loc.value === value)?.label || value;
   };
 
-  const getDayName = (dateString: string) => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+    
     const date = new Date(dateString);
-    return days[date.getDay()];
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    const dayName = days[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    
+    // Get ordinal suffix (1st, 2nd, 3rd, 4th, etc.)
+    const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
+                  (day % 10 === 2 && day !== 12) ? 'nd' :
+                  (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+    
+    return `${dayName}, ${day}${suffix} ${month} ${year}`;
   };
 
   return (
@@ -505,70 +522,31 @@ const QuoteSystem = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-4">QuickQuote</h2>
           <div className="mb-4">
             <p className="text-gray-700">
-              {adults + children} people departing from {getLocationLabel(pickupLocation)} to {getLocationLabel(destinationLocation)}
+              {adults + children} people from {getLocationLabel(pickupLocation)} to {getLocationLabel(destinationLocation)}
             </p>
-            <p className="text-sm text-gray-500 mt-1">
-              {getDayName(selectedDate)}, {selectedDate} at {selectedTime}
+            <div className="text-sm text-gray-500 mt-2 space-y-1">
+              <div>Arrive: {formatDate(selectedDate)}</div>
               {tripType === 'roundTrip' && (
-                <>
-                  <br />
-                  Return: {getDayName(returnDate)}, {returnDate} at {returnTime}
-                </>
+                <div>Depart: {formatDate(returnDate)}</div>
               )}
-            </p>
+            </div>
           </div>
 
           {price !== null ? (
-            <>
-              <div className="mb-4">
-                <div className="text-xl font-bold text-blue-600">
-                  Price starting from: €{price?.toFixed(2)}
-                </div>
-                {tripType === 'roundTrip' && (
-                  <div className="text-sm text-gray-600">
-                    Total for round trip
-                  </div>
-                )}
+            <div className="mb-6">
+              <div className="text-xl font-bold text-blue-600">
+                Price starting from: €{price?.toFixed(2)}
               </div>
-
-              {priceDetails.length > 0 && (
-                <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                  <h3 className="font-semibold mb-2 text-primary">Price Breakdown:</h3>
-                  <ul className="text-sm space-y-1 text-black">
-                    {priceDetails.map((detail, index) => (
-                      <li key={index}>{detail}</li>
-                    ))}
-                  </ul>
+              {tripType === 'roundTrip' && (
+                <div className="text-sm text-gray-600">
+                  Total for round trip
                 </div>
               )}
-            </>
+            </div>
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
               <div className="text-yellow-700">
-                {priceDetails.length > 0 ? (
-                  <>
-                    <p>{priceDetails[0]}</p>
-                    {priceDetails[0].includes('For groups in excess of 12 passengers') ? (
-                      <p className="mt-2">
-                        Please contact us at{' '}
-                        <a href="mailto:info@featherstransfers.com" className="text-blue-600 underline">
-                          info@featherstransfers.com
-                        </a>
-                      </p>
-                    ) : (
-                      <p className="mt-2">
-                        Please <a href="/contact" className="text-blue-600 underline">contact us</a> for a custom quote.
-                      </p>
-                    )}
-                  </>
-                ) : (
-                  <p>
-                    For groups in excess of 12 passengers, please request a custom quote by clicking{' '}
-                    <a href="mailto:info@featherstransfers.com" className="text-blue-600 underline">
-                      info@featherstransfers.com
-                    </a>
-                  </p>
-                )}
+                <p>For groups in excess of 12 passengers, please request a custom quote by clicking info@featherstransfers.com</p>
               </div>
             </div>
           )}
