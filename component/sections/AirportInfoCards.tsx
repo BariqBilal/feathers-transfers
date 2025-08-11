@@ -9,8 +9,8 @@ export default function AirportInfoCards() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
         {/* Terminal 1 (Main) Card */}
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">Terminal 1 (Main)</h2>
-          <p className="text-gray-600 mb-4 flex-grow text-justify">
+          <a href='https://www.gva.ch/en/Site/Passagers/Acces-Transports/Plan/Plan-du-Terminal-1' target='_blank' className="text-xl underline font-semibold text-gray-800 mb-3">Terminal 1 (Main)</a>
+          <p className="text-gray-600 mb-4 flex-grow text-justify underline">
            Terminal 1 is the bigger of the two terminals and is the terminal that most airlines such as <a target="_blank" className='underline font-bold' href="https://www.easyjet.com/">EasyJet</a> and <a target="_blank" className='underline font-bold'  href="https://www.britishairways.com/travel/home/public/en_pk/">British Airways </a> use. It is most likely that this is the terminal your flight will arrive at.
           </p>
          
@@ -25,14 +25,11 @@ export default function AirportInfoCards() {
 
         {/* Terminal 2 (Charter) Card */}
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">Terminal 2 (Charter)</h2>
+          <a href='https://www.gva.ch/en/Site/Passagers/Acces-Transports/Plan/Terminal-2' className="text-xl font-semibold underline text-gray-800 mb-3">Terminal 2 (Charter)</a>
           <p className="text-gray-600 mb-4 flex-grow text-justify">
           Terminal 2 is used mainly for charter flights and is only a ten minute walk from Terminal 1. It is basically a hangar with not many facilities and at the time of writing, the budget airline <a target="_blank" className='underline font-bold' href="https://www.jet2.com/"> Jet2</a> use it at weekends during the winter
           </p>
-          <ul className="list-disc list-inside text-gray-600 mb-4">
-            <li>Jet2 (weekends)</li>
-            <li>Charter operations</li>
-          </ul>
+          
           <div className="bg-blue-50 rounded-lg p-4 text-blue-800 text-sm">
             <h3 className="font-semibold mb-1">Arrival Proceedure</h3>
             {/* <p className='text-justify'>
@@ -46,7 +43,7 @@ export default function AirportInfoCards() {
 
         {/* French Sector Card */}
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">French Sector</h2>
+          <a href='https://www.gva.ch/en/Site/Passagers/Acces-Transports/Plan/Secteur-France' className="text-xl font-semibold underline text-gray-800 mb-3">French Sector</a>
           <p className="text-gray-600 mb-4 flex-grow text-justify">
 The French sector is mainly used for internal flights, so it is unlikely you will arrive at this terminal
           </p>

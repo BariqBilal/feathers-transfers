@@ -21,21 +21,31 @@ export default function AirportGeneva(){
     imageAlt: "Aerial view of Geneva Airport"
   };
 
-  const stepsData = [
+const stepsData = [
   {
     icon: <FileText className="w-8 h-8" />,
-    stepTitle: 'Step 1: Documentation',
+    stepTitle: 'How to find your driver',
     description: 'The arrival procedure is very simple at Chambery as it is a very small airport. Once you have all your baggage, exit the arrivals terminal where you will find your driver holding a sign with your name on it.'
   },
   {
     icon: <Car className="w-8 h-8" />,
-    stepTitle: 'Step 2: Vehicle Inspection',
-    description: 'Ensure the vehicle passes the required safety inspection.'
+    stepTitle: 'Airlines',
+    description: (
+      <>
+                    Popular airlines such as{' '}
+                    <a href="http://www.jet2.com" target="_blank">Jet2</a>{' '}
+                    and{' '}
+                    <a href="http://www.ba.com" target="_blank">British Airways</a>{' '}
+                    all offer flights into Chambery. The British Tour Operator{' '}
+                    <a href="https://www.crystalski.co.uk" target="_blank">Crystal Ski Holidays</a>{' '}
+                    also have many flights into Chambery during the ski season.
+                  </>
+    )
   },
   {
     icon: <CheckCircle className="w-8 h-8" />,
-    stepTitle: 'Step 3: Final Approval',
-    description: 'Submit for final approval after all checks are complete.'
+    stepTitle: 'Airport Location',
+    description: 'Chambéry Airport France is the closest airport to all major ski resorts in the Savoie and thus, in theory, has the shortest transfer time. However, be warned that the airport can sometimes close due to fog from the Lac du Bourget, which is situated at the southern end of the runway.'
   },
 ];
     return(

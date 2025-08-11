@@ -10,30 +10,30 @@ export default function AirportGeneva(){
    const airportData = {
     title: "Lyon Saint-Exupéry Airport",
     description: [
-      "Lyon Saint-Exupéry Airport serves as the region’s principal portal to Europe and the world at large, blending efficiency and modernity with the timeless elegance of French design. On a good run, the airport is a two-and-a-half-hour transfer to La Plagne.",
+      "<a href='https://www.lyonaeroports.com/en'>Lyon Saint-Exupéry Airport</a> serves as the region’s principal portal to Europe and the world at large, blending efficiency and modernity with the timeless elegance of French design. On a good run, the airport is a two-and-a-half-hour transfer to La Plagne.",
       
       "The airport’s main terminal, Terminal 1, underwent significant expansion and modernization in 2017. The new extension offers a sleek, contemporary space with soaring glass facades, expansive waiting areas, and a variety of Shops Cafés/Restaurants and Airport lounges. It handles many international and Schengen flights and most flights from the UK arrive at Terminal 1.",
-      "The nearest parking to the Terminal 1 is a good ten minutes’ walk away, so to avoid you the inconvenience of hauling your baggage about, your driver will be waiting five minutes away and will come into the short stay pick up and drop off zone to collect you. When you are ready, we ask that yu send a WhatsApp message."
+      "The nearest parking to the Terminal 1 is a good ten minutes’ walk away, so to avoid you the inconvenience of hauling your baggage about, your driver will be waiting five minutes away and will come into the short stay pick up and drop off zone to collect you. When you are ready, we ask that <a href='https://www.lyonaeroports.com/en'> You</a> send a WhatsApp message."
     ],
-    imageUrl: "/aa.png",
+    imageUrl: "/T1 LYON.jpg",
     imageAlt: "Aerial view of Geneva Airport"
   };
 
   const stepsData = [
   {
     icon: <FileText className="w-8 h-8" />,
-    stepTitle: 'Step 1: Documentation',
+    stepTitle: '',
     description: 'The nearest parking to the Terminal 1 is a good ten minutes’ walk away, so to avoid you the inconvenience of hauling your baggage about, your driver will be waiting five minutes away and will come into the short stay pick up and drop off zone to collect you. '
   },
   {
     icon: <Car className="w-8 h-8" />,
-    stepTitle: 'Step 2: Vehicle Inspection',
+    stepTitle: '',
     description: 'When you have collected all your luggage and are ready to go, we ask that you walk out to the car park (not the one with taxis and buses) and then send your driver a WhatsApp message. He or she will then come in to collect you.'
   },
   {
     icon: <CheckCircle className="w-8 h-8" />,
-    stepTitle: 'Step 3: Final Approval',
-    description: 'Situated on the outskirts of lyon, the airport has direct motorway access ensuring a speedy getaway towards the alps '
+    stepTitle: '',
+    description: 'Situated on the outskirts of Lyon, the airport has direct motorway access ensuring you a speedy getaway towards the alps.'
   },
 ];
     return(

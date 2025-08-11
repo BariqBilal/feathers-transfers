@@ -10,9 +10,9 @@ export default function AirportGeneva(){
    const airportData = {
     title: "Geneva Airport Overview",
      description: [
-      "Arrivals at Geneva can get VERY busy on Saturdays during the ski season so to avoid problems, we always meet our Passengers at the <a  href='https://www.google.fr/maps/place/Swiss+Chalet/@46.2311027,6.1066986,17z/data=!3m1!5s0x478c64845e72c92b:0x55f0c588a8b1ba9e!4m10!1m2!2m1!1sswiss+chalet+restauran+geneva+airport!3m6!1s0x478c64845ca06b3f:0x87f884a9e214bc72!8m2!3d46.2312036!4d6.1094997!15sCiZzd2lzcyBjaGFsZXQgcmVzdGF1cmFudCBnZW5ldmEgYWlycG9ydCIDiAEBWigiJnN3aXNzIGNoYWxldCByZXN0YXVyYW50IGdlbmV2YSBhaXJwb3J0kgEQc3dpc3NfcmVzdGF1cmFudKoBkAEKDC9nLzFxNjI5eF9qcwoJL20vMDFxc2d0CgkvbS8wMjBuX18QASobIhdzd2lzcyBjaGFsZXQgcmVzdGF1cmFudCgAMh8QASIb25u4cIVCe01MTrXVdJzWQN6JzN-WHUrFRinqMioQAiImc3dpc3MgY2hhbGV0IHJlc3RhdXJhbnQgZ2VuZXZhIGFpcnBvcnTgAQA!16s%2Fg%2F1hhxjy0vx?entry=ttu&g_ep=EgoyMDI1MDczMC4wIKXMDSoASAFQAw%3D%3D' className='text-blue-500 hover:underline'>Swiss Chalet Restaurant</a> which is well away from the crowds.",
+      "<a  href='http://www.gva.ch/' className='text-blue-500 hover:underline'> Geneva Airport</a> is one of Switzerland’s principal gateways to the world. Situated just four kilometres northwest of the city centre, it serves not only the city and parts of neighbouring France, but it is also the main arrival destination for skiers during the ski season. On a good run, Geneva Airport is a two-and-a-half-hour transfer to La Plagne.",
       
-      "Exit customs, but not the airport terminal, and turn left, heading towards the train station. Walk for no more than 100m and on your left hand side you will see the Swiss Chalet Restaurant where your driver will be waiting for you holding a sign with your name on it.",
+      "In our opinion, Geneva should be your first-choice airport not only due to the large number of daily flights, but principally because it is such a major transfer hub, it very rarely, if ever, gets closed due to bad weather ensuring your flight is very unlikely to be diverted. The airport has two terminals and free wi-fi is available throughout.",
       
     ],
     imageUrl: "/airportg.jpg",

@@ -77,27 +77,29 @@ const DetailSection: React.FC = () => {
       description: "La Roche is home to the finish line of the Olympic bobsleigh track, adding a touch of adrenaline-fueled history to your ski holiday. Perfect for those seeking both adventure and a taste of the authentic Alpine lifestyle, La Roche provides a quieter base with all the essentials for a memorable stay in the mountains."
     }
   ];
-
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8 mb-12">
-        <div className="md:w-1/2">
-          <Image 
-            src="/sec1.PNG" 
-            alt="La Plagne ski resort"
-            width={800}
-            height={400}
-            className="rounded-lg shadow-lg h-[50vh] object-cover"
-            priority
-          />
+        <div className="md:w-1/2 h-full">
+          <div className="relative h-full min-h-[400px]"> {/* Added relative and min-height */}
+            <Image 
+              src="/sec1.PNG" 
+              alt="La Plagne ski resort"
+              fill // This makes the image fill the container
+              className="rounded-lg shadow-lg object-cover"
+              priority
+            />
+          </div>
         </div>
         <div className="md:w-1/2">
-          <p className="text-lg mb-4 text-justify">
-            La Plagne is a collection of twelve small, purpose-built high altitude ski resorts and traditional villages located on the edge of the Vanoise National Park. Renowned as a family-friendly resort, it has a good selection of beginner pistes but also some great choices for the more advanced skier or snowboarder. In addition, La Plagne is part of the famous Paradiski ski area, linked to Les Arcs by the Vanoise Express cable car.
-          </p>
-          <p className="text-lg text-justify">
-            All resorts have a good choice of ski in ski out apartments, chalets and hotels, restaurants and nightlife. Getting around is easy thanks to free shuttle buses and a great network of ski lifts that connect the high altitude resorts and villages. Some of these links are open at night to help visitors get from their accommodation to the different restaurants, shops and bars in the neighbouring resorts. Feathers Transfers can also be pre-booked to take/collect your party for a night out. 
-          </p>
+          <div className="h-full flex flex-col justify-center"> {/* Added to center content vertically */}
+            <p className="text-lg mb-4 text-justify">
+              La Plagne is a collection of twelve small, purpose-built high altitude ski resorts and traditional villages located on the edge of the Vanoise National Park. Renowned as a family-friendly resort, it has a good selection of beginner pistes but also some great choices for the more advanced skier or snowboarder. In addition, La Plagne is part of the famous Paradiski ski area, linked to Les Arcs by the Vanoise Express cable car.
+            </p>
+            <p className="text-lg text-justify">
+              All resorts have a good choice of ski in ski out apartments, chalets and hotels, restaurants and nightlife. Getting around is easy thanks to free shuttle buses and a great network of ski lifts that connect the high altitude resorts and villages. Some of these links are open at night to help visitors get from their accommodation to the different restaurants, shops and bars in the neighbouring resorts. Feathers Transfers can also be pre-booked to take/collect your party for a night out. 
+            </p>
+          </div>
         </div>
       </div>
 
