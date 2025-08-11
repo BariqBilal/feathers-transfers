@@ -13,7 +13,17 @@ export default function Links() {
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
               >
-                That's La Plagne. The Only Stop For Everything La Plagne
+                That's La Plagne. The Only Stop For This Weeks La Plagne News
+              </a>
+            </li>
+            <li>
+              <a 
+                href="https://en.la-plagne.com/?_gl=1*13zh0gy*_gcl_au*MjEyODU1ODkxMC4xNzU0NjY2MTM1*_ga*MTE2NDQ2MzMxMy4xNzU0NjY2MTMy*_ga_RGHX4L1ZKT*czE3NTQ3NDgwMDckbzIkZzAkdDE3NTQ3NDgwMDckajYwJGwwJGgw" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                La Plagne, Paradiski
               </a>
             </li>
           </ul>
@@ -32,6 +42,7 @@ export default function Links() {
                 8/10 Person apartment to rent, Carroley B, Plagne Bellecote
               </a>
             </li>
+           
             <li>
               <a 
                 href="https://www.papvacances.fr/annonce/location-appartement-la-plagne-tarentaise-8-r207902283" 
@@ -98,6 +109,16 @@ export default function Links() {
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Ski Schools & Services</h2>
           <ul className="space-y-2">
+             <li>
+              <a 
+                href="https://pistepads.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Piste Pads, self catered ski holidays inLa Plagne
+              </a>
+            </li>
             <li>
               <a 
                 href="https://www.reflex-skischool.com/" 

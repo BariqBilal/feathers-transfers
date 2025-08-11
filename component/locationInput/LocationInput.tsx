@@ -59,7 +59,12 @@ export default function LocationInput() {
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
     
     // Other
-    { value: 'Other', label: 'Other Resort', type: 'other' }
+    { 
+      value: 'other-resort', 
+      label: 'For other resorts please contact info@featherstransfers.com', 
+      type: 'other',
+      disabled: true 
+    }
   ];
 
   // Function to organize locations for pickup (Airports, Hotels/Cities, Stations first, then Resorts)
