@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-// import Navbar from "@/component/navbar/Navbar";
-// import Footer from "@/component/footer/Footer";
-// import { FaWhatsapp } from "react-icons/fa";
+import Navbar from "@/component/navbar/Navbar";
+import Footer from "@/component/footer/Footer";
+import { FaWhatsapp } from "react-icons/fa";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +29,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <Navbar /> */}
+        <Navbar />
         {children}
-        {/* <Footer /> */}
+        <Footer />
 
         {/* WhatsApp Icon */}
-        {/* <a
+        <a
           href="https://wa.me/+33679524959" 
           target="_blank"
           rel="noopener noreferrer"
@@ -43,7 +42,7 @@ export default function RootLayout({
           aria-label="Chat with us on WhatsApp"
         >
           <FaWhatsapp size={30} /> 
-        </a> */}
+        </a>
       </body>
     </html>
   );
