@@ -57,7 +57,7 @@ export default function GrenobleAirport(){
         imageUrl={airportData.imageUrl}
         imageAlt={airportData.imageAlt}
       />
-       <ProcedureSection sectionTitle="Arrival Proceedure at Grenoble Airport" steps={stepsData} />
+       <ProcedureSection sectionTitle="Arrival Procedure at Grenoble Airport" steps={stepsData} />
        <div style={{ padding: '20px' }}>
       <InfoCard
         title="Grenoble Airport – Did you know ?"

@@ -29,6 +29,7 @@ export default function LocationInput() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [minReturnDate, setMinReturnDate] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
+  const [showLargeGroupMessage, setShowLargeGroupMessage] = useState(false);
 
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
@@ -159,12 +160,14 @@ export default function LocationInput() {
   }, [selectedDate, selectedTime]);
 
   useEffect(() => {
+    const totalPassengers = adults + children;
     const isValid = (
       pickupLocation !== '' &&
       destinationLocation !== '' &&
       selectedDate !== '' &&
       selectedTime !== '' &&
       adults > 0 &&
+      totalPassengers <= 12 &&
       (tripType === 'oneWay' || (
         returnDate !== '' && 
         returnTime !== '' &&
@@ -173,6 +176,9 @@ export default function LocationInput() {
       ))
     );
     setIsFormValid(isValid);
+    
+    // Show message if group size exceeds 12
+    setShowLargeGroupMessage(totalPassengers > 12);
   }, [
     pickupLocation,
     destinationLocation,
@@ -181,6 +187,7 @@ export default function LocationInput() {
     returnDate,
     returnTime,
     adults,
+    children,
     tripType
   ]);
 
@@ -195,6 +202,22 @@ export default function LocationInput() {
   };
 
   const handlePaxChange = (adults: number, children: number) => {
+    const totalPassengers = adults + children;
+    
+    // Don't allow more than 12 passengers
+    if (totalPassengers > 12) {
+      // Calculate how many adults we can add to stay within limit
+      const maxAdults = 12 - children;
+      if (maxAdults > 0) {
+        setAdults(maxAdults);
+      } else {
+        // If children already exceed limit, reduce children instead
+        setAdults(1);
+        setChildren(0);
+      }
+      return;
+    }
+    
     setAdults(adults);
     setChildren(children);
   };
@@ -294,6 +317,13 @@ export default function LocationInput() {
 
   const handleSubmit = () => {
     if (!isFormValid) return;
+    
+    const totalPassengers = adults + children;
+    
+    // Check if group size exceeds 12
+    if (totalPassengers > 12) {
+      return; // Should not happen due to validation, but just in case
+    }
     
     // Check if this is a resort-to-resort transfer
     if (isResortToResort(pickupLocation, destinationLocation)) {
@@ -428,6 +458,7 @@ export default function LocationInput() {
               adults={adults}
               children={children}
               onChange={handlePaxChange}
+              maxTotal={12}
             />
           </div>
 
@@ -445,6 +476,16 @@ export default function LocationInput() {
             </button>
           </div>
         </div>
+
+        {/* Large group message */}
+        {showLargeGroupMessage && (
+          <div className="mt-4 p-3 bg-yellow-100 border border-yellow-400 rounded-md text-yellow-800 text-sm">
+            For groups in excess of 12 passengers, please request a custom quote by contacting{' '}
+            <a href="mailto:info@featherstransfers.com" className="font-semibold underline">
+              info@featherstransfers.com
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

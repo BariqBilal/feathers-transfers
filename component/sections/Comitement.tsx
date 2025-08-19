@@ -2,13 +2,19 @@
 import React from 'react';
 import Image from 'next/image';
 import { Snowflake, UserCheck, BatteryCharging, CheckCircle } from 'lucide-react'; // Importing icons
+import { CiLocationOn } from 'react-icons/ci';
 
 const CommitmentSection: React.FC = () => {
   const commitments = [
     {
+      icon: CiLocationOn,
+      title: "Local Knowledge",
+      description: "We know where you are going",
+    },
+    {
       icon: Snowflake,
       title: "New Snow Tyres",
-      description: "All vehicles fitted with new snow tyres each winter Should read",
+      description: "All vehicles fitted with new snow tyres each winter",
     },
     {
       icon: UserCheck,

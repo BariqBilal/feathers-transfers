@@ -6,16 +6,7 @@ export default function Links() {
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Official Sites</h2>
           <ul className="space-y-2">
-            <li>
-              <a 
-                href="https://thatslaplagne.com/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                That's La Plagne. The Only Stop For This Weeks La Plagne News
-              </a>
-            </li>
+           
             <li>
               <a 
                 href="https://en.la-plagne.com/?_gl=1*13zh0gy*_gcl_au*MjEyODU1ODkxMC4xNzU0NjY2MTM1*_ga*MTE2NDQ2MzMxMy4xNzU0NjY2MTMy*_ga_RGHX4L1ZKT*czE3NTQ3NDgwMDckbzIkZzAkdDE3NTQ3NDgwMDckajYwJGwwJGgw" 
@@ -32,6 +23,16 @@ export default function Links() {
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Accommodation</h2>
           <ul className="space-y-2">
+             <li>
+              <a 
+                href="https://pistepads.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Piste Pads, self catered ski holidays inLa Plagne
+              </a>
+            </li>
             <li>
               <a 
                 href="https://www.papvacances.fr/annonce/location-appartement-la-plagne-tarentaise-8-r208103504" 
@@ -109,16 +110,46 @@ export default function Links() {
         <div className="bg-white p-4 rounded shadow">
           <h2 className="text-xl font-semibold mb-2">Ski Schools & Services</h2>
           <ul className="space-y-2">
-             <li>
+            <li>
               <a 
-                href="https://pistepads.com/" 
+                href="https://limesnowsports.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"
               >
-                Piste Pads, self catered ski holidays inLa Plagne
+                Lime Snowsports
               </a>
-            </li>
+            </li> 
+            <li>
+              <a 
+                href="https://www.elpro-la-plagne.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                ELPRO Ski School and Hire Belle Plagne
+              </a>
+            </li> 
+            <li>
+              <a 
+                href="https://www.esf-plagne.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                École de ski La Plagne (ESF)
+              </a>
+            </li> 
+            <li>
+              <a 
+                href="https://thatslaplagne.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                That's La Plagne. The Only Stop For This Weeks La Plagne News
+              </a>
+            </li> 
             <li>
               <a 
                 href="https://www.reflex-skischool.com/" 
