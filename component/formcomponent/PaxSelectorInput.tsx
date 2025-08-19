@@ -5,9 +5,15 @@ interface PaxSelectorInputProps {
   adults: number;
   children: number;
   onChange: (adults: number, children: number) => void;
+  maxTotal?: number;
 }
 
-const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, onChange }) => {
+const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ 
+  adults, 
+  children, 
+  onChange, 
+  maxTotal = 12 
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [tempAdults, setTempAdults] = useState(adults);
   const [tempChildren, setTempChildren] = useState(children);
@@ -40,6 +46,39 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, o
   }, [showDropdown, tempAdults, tempChildren, onChange]);
 
   const displayPax = `${tempAdults} adult${tempAdults > 1 ? 's' : ''} • ${tempChildren} child${tempChildren > 1 ? 'ren' : ''}`;
+  const totalPassengers = tempAdults + tempChildren;
+  const maxAdultsReached = totalPassengers >= maxTotal;
+  const maxChildrenReached = totalPassengers >= maxTotal;
+
+  const handleAdultsChange = (newAdults: number) => {
+    const newTotal = newAdults + tempChildren;
+    if (newTotal <= maxTotal) {
+      setTempAdults(newAdults);
+    } else if (tempChildren > 0) {
+      // If adding an adult would exceed the limit, but we have children,
+      // reduce children first if possible
+      const availableSpace = maxTotal - newAdults;
+      if (availableSpace >= 0) {
+        setTempAdults(newAdults);
+        setTempChildren(Math.min(tempChildren, availableSpace));
+      }
+    }
+  };
+
+  const handleChildrenChange = (newChildren: number) => {
+    const newTotal = tempAdults + newChildren;
+    if (newTotal <= maxTotal) {
+      setTempChildren(newChildren);
+    } else if (tempAdults > 0) {
+      // If adding a child would exceed the limit, but we have adults,
+      // reduce adults first if possible
+      const availableSpace = maxTotal - newChildren;
+      if (availableSpace >= 0) {
+        setTempChildren(newChildren);
+        setTempAdults(Math.min(tempAdults, availableSpace));
+      }
+    }
+  };
 
   return (
     <div className="relative">
@@ -47,7 +86,7 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, o
         ref={triggerRef}
         type="button"
         id="pax-selector"
-        className="w-full flex items-center justify-start px-3 py-3 border border-gray-300 rounded-md  bg-white text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="w-full flex items-center justify-start px-3 py-3 border border-gray-300 rounded-md bg-white text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         onClick={(e) => {
           e.stopPropagation();
           setShowDropdown(prev => !prev);
@@ -67,6 +106,13 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, o
         >
           <div className="p-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Passengers</h3>
+            
+            {/* Max passengers warning */}
+            {totalPassengers >= maxTotal && (
+              <div className="mb-3 p-2 bg-yellow-100 border border-yellow-400 rounded text-yellow-800 text-sm">
+                Maximum {maxTotal} passengers allowed. For larger groups, please contact us. <a href="mailto:info@featherstransfers.com" className='underline text-blue-500'>info@featherstransfers.com</a>
+              </div>
+            )}
 
             {/* Adults Counter */}
             <div className="flex justify-between items-center py-3 border-b border-gray-200">
@@ -76,7 +122,7 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, o
               <div className="flex items-center space-x-3">
                 <button
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => setTempAdults(prev => Math.max(0, prev - 1))}
+                  onClick={() => handleAdultsChange(tempAdults - 1)}
                   disabled={tempAdults === 0}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,8 +131,9 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, o
                 </button>
                 <span className="text-lg font-semibold text-gray-900 w-6 text-center">{tempAdults}</span>
                 <button
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
-                  onClick={() => setTempAdults(prev => prev + 1)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handleAdultsChange(tempAdults + 1)}
+                  disabled={maxAdultsReached}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -104,7 +151,7 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, o
               <div className="flex items-center space-x-3">
                 <button
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={() => setTempChildren(prev => Math.max(0, prev - 1))}
+                  onClick={() => handleChildrenChange(tempChildren - 1)}
                   disabled={tempChildren === 0}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,14 +160,24 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ adults, children, o
                 </button>
                 <span className="text-lg font-semibold text-gray-900 w-6 text-center">{tempChildren}</span>
                 <button
-                  className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
-                  onClick={() => setTempChildren(prev => prev + 1)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handleChildrenChange(tempChildren + 1)}
+                  disabled={maxChildrenReached}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                   </svg>
                 </button>
               </div>
+            </div>
+            
+            {/* Total passengers display */}
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <p className="text-sm font-medium text-gray-700">
+                Total passengers: <span className={totalPassengers > maxTotal ? "text-red-600" : "text-green-600"}>
+                  {totalPassengers}/{maxTotal}
+                </span>
+              </p>
             </div>
           </div>
         </div>

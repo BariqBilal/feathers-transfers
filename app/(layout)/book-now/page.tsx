@@ -8,7 +8,7 @@ export default function BookNow() {
         height="75vh"
         bgImage="/ccc.PNG"
         title="Book Your Transfer Now!"
-        description="Secure your transfer to La Plagne Resorts today with our fast, reliable, and comfortable."
+        description="Secure your transfer to La Plagne Resorts today with our fast, reliable, and comfortable service."
       />
       <FeatureSection />
     </>
