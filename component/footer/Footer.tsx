@@ -2,6 +2,7 @@ import React from 'react';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { Facebook, Twitter, Instagram } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const quickLinks = [
   { name: 'Useful Links', href: '/link-page' },
@@ -59,8 +60,8 @@ const airportInfo = [
 export default function Footer() {
   return (
     <footer className="bg-primary text-white py-10 font-inter">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           <div className="col-span-1">
             <h3 className="text-xl font-bold mb-4">Feathers Transfers</h3>
             <p className="text-sm text-blue-100 text-justify mb-4">
@@ -83,6 +84,17 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+          <div className="col-span-1">
+            <Image
+                        src="/Logo.png"
+                        alt="Feathers Transfers Logo"
+                        width={80}
+                        height={80}
+                        className="object-cover"
+                      />
+          </div>
+
+           
 
           <div className="col-span-1">
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
