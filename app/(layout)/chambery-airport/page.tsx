@@ -33,11 +33,11 @@ export default function AirportGeneva() {
       description: (
         <>
           Popular airlines such as{' '}
-          <a href="http://www.jet2.com" target="_blank">Jet2</a>{' '}
+          <a className="underline text-blue-500" href="http://www.jet2.com" target="_blank">Jet2</a>{' '}
           and{' '}
-          <a href="http://www.ba.com" target="_blank">British Airways</a>{' '}
+          <a className="underline text-blue-500" href="http://www.ba.com" target="_blank">British Airways</a>{' '}
           all offer flights into Chambery. The British Tour Operator{' '}
-          <a href="https://www.crystalski.co.uk" target="_blank">Crystal Ski Holidays</a>{' '}
+          <a className="underline text-blue-500" href="https://www.crystalski.co.uk" target="_blank">Crystal Ski Holidays</a>{' '}
           also have many flights into Chambery during the ski season.
         </>
       )
