@@ -38,7 +38,7 @@ export default function RootLayout({
           href="https://wa.me/+33679524959" 
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-4 right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-colors"
+          className="fixed bottom-4 z-50 right-4 bg-green-500 text-white rounded-full p-4 shadow-lg hover:bg-green-600 transition-colors"
           aria-label="Chat with us on WhatsApp"
         >
           <FaWhatsapp size={30} /> 

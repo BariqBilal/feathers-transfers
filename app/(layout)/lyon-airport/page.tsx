@@ -52,7 +52,7 @@ export default function AirportGeneva(){
       <AirportOverview
         title={airportData.title}
         description={airportData.description}
-        imageUrl={airportData.imageUrl}
+      imageUrl={airportData.imageUrl}
         imageAlt={airportData.imageAlt}
       />
        <ProcedureSection sectionTitle="Arrival Proceedure at Lyon Airport" steps={stepsData} />

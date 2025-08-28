@@ -522,7 +522,7 @@ const QuoteSystem = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-4">QuickQuote</h2>
           <div className="mb-4">
             <p className="text-gray-700">
-              {adults + children} people from {getLocationLabel(pickupLocation)} to {getLocationLabel(destinationLocation)}
+              {adults + children} person from {getLocationLabel(pickupLocation)} to {getLocationLabel(destinationLocation)}
             </p>
             <div className="text-sm text-gray-500 mt-2 space-y-1">
               <div>Arrive: {formatDate(selectedDate)}</div>
@@ -546,7 +546,7 @@ const QuoteSystem = () => {
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
               <div className="text-yellow-700">
-                <p>For groups in excess of 12 passengers, please request a custom quote by clicking info@featherstransfers.com</p>
+                <p>For other resorts please contact info <span className='underline text-blue-500'>info@featherstransfers.com</span></p>
               </div>
             </div>
           )}
