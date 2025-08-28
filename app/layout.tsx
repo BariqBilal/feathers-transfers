@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import CookieContent from "@/component/CookieContent";
 // import Navbar from "@/component/navbar/Navbar";
 // import Footer from "@/component/footer/Footer";
 // import { FaWhatsapp } from "react-icons/fa";
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         {/* <Navbar /> */}
         {children}
+        <CookieContent/>
         {/* <Footer /> */}
 
         {/* WhatsApp Icon */}

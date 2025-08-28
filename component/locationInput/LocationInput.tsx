@@ -34,15 +34,15 @@ export default function LocationInput() {
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
     // Airports and stations
-    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
-    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
-    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
-    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
-    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
-    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
-    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
-    { value: 'BSM', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'GARE BSM' },
+    { value: 'Chambery (CMF)', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'Chambery (CMF)' },
+    { value: 'Geneva Airport (GVA)', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'Geneva Airport (GVA)' },
+    { value: 'Geneva Hotel', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
+    { value: 'Geneva City Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
+    { value: 'Lyon (LYS)', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'Lyon (LYS)' },
+    { value: 'Lyon City Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
+    { value: 'Grenoble (GNB)', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'Grenoble (GNB)' },
+    { value: 'Aime Train Station', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'Aime Train Station' },
+    { value: 'Bourg Saint Maurice Train Station', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'Bourg Saint Maurice Train Station' },
     
     // Resorts
     { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort', country: 'FR' },
@@ -124,15 +124,15 @@ export default function LocationInput() {
   }, [pickupLocation, destinationLocation]);
 
   const pricingData: Record<string, Record<number, number>> = {
-    'CMF': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
-    'GVA': {1: 360, 2: 360, 3: 360, 4: 360, 5: 378, 6: 393.12, 7: 404.91, 8: 413.01, 9: 743.42, 10: 780.59, 11: 811.82, 12: 836.17},
+    'Chambery (CMF)': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
+    'Geneva Airport (GVA)': {1: 360, 2: 360, 3: 360, 4: 360, 5: 378, 6: 393.12, 7: 404.91, 8: 413.01, 9: 743.42, 10: 780.59, 11: 811.82, 12: 836.17},
     'Hotel GVA': {1: 375, 2: 375, 3: 375, 4: 375, 5: 393.75, 6: 409.5, 7: 421.79, 8: 430.22, 9: 774.4, 10: 813.12, 11: 845.64, 12: 871.01},
-    'Gen Centre': {1: 390, 2: 390, 3: 390, 4: 390, 5: 409.5, 6: 425.88, 7: 438.66, 8: 447.43, 9: 805.37, 10: 845.64, 11: 879.47, 12: 905.85},
-    'LYS': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'Lyon Centre': {1: 450, 2: 450, 3: 450, 4: 450, 5: 472.5, 6: 491.4, 7: 506.14, 8: 516.26, 9: 929.28, 10: 975.74, 11: 1014.77, 12: 1045.21},
-    'GNB': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'AIME': {1: 80, 2: 80, 3: 80, 4: 80, 5: 84, 6: 87.36, 7: 89.98, 8: 91.78, 9: 165.2, 10: 173.46, 11: 180.4, 12: 185.82},
-    'BSM': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
+    'Geneva City Centre': {1: 390, 2: 390, 3: 390, 4: 390, 5: 409.5, 6: 425.88, 7: 438.66, 8: 447.43, 9: 805.37, 10: 845.64, 11: 879.47, 12: 905.85},
+    'Lyon (LYS)': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
+    'Lyon City Centre': {1: 450, 2: 450, 3: 450, 4: 450, 5: 472.5, 6: 491.4, 7: 506.14, 8: 516.26, 9: 929.28, 10: 975.74, 11: 1014.77, 12: 1045.21},
+    'Grenoble (GNB)': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
+    'Aime Train Station': {1: 80, 2: 80, 3: 80, 4: 80, 5: 84, 6: 87.36, 7: 89.98, 8: 91.78, 9: 165.2, 10: 173.46, 11: 180.4, 12: 185.82},
+    'Bourg Saint Maurice Train Station': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
   };
 
   // Map of valid pickup locations for pricing (airports and stations)
