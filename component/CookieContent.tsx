@@ -77,6 +77,8 @@ export default function CookieContent() {
                 {cookieText.terms}{" "}
                 <a href="/terms" className="text-blue-600 dark:text-blue-400 hover:underline">
                   {cookieText.privacyPolicy}
+
+                  
                 </a>
                 .
               </p>
