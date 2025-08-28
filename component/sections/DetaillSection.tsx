@@ -14,7 +14,7 @@ const DetailSection: React.FC = () => {
       id: 2,
       name: "Plagne 1800",
       altitude: "1800m",
-      description: "A bit quieter than Plagne Centre, it's set a little lower on the mountain. It has a more traditional alpine feel and is great for families looking for a serene retreat, with the largest selection of ski chalets rather than residencies and apartments."
+      description: "A bit quieter than Plagne Centre, it's set a little lower on the mountain. It has a more traditional alpine feel and is great for families looking for a serene retreat, with the largest selection of ski chalets rather than residences and apartments."
     },
     {
       id: 3,
@@ -62,7 +62,7 @@ const DetailSection: React.FC = () => {
       id: 10,
       name: "Champagny en Vanoise",
       altitude: "1250m",
-      description: "This village offers a different perspective on La Plagne, with access to the Paradiski area and its own distinct character. It's particularly popular with those who enjoy off-piste skiing and the tranquillity of the Vanoise National Park."
+      description: "This village offers a different perspective on La Plagne, with access to the Paradiski area and its own distinct character. It's particularly popular with those who enjoy off-piste skiing and the tranquility of the Vanoise National Park."
     },
     {
       id: 11,
@@ -74,7 +74,7 @@ const DetailSection: React.FC = () => {
       id: 12,
       name: "La Roche",
       altitude: "1550m",
-      description: "La Roche is home to the finish line of the Olympic bobsleigh track, adding a touch of adrenaline-fueled history to your ski holiday. Perfect for those seeking both adventure and a taste of the authentic Alpine lifestyle, La Roche provides a quieter base with all the essentials for a memorable stay in the mountains."
+      description: "La Roche is home to the finish line of the Olympic bobsleigh track, adding a touch of adrenaline-fuelled history to your ski holiday. Perfect for those seeking both adventure and a taste of the authentic Alpine lifestyle, La Roche provides a quieter base with all the essentials for a memorable stay in the mountains."
     }
   ];
   return (
