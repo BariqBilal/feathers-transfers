@@ -133,7 +133,7 @@ function JourneyPageContent() {
             <div className="text-gray-800 border border-gray-300 rounded-xl p-6 shadow-sm">
               <h2 className="text-lg sm:text-xl font-bold mb-1">Journey No 1</h2>
               {tripType !== 'oneWay' && journey2 && (
-                <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Booking Summary Journey #2</h3>
+                <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Booking Summary Journey #1</h3>
               )}
               
               <div className="flex items-center mb-2">
@@ -142,11 +142,11 @@ function JourneyPageContent() {
               </div>
               <div className="flex items-center mb-2">
                 <MdCalendarMonth className="text-blue-600 text-xl mr-3" />
-                <p className="text-base sm:text-lg">Departure Date: {journey1.departureDate}</p>
+                <p className="text-base sm:text-lg">Arrival Date: {journey1.departureDate}</p>
               </div>
               <div className="flex items-center mb-2">
                 <MdAccessTime className="text-blue-600 text-xl mr-3" />
-                <p className="text-base sm:text-lg">Flight Departure Time: {journey1.departureTime}</p>
+                <p className="text-base sm:text-lg">Flight Arrival Time: {journey1.departureTime}</p>
               </div>
               <div className="flex items-center mb-2">
                 <FaUsers className="text-blue-600 text-xl mr-3" />
@@ -157,11 +157,11 @@ function JourneyPageContent() {
               <h3 className="text-lg sm:text-xl font-bold mt-6 mb-3 text-gray-800">Additional Information</h3>
               <div className="flex items-start mb-2">
                 <FaCar className="text-blue-600 text-xl mr-3 flex-shrink-0" />
-                <p className="text-sm sm:text-base text-gray-700 leading-tight">Locally registered vehicle allowing access to back roads on peak weeks thus avoiding queues</p>
+                <p className="text-sm sm:text-base text-gray-700 leading-tight">Locally registered vehicles allowing access to back roads on peak weeks thus avoiding queues</p>
               </div>
               <div className="flex items-start mb-2">
                 <FaCommentDots className="text-blue-600 text-xl mr-3 flex-shrink-0" />
-                <p className="text-sm sm:text-base text-gray-700 leading-tight">English speaking experienced driver</p>
+                <p className="text-sm sm:text-base text-gray-700 leading-tight">English speaking experienced drivers</p>
               </div>
               <div className="flex items-start mb-2">
                 <FaSnowflake className="text-blue-600 text-xl mr-3 flex-shrink-0" />
@@ -197,7 +197,7 @@ function JourneyPageContent() {
           {journeyStep === 2 && journey2 && (
             <div className="text-gray-800 border border-gray-300 rounded-xl p-6 shadow-sm">
               <h2 className="text-lg sm:text-xl font-bold mb-1">Journey No 2</h2>
-              <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Return Journey</h3>
+              <h3 className="text-md sm:text-lg font-normal text-gray-600 mb-5">Booking Summary Journey #2</h3>
               
               <div className="flex items-center mb-2">
                 <MdLocationOn className="text-blue-600 text-xl mr-3" />
@@ -220,11 +220,11 @@ function JourneyPageContent() {
               <h3 className="text-lg sm:text-xl font-bold mt-6 mb-3 text-gray-800">Additional Information</h3>
               <div className="flex items-start mb-2">
                 <FaCar className="text-blue-600 text-xl mr-3 flex-shrink-0" />
-                <p className="text-sm sm:text-base text-gray-700 leading-tight">Locally registered vehicle allowing access to back roads on peak weeks thus avoiding queues</p>
+                <p className="text-sm sm:text-base text-gray-700 leading-tight">Locally registered vehicles allowing access to back roads on peak weeks thus avoiding queues</p>
               </div>
               <div className="flex items-start mb-2">
                 <FaCommentDots className="text-blue-600 text-xl mr-3 flex-shrink-0" />
-                <p className="text-sm sm:text-base text-gray-700 leading-tight">English speaking experienced driver</p>
+                <p className="text-sm sm:text-base text-gray-700 leading-tight">English speaking experienced drivers</p>
               </div>
               <div className="flex items-start mb-2">
                 <FaSnowflake className="text-blue-600 text-xl mr-3 flex-shrink-0" />

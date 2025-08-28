@@ -311,8 +311,7 @@ function BookingSummaryContent() {
               <div className="text-sm text-gray-700 space-y-3">
                 <p>1. All transfers are subject to availability.</p>
                 <p>2. Prices include all taxes and fees.</p>
-                <p>3. Cancellations must be made at least 48 hours prior to the scheduled transfer for a full refund.</p>
-                <p>4. The company is not responsible for delays caused by weather or traffic conditions.</p>
+                <p>4. Feathers Transfers cannot be held responsible for delays due to bad weather or traffic conditions. </p>
                 <p>5. Children under 12 must be accompanied by an adult.</p>
               </div>
               <div className="flex items-center mt-6">
