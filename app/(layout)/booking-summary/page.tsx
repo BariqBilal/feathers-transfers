@@ -33,8 +33,16 @@ function BookingSummaryContent() {
   const children = searchParams.get('children') || '0';
 
   // Pricing information
-  const totalPrice = parseFloat(searchParams.get('totalPrice') || '0');
-  const returnTotalPrice = parseFloat(searchParams.get('returnTotalPrice') || '0');
+  const baseTotalPrice = parseFloat(searchParams.get('totalPrice') || '0');
+  const baseReturnTotalPrice = parseFloat(searchParams.get('returnTotalPrice') || '0');
+
+  // Supermarket stop state
+  const [includeSupermarketStop, setIncludeSupermarketStop] = useState(false);
+  const supermarketStopPrice = 25;
+
+  // Calculate prices with supermarket stop if selected
+  const totalPrice = includeSupermarketStop ? baseTotalPrice + supermarketStopPrice : baseTotalPrice;
+  const returnTotalPrice = includeSupermarketStop ? baseReturnTotalPrice + supermarketStopPrice : baseReturnTotalPrice;
 
   // Format price for display
   const formatPrice = (price: number) => {
@@ -78,6 +86,11 @@ function BookingSummaryContent() {
     }));
   };
 
+  // Handle supermarket stop checkbox change
+  const handleSupermarketStopChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIncludeSupermarketStop(e.target.value === 'yes');
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,7 +121,8 @@ function BookingSummaryContent() {
         accommodation_website: formData.accommodationWebsite,
         special_requests: formData.specialRequests,
         adults: adults,
-        children: children
+        children: children,
+        supermarket_stop: includeSupermarketStop
       };
 
       // Make the API call
@@ -176,6 +190,12 @@ function BookingSummaryContent() {
                     <FaUsers className="text-blue-600 text-xl mr-3" />
                     <p className="text-base sm:text-lg">Passengers: {adults} Adults, {children} Children</p>
                   </div>
+                  {includeSupermarketStop && (
+                    <div className="flex items-center">
+                      <FaEuroSign className="text-blue-600 text-xl mr-3" />
+                      <p className="text-base sm:text-lg">Includes Supermarket Stop (+{formatPrice(supermarketStopPrice)})</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -191,6 +211,12 @@ function BookingSummaryContent() {
                     <div className="flex justify-between">
                       <span className="text-gray-700">Return Journey:</span>
                       <span className="font-medium">{formatPrice(returnTotalPrice)}</span>
+                    </div>
+                  )}
+                  {includeSupermarketStop && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-700">Supermarket Stop:</span>
+                      <span className="font-medium">+{formatPrice(supermarketStopPrice)}</span>
                     </div>
                   )}
                   <div className="pt-2 border-t mt-2">
@@ -278,20 +304,48 @@ function BookingSummaryContent() {
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 ></textarea>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                
-                  
-                <div className="mb-4">
-                  <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
-                  <textarea
-                    id="specialRequests"
-                    name="specialRequests"
-                    value={formData.specialRequests}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                  ></textarea>
+              
+              {/* Supermarket Stop Option */}
+              <div className="mb-6 p-4 border border-gray-200 rounded-md bg-gray-50">
+                <p className="text-sm font-medium text-gray-700 mb-2">Add Supermarket Stop for {formatPrice(supermarketStopPrice)}?</p>
+                <div className="flex items-center space-x-6">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="supermarketStop"
+                      value="yes"
+                      checked={includeSupermarketStop === true}
+                      onChange={handleSupermarketStopChange}
+                      className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      required
+                    />
+                    <span className="ml-2 text-sm text-gray-700">Yes</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="supermarketStop"
+                      value="no"
+                      checked={includeSupermarketStop === false}
+                      onChange={handleSupermarketStopChange}
+                      className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                      required
+                    />
+                    <span className="ml-2 text-sm text-gray-700">No</span>
+                  </label>
                 </div>
+              </div>
+              
+              <div className="mb-4">
+                <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
+                <textarea
+                  id="specialRequests"
+                  name="specialRequests"
+                  value={formData.specialRequests}
+                  onChange={handleInputChange}
+                  rows={3}
+                  className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                ></textarea>
               </div>
             </div>
 
@@ -301,6 +355,9 @@ function BookingSummaryContent() {
                 <h3 className="text-lg font-bold mb-4 text-gray-800">Total Price</h3>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-blue-600">{totalAmount}</p>
+                  {includeSupermarketStop && (
+                    <p className="text-sm text-gray-600 mt-2">Includes supermarket stop (+{formatPrice(supermarketStopPrice)})</p>
+                  )}
                 </div>
               </div>
             )}
@@ -311,8 +368,8 @@ function BookingSummaryContent() {
               <div className="text-sm text-gray-700 space-y-3">
                 <p>1. All transfers are subject to availability.</p>
                 <p>2. Prices include all taxes and fees.</p>
-                <p>4. Feathers Transfers cannot be held responsible for delays due to bad weather or traffic conditions. </p>
-                <p>5. Children under 12 must be accompanied by an adult.</p>
+                <p>3. Feathers Transfers cannot be held responsible for delays due to bad weather or traffic conditions. </p>
+                <p>4. Children under 12 must be accompanied by an adult.</p>
               </div>
               <div className="flex items-center mt-6">
                 <input
@@ -325,9 +382,8 @@ function BookingSummaryContent() {
                   required
                 />
                 <label htmlFor="termsAndConditions" className="ml-2 block text-sm text-gray-900">
-  I agree to the <Link href="/terms"><span className="text-primary underline">Terms and Conditions</span></Link>
-</label>
-
+                  I agree to the <Link href="/terms"><span className="text-primary underline">Terms and Conditions</span></Link>
+                </label>
               </div>
             </div>
 
