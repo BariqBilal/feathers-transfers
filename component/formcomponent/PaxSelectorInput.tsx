@@ -8,11 +8,11 @@ interface PaxSelectorInputProps {
   maxTotal?: number;
 }
 
-const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({ 
-  adults, 
-  children, 
-  onChange, 
-  maxTotal = 12 
+const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
+  adults,
+  children,
+  onChange,
+  maxTotal = 12
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [tempAdults, setTempAdults] = useState(adults);
@@ -30,11 +30,11 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-      if (showDropdown && 
-          dropdownRef.current && 
-          !dropdownRef.current.contains(target) && 
-          triggerRef.current && 
-          !triggerRef.current.contains(target)) {
+      if (showDropdown &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(target)) {
         setShowDropdown(false);
         // Apply changes immediately when clicking outside
         onChange(tempAdults, tempChildren);
@@ -99,14 +99,14 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
       </button>
 
       {showDropdown && (
-        <div 
+        <div
           ref={dropdownRef}
           className="absolute z-[1000] mt-2 w-full min-w-3xs bg-white border border-gray-300 rounded-lg shadow-lg"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Passengers</h3>
-            
+
             {/* Max passengers warning */}
             {totalPassengers >= maxTotal && (
               <div className="mb-3 p-2 bg-yellow-100 border border-yellow-400 rounded text-yellow-800 text-sm">
@@ -170,14 +170,19 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
                 </button>
               </div>
             </div>
-            
-            {/* Total passengers display */}
-            <div className="mt-3 pt-3 border-t border-gray-200">
+
+            <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between">
               <p className="text-sm font-medium text-gray-700">
                 Total passengers: <span className={totalPassengers > maxTotal ? "text-red-600" : "text-green-600"}>
                   {totalPassengers}/{maxTotal}
                 </span>
               </p>
+              <button
+                onClick={() => setShowDropdown(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                Done
+              </button>
             </div>
           </div>
         </div>
