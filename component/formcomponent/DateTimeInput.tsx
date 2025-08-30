@@ -2,13 +2,13 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 
 interface DateTimeInputProps {
-  date: string; // YYYY-MM-DD
-  time: string; // HH:MM
+  date: string;  
+  time: string; 
   onChange: (date: string, time: string) => void;
   placeholder?: string;
-  minDate?: string; // Minimum allowed date (YYYY-MM-DD)
-  minTime?: string; // Minimum allowed time when date === minDate (HH:MM)
-  showTimeAfterDate?: boolean; // Whether to show time picker after date selection
+  minDate?: string;  
+  minTime?: string;  
+  showTimeAfterDate?: boolean; 
 }
 
 const DateTimeInput: React.FC<DateTimeInputProps> = ({ 
@@ -23,27 +23,38 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
   const [selectedHour, setSelectedHour] = useState(() => {
-    if (time) return parseInt(time.split(':')[0]);
-    return new Date().getHours();
+    if (time) {
+      const hour = parseInt(time.split(':')[0]);
+      return hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    }
+    const currentHour = new Date().getHours();
+    return currentHour === 0 ? 12 : currentHour > 12 ? currentHour - 12 : currentHour;
   });
   const [selectedMinute, setSelectedMinute] = useState(() => {
     if (time) return parseInt(time.split(':')[1]);
     return new Date().getMinutes();
   });
+  const [selectedPeriod, setSelectedPeriod] = useState<'AM' | 'PM'>(() => {
+    if (time) {
+      const hour = parseInt(time.split(':')[0]);
+      return hour >= 12 ? 'PM' : 'AM';
+    }
+    return new Date().getHours() >= 12 ? 'PM' : 'AM';
+  });
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentView, setCurrentView] = useState<'date' | 'time'>('date');
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const hoursRef = useRef<HTMLDivElement>(null);
-  const minutesRef = useRef<HTMLDivElement>(null);
 
   // Initialize with props
   useEffect(() => {
     if (date) setSelectedDate(date);
     if (time) {
       const [hour, minute] = time.split(':').map(Number);
-      setSelectedHour(hour);
+      setSelectedHour(hour === 0 ? 12 : hour > 12 ? hour - 12 : hour);
       setSelectedMinute(minute);
+      setSelectedPeriod(hour >= 12 ? 'PM' : 'AM');
     }
   }, [date, time]);
 
@@ -54,7 +65,6 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     } else if (minDate) {
       setCurrentMonth(new Date(minDate));
     } else {
-      // Default to current month if no date is selected
       setCurrentMonth(new Date());
     }
   }, [selectedDate, minDate]);
@@ -77,6 +87,15 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     return () => document.removeEventListener('click', handleOutsideClick, true);
   }, [showDropdown]);
 
+  // Convert 12-hour format to 24-hour format
+  const get24HourFormat = (hour: number, period: 'AM' | 'PM'): number => {
+    if (period === 'AM') {
+      return hour === 12 ? 0 : hour;
+    } else {
+      return hour === 12 ? 12 : hour + 12;
+    }
+  };
+
   // Format display text
   const displayDateTime = useMemo(() => {
     if (!selectedDate) return placeholder;
@@ -84,25 +103,22 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     const dateObj = new Date(selectedDate);
     if (isNaN(dateObj.getTime())) return 'Invalid Date';
     
-    // Format date as "Saturday, 16 January 2025"
     const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'long' });
     const day = dateObj.getDate();
     const month = dateObj.toLocaleDateString('en-US', { month: 'long' });
     const year = dateObj.getFullYear();
     
-    // Format time separately if showTimeAfterDate is true or time is already selected
     if (showTimeAfterDate || time) {
-      const timeStr = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
+      const timeStr = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')} ${selectedPeriod}`;
       return `${weekday}, ${day} ${month} ${year}, ${timeStr}`;
     }
     
     return `${weekday}, ${day} ${month} ${year}`;
-  }, [selectedDate, selectedHour, selectedMinute, placeholder, showTimeAfterDate, time]);
+  }, [selectedDate, selectedHour, selectedMinute, selectedPeriod, placeholder, showTimeAfterDate, time]);
 
   // Calendar navigation
   const goToPreviousMonth = () => {
     const prevMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
-    // Only allow navigation to months that have selectable dates
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const firstDayOfPrevMonth = new Date(prevMonth.getFullYear(), prevMonth.getMonth(), 1);
@@ -116,15 +132,13 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
   };
 
-  // Check if a date is disabled (previous dates and days)
+  // Check if a date is disabled
   const isDateDisabled = (date: Date) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Disable dates in the past
     if (date < today) return true;
 
-    // Disable dates before minDate if specified
     if (minDate) {
       const minDateObj = new Date(minDate);
       minDateObj.setHours(0, 0, 0, 0);
@@ -135,11 +149,13 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   };
 
   // Check if a time is disabled
-  const isTimeDisabled = (hour: number, minute: number) => {
+  const isTimeDisabled = (hour: number, minute: number, period: 'AM' | 'PM') => {
     if (!minTime || !minDate || selectedDate !== minDate) return false;
     
     const [minHour, minMinute] = minTime.split(':').map(Number);
-    return hour < minHour || (hour === minHour && minute < minMinute);
+    const currentHour24 = get24HourFormat(hour, period);
+    
+    return currentHour24 < minHour || (currentHour24 === minHour && minute < minMinute);
   };
 
   // Generate calendar days
@@ -167,7 +183,6 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   // Handle date selection
   const handleDateSelect = (day: number | null, isDisabled: boolean) => {
     if (day && !isDisabled) {
-      // Create date in local timezone to avoid timezone issues
       const newDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
       const year = newDate.getFullYear();
       const month = String(newDate.getMonth() + 1).padStart(2, '0');
@@ -183,55 +198,36 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       }
       
       // Reset time if needed when date changes
-      let hour = selectedHour;
-      let minute = selectedMinute;
-      
       if (minDate && newDateStr === minDate && minTime) {
         const [minHour, minMinute] = minTime.split(':').map(Number);
-        if (hour < minHour || (hour === minHour && minute < minMinute)) {
-          hour = minHour;
-          minute = minMinute;
-          setSelectedHour(hour);
-          setSelectedMinute(minute);
+        const currentHour24 = get24HourFormat(selectedHour, selectedPeriod);
+        
+        if (currentHour24 < minHour || (currentHour24 === minHour && selectedMinute < minMinute)) {
+          const newHour = minHour === 0 ? 12 : minHour > 12 ? minHour - 12 : minHour;
+          const newPeriod = minHour >= 12 ? 'PM' : 'AM';
+          setSelectedHour(newHour);
+          setSelectedMinute(minMinute);
+          setSelectedPeriod(newPeriod);
         }
       }
       
-      onChange(newDateStr, ``);
+      const hour24 = get24HourFormat(selectedHour, selectedPeriod);
+      const timeString = `${String(hour24).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
+      onChange(newDateStr, timeString);
     }
   };
 
-  // Handle time selection
-  const handleTimeChange = () => {
-    onChange(
-      selectedDate,
-      `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`
-    );
+  // Handle time change
+  const handleTimeChange = (newHour?: number, newMinute?: number, newPeriod?: 'AM' | 'PM') => {
+    const hour = newHour ?? selectedHour;
+    const minute = newMinute ?? selectedMinute;
+    const period = newPeriod ?? selectedPeriod;
+    
+    const hour24 = get24HourFormat(hour, period);
+    const timeString = `${String(hour24).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+    
+    onChange(selectedDate, timeString);
   };
-
-  // Time picker handlers
-  const handleHourChange = (hour: number) => {
-    if (!isTimeDisabled(hour, selectedMinute)) {
-      setSelectedHour(hour);
-      handleTimeChange();
-    }
-  };
-
-  const handleMinuteChange = (minute: number) => {
-    if (!isTimeDisabled(selectedHour, minute)) {
-      setSelectedMinute(minute);
-      handleTimeChange();
-    }
-  };
-
-  // Scroll to selected time
-  useEffect(() => {
-    if (showDropdown && currentView === 'time') {
-      setTimeout(() => {
-        hoursRef.current?.scrollTo(0, selectedHour * 48);
-        minutesRef.current?.scrollTo(0, (selectedMinute / 5) * 48);
-      }, 10);
-    }
-  }, [showDropdown, currentView, selectedHour, selectedMinute]);
 
   // Handle responsive positioning
   const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
@@ -258,7 +254,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       <button
         ref={triggerRef}
         type="button"
-        className="w-full flex items-center justify-start px-3 py-3 border border-gray-300 rounded-md bg-white text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        className="w-full flex items-center justify-start px-3 py-3 border border-gray-300 rounded-md bg-white text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hover:border-gray-400 transition-colors"
         onClick={(e) => {
           e.stopPropagation();
           setShowDropdown(!showDropdown);
@@ -275,14 +271,14 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
         <div 
           ref={dropdownRef}
           className={`absolute z-[1000] ${dropdownPosition === 'bottom' ? 'mt-2' : 'bottom-full mb-2'} 
-            w-full sm:w-auto min-w-[300px] bg-white border border-gray-300 rounded-lg shadow-lg
-            ${isMobile ? 'fixed inset-x-0 mx-4 max-h-[80vh] overflow-y-auto' : ''}`}
+            w-full sm:w-auto min-w-[320px] bg-white border border-gray-300 rounded-lg shadow-xl
+            ${isMobile ? 'fixed inset-x-0 mx-4 max-h-[85vh] overflow-y-auto' : ''}`}
           onClick={(e) => e.stopPropagation()}
           style={isMobile ? { 
             top: '50%', 
             left: '50%', 
             transform: 'translate(-50%, -50%)',
-            maxHeight: '80vh',
+            maxHeight: '85vh',
             width: 'calc(100% - 2rem)'
           } : {}}
         >
@@ -291,53 +287,61 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
               <div className="flex justify-between items-center mb-4">
                 <button 
                   onClick={goToPreviousMonth} 
-                  className="p-2 text-black rounded-full hover:bg-gray-200"
-                  disabled={isDateDisabled(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                  className="p-2 text-gray-600 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={(() => {
+                    const prevMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+                    return isDateDisabled(prevMonth);
+                  })()}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
-                <span className="text-lg font-medium text-black">
+                <span className="text-lg font-semibold text-gray-800">
                   {currentMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
-                <button onClick={goToNextMonth} className="p-2 rounded-full text-black hover:bg-gray-200">
+                <button 
+                  onClick={goToNextMonth} 
+                  className="p-2 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
+                >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
               </div>
+              
               <div className="grid grid-cols-7 text-center text-sm font-medium text-gray-500 mb-2">
                 {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
-                  <div key={day}>{day}</div>
+                  <div key={day} className="py-2">{day}</div>
                 ))}
               </div>
-              <div className="grid grid-cols-7 text-center text-sm">
+              
+              <div className="grid grid-cols-7 text-center text-sm gap-1">
                 {calendarDays.map((dayObj, index) => (
-                  <div key={index} className="p-1">
+                  <div key={index} className="aspect-square">
                     {dayObj ? (
                       <button
-                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors
-                          ${dayObj.isDisabled ? 'text-gray-400 cursor-default' : 
-                            selectedDate === `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(dayObj.day).padStart(2, '0')}`
-                              ? 'bg-blue-600 text-white'
-                              : 'text-gray-900 hover:bg-gray-200'}`}
+                        className={`w-full h-full flex items-center justify-center rounded-lg transition-all duration-150 font-medium
+                          ${dayObj.isDisabled 
+                            ? 'text-gray-300 cursor-not-allowed' 
+                            : selectedDate === `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(dayObj.day).padStart(2, '0')}`
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}`}
                         onClick={() => handleDateSelect(dayObj.day, dayObj.isDisabled)}
                         disabled={dayObj.isDisabled}
                       >
                         {dayObj.day}
                       </button>
-                    ) : (
-                      <div className="w-8 h-8"></div>
-                    )}
+                    ) : null}
                   </div>
                 ))}
               </div>
+              
               {!showTimeAfterDate && (
-                <div className="mt-4 flex justify-end">
+                <div className="mt-6 flex justify-end">
                   <button
                     onClick={() => setShowDropdown(false)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                   >
                     Done
                   </button>
@@ -346,10 +350,10 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
             </div>
           ) : (
             <div className="p-4">
-              <div className="p-2 border-b border-gray-200 mb-4">
+              <div className="border-b border-gray-200 pb-3 mb-4">
                 <button 
                   onClick={() => setCurrentView('date')}
-                  className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
+                  className="flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
                 >
                   <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -359,83 +363,110 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
               </div>
               
               <div className="flex flex-col items-center">
-                <div className="text-lg font-medium mb-2">
+                <div className="text-lg font-semibold mb-4 text-gray-800">
                   {selectedDate && new Date(selectedDate).toLocaleDateString('en-US', {
-                    weekday: 'short',
+                    weekday: 'long',
                     day: 'numeric',
-                    month: 'short'
+                    month: 'long'
                   })}
                 </div>
                 
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <div className="relative">
-                    <div 
-                      ref={hoursRef}
-                      className="w-16 h-32 overflow-y-scroll no-scrollbar snap-y snap-mandatory"
-                      onScroll={(e) => {
-                        const index = Math.round(e.currentTarget.scrollTop / 48);
-                        handleHourChange(index % 24);
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  {/* Hours */}
+                  <div className="flex flex-col items-center">
+                    <label className="text-sm font-medium text-gray-600 mb-2">Hour</label>
+                    <select
+                      value={selectedHour}
+                      onChange={(e) => {
+                        const newHour = parseInt(e.target.value);
+                        setSelectedHour(newHour);
+                        handleTimeChange(newHour, selectedMinute, selectedPeriod);
                       }}
+                      className="w-16 h-12 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold"
                     >
-                      {Array.from({ length: 24 * 3 }, (_, i) => {
-                        const hour = i % 24;
-                        const disabled = isTimeDisabled(hour, selectedMinute);
+                      {Array.from({ length: 12 }, (_, i) => {
+                        const hour = i + 1;
+                        const disabled = isTimeDisabled(hour, selectedMinute, selectedPeriod);
                         return (
-                          <div
-                            key={i}
-                            className={`h-12 flex items-center justify-center snap-center text-lg
-                              ${disabled ? 'text-gray-300' : ''}
-                              ${hour === selectedHour ? 'text-blue-600 font-bold' : 'text-gray-700'}`}
-                            onClick={() => handleHourChange(hour)}
-                          >
+                          <option key={hour} value={hour} disabled={disabled}>
                             {String(hour).padStart(2, '0')}
-                          </div>
+                          </option>
                         );
                       })}
-                    </div>
-                    <div className="absolute inset-x-0 top-1/2 h-12 -translate-y-1/2 border-t border-b border-blue-200 pointer-events-none"></div>
+                    </select>
                   </div>
                   
-                  <span className="text-lg font-bold">:</span>
+                  <span className="text-2xl font-bold text-gray-400 mt-6">:</span>
                   
-                  <div className="relative">
-                    <div 
-                      ref={minutesRef}
-                      className="w-16 h-32 overflow-y-scroll no-scrollbar snap-y snap-mandatory"
-                      onScroll={(e) => {
-                        const index = Math.round(e.currentTarget.scrollTop / 48);
-                        handleMinuteChange((index * 5) % 60);
+                  {/* Minutes */}
+                  <div className="flex flex-col items-center">
+                    <label className="text-sm font-medium text-gray-600 mb-2">Minute</label>
+                    <select
+                      value={selectedMinute}
+                      onChange={(e) => {
+                        const newMinute = parseInt(e.target.value);
+                        setSelectedMinute(newMinute);
+                        handleTimeChange(selectedHour, newMinute, selectedPeriod);
                       }}
+                      className="w-16 h-12 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold"
                     >
-                      {Array.from({ length: 12 * 3 }, (_, i) => {
-                        const minute = (i * 5) % 60;
-                        const disabled = isTimeDisabled(selectedHour, minute);
+                      {Array.from({ length: 60 }, (_, i) => {
+                        const disabled = isTimeDisabled(selectedHour, i, selectedPeriod);
                         return (
-                          <div
-                            key={i}
-                            className={`h-12 flex items-center justify-center snap-center text-lg
-                              ${disabled ? 'text-gray-300' : ''}
-                              ${minute === selectedMinute ? 'text-blue-600 font-bold' : 'text-gray-700'}`}
-                            onClick={() => handleMinuteChange(minute)}
-                          >
-                            {String(minute).padStart(2, '0')}
-                          </div>
+                          <option key={i} value={i} disabled={disabled}>
+                            {String(i).padStart(2, '0')}
+                          </option>
                         );
                       })}
+                    </select>
+                  </div>
+                  
+                  {/* AM/PM */}
+                  <div className="flex flex-col items-center">
+                    <label className="text-sm font-medium text-gray-600 mb-2">Period</label>
+                    <div className="flex flex-col bg-gray-100 rounded-lg p-1">
+                      <button
+                        onClick={() => {
+                          setSelectedPeriod('AM');
+                          handleTimeChange(selectedHour, selectedMinute, 'AM');
+                        }}
+                        className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
+                          selectedPeriod === 'AM'
+                            ? 'bg-white text-blue-600 shadow-sm'
+                            : 'text-gray-600 hover:text-gray-800'
+                        }`}
+                      >
+                        AM
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedPeriod('PM');
+                          handleTimeChange(selectedHour, selectedMinute, 'PM');
+                        }}
+                        className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
+                          selectedPeriod === 'PM'
+                            ? 'bg-white text-blue-600 shadow-sm'
+                            : 'text-gray-600 hover:text-gray-800'
+                        }`}
+                      >
+                        PM
+                      </button>
                     </div>
-                    <div className="absolute inset-x-0 top-1/2 h-12 -translate-y-1/2 border-t border-b border-blue-200 pointer-events-none"></div>
                   </div>
                 </div>
                 
+                <div className="text-lg font-semibold text-gray-800 mb-2">
+                  {String(selectedHour).padStart(2, '0')}:{String(selectedMinute).padStart(2, '0')} {selectedPeriod}
+                </div>
                 <div className="text-sm text-gray-500">
-                  {selectedHour >= 12 ? 'PM' : 'AM'}
+                  24-hour format: {String(get24HourFormat(selectedHour, selectedPeriod)).padStart(2, '0')}:{String(selectedMinute).padStart(2, '0')}
                 </div>
               </div>
               
-              <div className="mt-4 flex justify-end">
+              <div className="mt-6 flex justify-end">
                 <button
                   onClick={() => setShowDropdown(false)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                 >
                   Done
                 </button>
