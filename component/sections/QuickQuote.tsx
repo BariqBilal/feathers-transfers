@@ -109,8 +109,16 @@ const QuoteSystem = () => {
 
   // Update filtered locations when values change
   useEffect(() => {
+     const initialPickupLocations = getPickupLocations('', '');
+    const initialDestinationLocations = getDestinationLocations('', '');
     setPickupLocations(getPickupLocations(pickupLocation, destinationLocation));
     setDestinationLocations(getDestinationLocations(destinationLocation, pickupLocation));
+     if (!pickupLocation && initialPickupLocations.length > 0) {
+      setPickupLocation(initialPickupLocations[0].value);
+    }
+    if (!destinationLocation && initialDestinationLocations.length > 0) {
+      setDestinationLocation(initialPickupLocations[1].value);
+    }
   }, [pickupLocation, destinationLocation]);
 
   // Exact pricing data from the spreadsheet

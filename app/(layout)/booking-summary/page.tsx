@@ -57,7 +57,7 @@ function BookingSummaryContent() {
   const bgImage = '/ccc.PNG';
 
   // Calculate total amount
-  const totalAmount = tripType === 'roundTrip' 
+  const totalAmount = tripType === 'roundTrip'
     ? formatPrice(totalPrice + returnTotalPrice)
     : formatPrice(totalPrice);
 
@@ -94,7 +94,7 @@ function BookingSummaryContent() {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!agreedToTerms) {
       alert('Please agree to the Terms and Conditions.');
       return;
@@ -126,7 +126,7 @@ function BookingSummaryContent() {
       };
 
       // Make the API call
-      const response = await axios.post(
+      await axios.post(
         'https://devsquare-apis.vercel.app/api/transfers',
         requestData,
         {
@@ -136,11 +136,35 @@ function BookingSummaryContent() {
         }
       );
 
-      if (response.status === 200) {
-        router.push('/booking-confirmation');
-      } else {
-        throw new Error('Failed to submit booking');
-      }
+      // Create URL parameters with all the data for the confirmation page
+      const params = new URLSearchParams();
+
+      // Add user details
+      params.append('firstName', formData.firstName);
+      params.append('lastName', formData.lastName);
+      params.append('email', formData.email);
+      params.append('phoneNumber', formData.phoneNumber);
+
+      // Add booking details
+      params.append('tripType', tripType);
+      params.append('pickupLocation', pickupLocation);
+      params.append('destinationLocation', destinationLocation);
+      params.append('selectedDate', selectedDate);
+      params.append('selectedTime', selectedTime);
+      params.append('returnDate', returnDate);
+      params.append('returnTime', returnTime);
+      params.append('adults', adults);
+      params.append('children', children);
+      params.append('totalPrice', totalPrice.toString());
+      params.append('returnTotalPrice', returnTotalPrice.toString());
+      params.append('includeSupermarketStop', includeSupermarketStop.toString());
+
+      // Add additional information
+      params.append('accommodationAddress', formData.accommodationAddress);
+      params.append('specialRequests', formData.specialRequests);
+
+      // Navigate to confirmation page with all data
+      router.push(`/booking-confirmation?${params.toString()}`);
     } catch (error) {
       console.error('Booking submission error:', error);
       setSubmitError('Failed to submit booking. Please try again.');
@@ -304,7 +328,7 @@ function BookingSummaryContent() {
                   className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 ></textarea>
               </div>
-              
+
               {/* Supermarket Stop Option */}
               <div className="mb-6 p-4 border border-gray-200 rounded-md bg-gray-50">
                 <p className="text-sm font-medium text-gray-700 mb-2">Add Supermarket Stop for {formatPrice(supermarketStopPrice)}?</p>
@@ -335,7 +359,7 @@ function BookingSummaryContent() {
                   </label>
                 </div>
               </div>
-              
+
               <div className="mb-4">
                 <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
                 <textarea
