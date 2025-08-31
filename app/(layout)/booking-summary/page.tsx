@@ -202,12 +202,12 @@ function BookingSummaryContent() {
                   </div>
                   <div className="flex items-center">
                     <MdCalendarMonth className="text-blue-600 text-xl mr-3" />
-                    <p className="text-base sm:text-lg">Departure: {new Date(selectedDate).toLocaleDateString()} at {selectedTime}</p>
+                    <p className="text-base sm:text-lg">Arrival Date: {new Date(selectedDate).toLocaleDateString()} at {selectedTime}</p>
                   </div>
                   {tripType === 'roundTrip' && (
                     <div className="flex items-center">
                       <MdCalendarMonth className="text-blue-600 text-xl mr-3" />
-                      <p className="text-base sm:text-lg">Return: {new Date(returnDate).toLocaleDateString()} at {returnTime}</p>
+                      <p className="text-base sm:text-lg">Departure Date: {new Date(returnDate).toLocaleDateString()} at {returnTime}</p>
                     </div>
                   )}
                   <div className="flex items-center">

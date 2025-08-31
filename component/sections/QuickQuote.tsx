@@ -554,7 +554,7 @@ const QuoteSystem = () => {
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
               <div className="text-yellow-700">
-                <p>For other resorts please contact info <span className='underline text-blue-500'>info@featherstransfers.com</span></p>
+                <p>For other resorts please contact <span className='underline text-blue-500'>info@featherstransfers.com</span></p>
               </div>
             </div>
           )}
