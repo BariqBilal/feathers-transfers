@@ -158,7 +158,7 @@ function JourneyPageContent() {
                 </div>
                 <div className="flex items-center mb-2">
                   <MdCalendarMonth className="text-blue-600 text-xl mr-3" />
-                  <p className="text-base sm:text-lg">Arrival Date: {journey1.departureDate}</p>
+                  <p className="text-base sm:text-lg">Flight Arrival Date: {journey1.departureDate}</p>
                 </div>
                 <div className="flex items-center mb-2">
                   <MdAccessTime className="text-blue-600 text-xl mr-3" />
@@ -221,7 +221,7 @@ function JourneyPageContent() {
                 </div>
                 <div className="flex items-center mb-2">
                   <MdCalendarMonth className="text-blue-600 text-xl mr-3" />
-                  <p className="text-base sm:text-lg">Departure Date: {journey2.departureDate}</p>
+                  <p className="text-base sm:text-lg">Flight Departure Date: {journey2.departureDate}</p>
                 </div>
                 <div className="flex items-center mb-2">
                   <MdAccessTime className="text-blue-600 text-xl mr-3" />
