@@ -485,7 +485,7 @@ const QuoteSystem = () => {
       {showQuoteDetails ? (
         <>
           {/* Locations with Swap Button */}
-          <div className="flex flex-col md:flex-row gap-3 items-center mb-4">
+          <div className="flex flex-col md:flex-row gap-3  mb-4">
             <div className={`flex-1 transition-opacity duration-200 ${isSwapping ? 'opacity-50' : 'opacity-100'}`}>
               <LocationCustom
                 id="pickup-location"
