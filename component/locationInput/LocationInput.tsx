@@ -217,7 +217,7 @@ useEffect(() => {
       setPickupLocation(initialPickupLocations[0].value);
     }
     if (!destinationLocation && initialDestinationLocations.length > 0) {
-      setDestinationLocation(initialPickupLocations[1].value);
+      setDestinationLocation(initialPickupLocations[11].value);
     }
   }, []);
 
