@@ -170,7 +170,7 @@ const QuoteSystem = () => {
       setPickupLocation(initialPickupLocations[0].value);
     }
     if (!destinationLocation && initialDestinationLocations.length > 0) {
-      setDestinationLocation(initialPickupLocations[9].value);
+      setDestinationLocation(initialPickupLocations[11].value);
     }
   }, [pickupLocation, destinationLocation]);
 
@@ -565,7 +565,7 @@ const QuoteSystem = () => {
         </>
       ) : (
         <>
-        
+
           <h2 className="text-2xl font-bold text-gray-800 mb-4">QuickQuote</h2>
           <div className="mb-4">
             <p className="text-gray-700">
