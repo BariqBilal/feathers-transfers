@@ -30,25 +30,78 @@ const QuoteSystem = () => {
   const [minReturnDate, setMinReturnDate] = useState('');
   const [price, setPrice] = useState<number | null>(null);
   const [priceDetails, setPriceDetails] = useState<string[]>([]);
+  const [pricingData, setPricingData] = useState<Record<string, Record<number, number>>>({});
+  const [loadingPrices, setLoadingPrices] = useState(true);
   const [isSwapping, setIsSwapping] = useState(false);
+  const [percentageRules, setPercentageRules] = useState<
+    { start_date: string; end_date: string; price: string }[]
+  >([]);
+  useEffect(() => {
+    const fetchPercentageRules = async () => {
+      try {
+        const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/date-based-price", {
+          cache: "no-store",
+        });
+        const json = await res.json();
+        if (json.data) {
+          setPercentageRules(json.data);
+        }
+      } catch (err) {
+        console.error("Error fetching percentage rules:", err);
+      }
+    };
+
+    fetchPercentageRules();
+  }, []);
+
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        setLoadingPrices(true);
+        const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/pricing", {
+          cache: "no-store",
+        });
+        const json = await res.json();
+
+        if (json.success && Array.isArray(json.data)) {
+          const grouped: Record<string, Record<number, number>> = {};
+
+          json.data.forEach((row: { location: string; passengers: number; price: string }) => {
+            if (!grouped[row.location]) grouped[row.location] = {};
+            grouped[row.location][row.passengers] = parseFloat(row.price);
+          });
+
+          setPricingData(grouped);
+        }
+      } catch (err) {
+        console.error("Error fetching pricing:", err);
+      } finally {
+        setLoadingPrices(false);
+      }
+    };
+
+    fetchPricing();
+  }, []);
+
 
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
     // Airports
-    { value: 'CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
-    { value: 'GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
-    { value: 'LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
-    { value: 'GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
-    
+    { value: 'Chambery CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
+    { value: 'Geneva GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
+    { value: 'Lyon LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
+    { value: 'Grenoble GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
+    { value: 'GARE AIME', label: 'GARE (AIME)', type: 'airport', country: 'FR', code: 'AIME' },
+    { value: 'GARE BSM', label: 'GARE (BSM)', type: 'airport', country: 'FR', code: 'BSM' },
     // Hotels and cities
     { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
     { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
     { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    
+
     // Stations
     { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
     { value: 'BSM', label: 'Bourg St Maurice Train station', type: 'station', country: 'FR', code: 'GARE BSM' },
-    
+
     // Resorts
     { value: 'Plagne 1800', label: 'Plagne 1800', type: 'resort', country: 'FR' },
     { value: 'Plagne Centre', label: 'Plagne Centre', type: 'resort', country: 'FR' },
@@ -62,13 +115,13 @@ const QuoteSystem = () => {
     { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-    
+
     // Other - Changed as requested
-    { 
-      value: 'other-resort', 
-      label: 'For other resorts please contact info@featherstransfers.com', 
+    {
+      value: 'other-resort',
+      label: 'For other resorts please contact info@featherstransfers.com',
       type: 'other',
-      disabled: true 
+      disabled: true
     }
   ];
 
@@ -83,7 +136,7 @@ const QuoteSystem = () => {
       });
       return acc;
     }, {} as Record<string, LocationOption[]>);
-    
+
     // Sort according to our preferred order
     return categoriesOrder.flatMap(type => grouped[type] || []);
   };
@@ -99,7 +152,7 @@ const QuoteSystem = () => {
       });
       return acc;
     }, {} as Record<string, LocationOption[]>);
-    
+
     // Sort according to our preferred order
     return categoriesOrder.flatMap(type => grouped[type] || []);
   };
@@ -109,11 +162,11 @@ const QuoteSystem = () => {
 
   // Update filtered locations when values change
   useEffect(() => {
-     const initialPickupLocations = getPickupLocations('', '');
+    const initialPickupLocations = getPickupLocations('', '');
     const initialDestinationLocations = getDestinationLocations('', '');
     setPickupLocations(getPickupLocations(pickupLocation, destinationLocation));
     setDestinationLocations(getDestinationLocations(destinationLocation, pickupLocation));
-     if (!pickupLocation && initialPickupLocations.length > 0) {
+    if (!pickupLocation && initialPickupLocations.length > 0) {
       setPickupLocation(initialPickupLocations[0].value);
     }
     if (!destinationLocation && initialDestinationLocations.length > 0) {
@@ -122,32 +175,22 @@ const QuoteSystem = () => {
   }, [pickupLocation, destinationLocation]);
 
   // Exact pricing data from the spreadsheet
-  const pricingData: Record<string, Record<number, number>> = {
-    'CMF': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
-    'GVA': {1: 360, 2: 360, 3: 360, 4: 360, 5: 378, 6: 393.12, 7: 404.91, 8: 413.01, 9: 743.42, 10: 780.59, 11: 811.82, 12: 836.17},
-    'Hotel GVA': {1: 375, 2: 375, 3: 375, 4: 375, 5: 393.75, 6: 409.5, 7: 421.79, 8: 430.22, 9: 774.4, 10: 813.12, 11: 845.64, 12: 871.01},
-    'Gen Centre': {1: 390, 2: 390, 3: 390, 4: 390, 5: 409.5, 6: 425.88, 7: 438.66, 8: 447.43, 9: 805.37, 10: 845.64, 11: 879.47, 12: 905.85},
-    'LYS': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'Lyon Centre': {1: 450, 2: 450, 3: 450, 4: 450, 5: 472.5, 6: 491.4, 7: 506.14, 8: 516.26, 9: 929.28, 10: 975.74, 11: 1014.77, 12: 1045.21},
-    'GNB': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'AIME': {1: 80, 2: 80, 3: 80, 4: 80, 5: 84, 6: 87.36, 7: 89.98, 8: 91.78, 9: 165.2, 10: 173.46, 11: 180.4, 12: 185.82},
-    'BSM': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
-  };
+
 
   // Map of valid pickup locations for pricing (airports and stations)
   const validPickupLocations = new Set(Object.keys(pricingData));
 
   const handleSwapLocations = async () => {
     setIsSwapping(true);
-    
+
     // Add a small delay for the animation
     await new Promise(resolve => setTimeout(resolve, 200));
-    
+
     // Swap the values
     const tempLocation = pickupLocation;
     setPickupLocation(destinationLocation);
     setDestinationLocation(tempLocation);
-    
+
     setIsSwapping(false);
   };
 
@@ -165,69 +208,68 @@ const QuoteSystem = () => {
     return null;
   };
 
-  const calculatePrice = (date: string, time: string, fromLocation: string, toLocation: string) => {
+  const calculatePrice = (
+    date: string,
+    time: string,
+    fromLocation: string,
+    toLocation: string
+  ) => {
     const totalPax = adults + children;
-    let basePrice = 0;
     const supplementDetails: string[] = [];
-    
-    // Check if we can price this journey
+
     const pricedLocation = findPricedLocation(fromLocation, toLocation);
-    
+
     if (!pricedLocation) {
       return {
         basePrice: 0,
         supplements: 0,
         totalPrice: 0,
         supplementDetails: ['Price not available online - please contact us for a quote'],
-        canPrice: false
+        canPrice: false,
       };
     }
 
-    // Get the correct pricing
     const pax = totalPax > 12 ? 12 : totalPax;
-    basePrice = pricingData[pricedLocation][pax];
-    supplementDetails.push(`Best price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+    let basePrice = pricingData[pricedLocation][pax] || 0;
+    supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
 
-    // Apply destination supplements for Champagny
-    if (toLocation === 'Champagny en Vanoise') {
-      basePrice += 50;
-      supplementDetails.push(`Champagny supplement: +€50.00`);
-    }
-
+    let totalPrice = basePrice;
     let supplements = 0;
 
-    // Apply time-based supplements
-    if (date) {
-      const departureDate = new Date(date);
-      const dayOfWeek = departureDate.getDay();
+    // ✅ Apply admin percentage rules if date falls in range
+    if (date && percentageRules.length > 0) {
+      const journeyDate = new Date(date);
 
-      if (dayOfWeek === 6) {
-        const supplement = basePrice * 0.2;
-        supplements += supplement;
-        supplementDetails.push(`Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
-      } else if (dayOfWeek === 0) {
-        const supplement = basePrice * 0.15;
-        supplements += supplement;
-        supplementDetails.push(`Sunday supplement: +€${supplement.toFixed(2)} (15%)`);
-      }
+      percentageRules.forEach(rule => {
+        const start = new Date(rule.start_date);
+        const end = new Date(rule.end_date);
+        const percent = parseFloat(rule.price); // example: "8" → 8%
+
+        if (journeyDate >= start && journeyDate <= end) {
+          const extra = (totalPrice * percent) / 100;
+          supplements += extra;
+          totalPrice += extra;
+          supplementDetails.push(`Admin price increase: +${percent}% (€${extra.toFixed(2)})`);
+        }
+      });
     }
 
-    const totalPrice = basePrice + supplements;
-    
     return {
       basePrice: parseFloat(basePrice.toFixed(2)),
       supplements: parseFloat(supplements.toFixed(2)),
       totalPrice: parseFloat(totalPrice.toFixed(2)),
       supplementDetails,
-      canPrice: true
+      canPrice: true,
     };
   };
+
+
 
   // Auto-calculate price when form values change
   useEffect(() => {
     if (isFormValid && !showQuoteDetails) {
       const totalPax = adults + children;
-      
+
       // Check if group is larger than 12 - Updated message as requested
       if (totalPax > 12) {
         setPrice(null);
@@ -237,16 +279,16 @@ const QuoteSystem = () => {
 
       const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
       let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
-      
+
       let totalPrice = departurePrice.totalPrice;
       let allDetails = [...departurePrice.supplementDetails];
-      
+
       if (tripType === 'roundTrip' && returnPrice) {
         totalPrice += returnPrice.totalPrice;
         allDetails.push('---Return Journey---');
         allDetails.push(...returnPrice.supplementDetails);
       }
-      
+
       setPrice(departurePrice.canPrice && (tripType === 'oneWay' || (returnPrice?.canPrice ?? true)) ? totalPrice : null);
       setPriceDetails(allDetails);
     }
@@ -267,10 +309,10 @@ const QuoteSystem = () => {
   useEffect(() => {
     if (selectedDate) {
       setMinReturnDate(selectedDate);
-      
+
       if (returnDate && returnDate < selectedDate) {
         setReturnDate(selectedDate);
-        
+
         if (returnDate === selectedDate && returnTime < selectedTime) {
           setReturnTime(selectedTime);
         }
@@ -285,9 +327,9 @@ const QuoteSystem = () => {
       selectedDate !== '' &&
       adults > 0 &&
       (tripType === 'oneWay' || (
-        returnDate !== '' && 
-        (returnDate > selectedDate || 
-         (returnDate === selectedDate))
+        returnDate !== '' &&
+        (returnDate > selectedDate ||
+          (returnDate === selectedDate))
       ))
     );
     setIsFormValid(isValid);
@@ -304,9 +346,9 @@ const QuoteSystem = () => {
 
   const handleGetQuote = () => {
     if (!isFormValid) return;
-    
+
     const totalPax = adults + children;
-    
+
     // Check if group is larger than 12 - Updated message as requested
     if (totalPax > 12) {
       setPrice(null);
@@ -317,16 +359,16 @@ const QuoteSystem = () => {
 
     const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
     let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
-    
+
     let totalPrice = departurePrice.totalPrice;
     let allDetails = [...departurePrice.supplementDetails];
-    
+
     if (tripType === 'roundTrip' && returnPrice) {
       totalPrice += returnPrice.totalPrice;
       allDetails.push('---Return Journey---');
       allDetails.push(...returnPrice.supplementDetails);
     }
-    
+
     setPrice(departurePrice.canPrice && (tripType === 'oneWay' || (returnPrice?.canPrice ?? true)) ? totalPrice : null);
     setPriceDetails(allDetails);
     setShowQuoteDetails(false);
@@ -334,13 +376,13 @@ const QuoteSystem = () => {
 
   const handleBookNow = () => {
     if (!isFormValid) return;
-    
+
     if (price === null) {
       // Redirect to contact page if price isn't available
       router.push('/contact');
       return;
     }
-    
+
     const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
     let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
 
@@ -401,21 +443,21 @@ const QuoteSystem = () => {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
-    
+
     const date = new Date(dateString);
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    
+
     const dayName = days[date.getDay()];
     const day = date.getDate();
     const month = months[date.getMonth()];
     const year = date.getFullYear();
-    
+
     // Get ordinal suffix (1st, 2nd, 3rd, 4th, etc.)
     const suffix = (day % 10 === 1 && day !== 11) ? 'st' :
-                  (day % 10 === 2 && day !== 12) ? 'nd' :
-                  (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
-    
+      (day % 10 === 2 && day !== 12) ? 'nd' :
+        (day % 10 === 3 && day !== 13) ? 'rd' : 'th';
+
     return `${dayName}, ${day}${suffix} ${month} ${year}`;
   };
 
@@ -426,17 +468,15 @@ const QuoteSystem = () => {
       <div className="flex gap-3 mb-4">
         <button
           onClick={() => handleTripTypeChange('roundTrip')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium ${
-            tripType === 'roundTrip' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
-          }`}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium ${tripType === 'roundTrip' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+            }`}
         >
           Round Trip
         </button>
         <button
           onClick={() => handleTripTypeChange('oneWay')}
-          className={`flex-1 py-2 rounded-lg text-sm font-medium ${
-            tripType === 'oneWay' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
-          }`}
+          className={`flex-1 py-2 rounded-lg text-sm font-medium ${tripType === 'oneWay' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'
+            }`}
         >
           One Way
         </button>
@@ -457,12 +497,11 @@ const QuoteSystem = () => {
             </div>
 
             <div className="flex items-center justify-center">
-              <button 
+              <button
                 onClick={handleSwapLocations}
                 disabled={isSwapping}
-                className={`bg-gray-200 hover:bg-gray-300 rounded-full p-2 transition-all duration-200 ${
-                  isSwapping ? 'animate-spin' : ''
-                }`}
+                className={`bg-gray-200 hover:bg-gray-300 rounded-full p-2 transition-all duration-200 ${isSwapping ? 'animate-spin' : ''
+                  }`}
                 aria-label="Swap locations"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -518,9 +557,8 @@ const QuoteSystem = () => {
           <button
             onClick={handleGetQuote}
             disabled={!isFormValid}
-            className={`w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors ${
-              !isFormValid ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
-            }`}
+            className={`w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors ${!isFormValid ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+              }`}
           >
             Get Quick Quote
           </button>

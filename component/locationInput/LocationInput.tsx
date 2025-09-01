@@ -30,20 +30,121 @@ export default function LocationInput() {
   const [minReturnDate, setMinReturnDate] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
   const [showLargeGroupMessage, setShowLargeGroupMessage] = useState(false);
+  const [pricingData, setPricingData] = useState<Record<string, Record<number, number>>>({});
+  const [loadingPrices, setLoadingPrices] = useState(true);
+  const [nightRule, setNightRule] = useState<{start_time: string; end_time: string; charge: number} | null>(null);
+
+useEffect(() => {
+  const fetchNightRule = async () => {
+    try {
+      const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/midnight-pricing", { cache: "no-store" });
+      const json = await res.json();
+      if (json.success && json.data) {
+        setNightRule({
+          start_time: json.data.start_time,
+          end_time: json.data.end_time,
+          charge: parseFloat(json.data.charge),
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching night charge rule:", err);
+    }
+  };
+  fetchNightRule();
+}, []);
+
+  const [percentageRules, setPercentageRules] = useState<
+    { start_date: string; end_date: string; price: string }[]
+  >([]);
+  useEffect(() => {
+    const fetchPercentageRules = async () => {
+      try {
+        const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/date-based-price", {
+          cache: "no-store",
+        });
+        const json = await res.json();
+        if (json.data) {
+          setPercentageRules(json.data);
+        }
+      } catch (err) {
+        console.error("Error fetching percentage rules:", err);
+      }
+    };
+
+    fetchPercentageRules();
+  }, []);
+
+  useEffect(() => {
+    const fetchPricing = async () => {
+      try {
+        setLoadingPrices(true);
+        const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/pricing", {
+          cache: "no-store",
+        });
+        const json = await res.json();
+
+        if (json.success && Array.isArray(json.data)) {
+          const grouped: Record<string, Record<number, number>> = {};
+
+          json.data.forEach((row: { location: string; passengers: number; price: string }) => {
+            if (!grouped[row.location]) grouped[row.location] = {};
+            grouped[row.location][row.passengers] = parseFloat(row.price);
+          });
+
+          setPricingData(grouped);
+        }
+      } catch (err) {
+        console.error("Error fetching pricing:", err);
+      } finally {
+        setLoadingPrices(false);
+      }
+    };
+
+    fetchPricing();
+  }, []);
+  const isWithinNightHours = (timeStr: string, rule: {start_time: string; end_time: string}) => {
+  if (!timeStr) return false;
+
+  const [h, m] = timeStr.split(":").map(Number);
+  const bookingMinutes = h * 60 + m;
+
+  const [startH, startM] = rule.start_time.split(":").map(Number);
+  const [endH, endM] = rule.end_time.split(":").map(Number);
+
+  const startMinutes = startH * 60 + startM;
+  const endMinutes = endH * 60 + endM;
+
+  if (startMinutes < endMinutes) {
+    // e.g. 20:00 → 23:59 (same day range)
+    return bookingMinutes >= startMinutes && bookingMinutes <= endMinutes;
+  } else {
+    // e.g. 20:00 → 05:00 (crosses midnight)
+    return bookingMinutes >= startMinutes || bookingMinutes <= endMinutes;
+  }
+};
 
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
     // Airports and stations
-    { value: 'Chambery (CMF)', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'Chambery (CMF)' },
-    { value: 'Geneva Airport (GVA)', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'Geneva Airport (GVA)' },
+
+  
+    { value: 'Chambery CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
+    { value: 'Geneva GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
+    { value: 'Lyon LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
+    
+    { value: 'Grenoble GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
+      { value: 'GARE AIME', label: 'GARE (AIME)', type: 'airport', country: 'FR', code: 'AIME' },
+        { value: 'GARE BSM', label: 'GARE (BSM)', type: 'airport', country: 'FR', code: 'BSM' },
+    // { value: 'Chambery (CMF)', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'Chambery (CMF)' },
+    // { value: 'Geneva Airport (GVA)', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'Geneva Airport (GVA)' },
     { value: 'Geneva Hotel', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
     { value: 'Geneva City Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
-    { value: 'Lyon (LYS)', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'Lyon (LYS)' },
+    // { value: 'Lyon (LYS)', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'Lyon (LYS)' },
     { value: 'Lyon City Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    { value: 'Grenoble (GNB)', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'Grenoble (GNB)' },
+    // { value: 'Grenoble (GNB)', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'Grenoble (GNB)' },
     { value: 'Aime Train Station', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'Aime Train Station' },
     { value: 'Bourg Saint Maurice Train Station', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'Bourg Saint Maurice Train Station' },
-    
+
     // Resorts
     { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort', country: 'FR' },
     { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort', country: 'FR' },
@@ -58,13 +159,13 @@ export default function LocationInput() {
     { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-    
+
     // Other
-    { 
-      value: 'other-resort', 
-      label: 'For other resorts please contact info@featherstransfers.com', 
+    {
+      value: 'other-resort',
+      label: 'For other resorts please contact info@featherstransfers.com',
       type: 'other',
-      disabled: true 
+      disabled: true
     }
   ];
 
@@ -79,7 +180,7 @@ export default function LocationInput() {
       });
       return acc;
     }, {} as Record<string, LocationOption[]>);
-    
+
     // Sort according to our preferred order
     return categoriesOrder.flatMap(type => grouped[type] || []);
   };
@@ -95,7 +196,7 @@ export default function LocationInput() {
       });
       return acc;
     }, {} as Record<string, LocationOption[]>);
-    
+
     // Sort according to our preferred order
     return categoriesOrder.flatMap(type => grouped[type] || []);
   };
@@ -107,10 +208,10 @@ export default function LocationInput() {
   useEffect(() => {
     const initialPickupLocations = getPickupLocations('', '');
     const initialDestinationLocations = getDestinationLocations('', '');
-    
+
     setPickupLocations(initialPickupLocations);
     setDestinationLocations(initialDestinationLocations);
-    
+
     // Auto-select the first pickup location if none is selected
     if (!pickupLocation && initialPickupLocations.length > 0) {
       setPickupLocation(initialPickupLocations[0].value);
@@ -126,17 +227,7 @@ export default function LocationInput() {
     setDestinationLocations(getDestinationLocations(destinationLocation, pickupLocation));
   }, [pickupLocation, destinationLocation]);
 
-  const pricingData: Record<string, Record<number, number>> = {
-    'Chambery (CMF)': {1: 317, 2: 317, 3: 317, 4: 317, 5: 332.85, 6: 346.16, 7: 356.55, 8: 363.68, 9: 654.62, 10: 687.36, 11: 714.85, 12: 736.29},
-    'Geneva Airport (GVA)': {1: 360, 2: 360, 3: 360, 4: 360, 5: 378, 6: 393.12, 7: 404.91, 8: 413.01, 9: 743.42, 10: 780.59, 11: 811.82, 12: 836.17},
-    'Hotel GVA': {1: 375, 2: 375, 3: 375, 4: 375, 5: 393.75, 6: 409.5, 7: 421.79, 8: 430.22, 9: 774.4, 10: 813.12, 11: 845.64, 12: 871.01},
-    'Geneva City Centre': {1: 390, 2: 390, 3: 390, 4: 390, 5: 409.5, 6: 425.88, 7: 438.66, 8: 447.43, 9: 805.37, 10: 845.64, 11: 879.47, 12: 905.85},
-    'Lyon (LYS)': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'Lyon City Centre': {1: 450, 2: 450, 3: 450, 4: 450, 5: 472.5, 6: 491.4, 7: 506.14, 8: 516.26, 9: 929.28, 10: 975.74, 11: 1014.77, 12: 1045.21},
-    'Grenoble (GNB)': {1: 410, 2: 410, 3: 410, 4: 410, 5: 430.5, 6: 447.72, 7: 461.15, 8: 470.37, 9: 846.67, 10: 889.01, 11: 924.57, 12: 952.31},
-    'Aime Train Station': {1: 80, 2: 80, 3: 80, 4: 80, 5: 84, 6: 87.36, 7: 89.98, 8: 91.78, 9: 165.2, 10: 173.46, 11: 180.4, 12: 185.82},
-    'Bourg Saint Maurice Train Station': {1: 120, 2: 120, 3: 120, 4: 120, 5: 126, 6: 131.04, 7: 134.97, 8: 137.67, 9: 247.81, 10: 260.2, 11: 270.61, 12: 278.72}
-  };
+
 
   // Map of valid pickup locations for pricing (airports and stations)
   const validPickupLocations = new Set(Object.keys(pricingData));
@@ -151,10 +242,10 @@ export default function LocationInput() {
   useEffect(() => {
     if (selectedDate) {
       setMinReturnDate(selectedDate);
-      
+
       if (returnDate && returnDate < selectedDate) {
         setReturnDate(selectedDate);
-        
+
         if (returnDate === selectedDate && returnTime < selectedTime) {
           setReturnTime(selectedTime);
         }
@@ -172,14 +263,14 @@ export default function LocationInput() {
       adults > 0 &&
       totalPassengers <= 12 &&
       (tripType === 'oneWay' || (
-        returnDate !== '' && 
+        returnDate !== '' &&
         returnTime !== '' &&
-        (returnDate > selectedDate || 
-         (returnDate === selectedDate && returnTime >= selectedTime))
+        (returnDate > selectedDate ||
+          (returnDate === selectedDate && returnTime >= selectedTime))
       ))
     );
     setIsFormValid(isValid);
-    
+
     // Show message if group size exceeds 12
     setShowLargeGroupMessage(totalPassengers > 12);
   }, [
@@ -206,7 +297,7 @@ export default function LocationInput() {
 
   const handlePaxChange = (adults: number, children: number) => {
     const totalPassengers = adults + children;
-    
+
     // Don't allow more than 12 passengers
     if (totalPassengers > 12) {
       // Calculate how many adults we can add to stay within limit
@@ -220,7 +311,7 @@ export default function LocationInput() {
       }
       return;
     }
-    
+
     setAdults(adults);
     setChildren(children);
   };
@@ -231,15 +322,15 @@ export default function LocationInput() {
 
   const handleSwapLocations = async () => {
     setIsSwapping(true);
-    
+
     // Add a small delay for the animation
     await new Promise(resolve => setTimeout(resolve, 200));
-    
+
     // Swap the values
     const tempLocation = pickupLocation;
     setPickupLocation(destinationLocation);
     setDestinationLocation(tempLocation);
-    
+
     setIsSwapping(false);
   };
 
@@ -247,7 +338,7 @@ export default function LocationInput() {
   const isResortToResort = (fromLocation: string, toLocation: string): boolean => {
     const fromLocationObj = allLocations.find(loc => loc.value === fromLocation);
     const toLocationObj = allLocations.find(loc => loc.value === toLocation);
-    
+
     return fromLocationObj?.type === 'resort' && toLocationObj?.type === 'resort';
   };
 
@@ -257,85 +348,109 @@ export default function LocationInput() {
     const toIsPriced = validPickupLocations.has(toLocation);
     return fromIsPriced || toIsPriced;
   };
-
-  const calculatePrice = (date: string, time: string, fromLocation: string, toLocation: string) => {
-    const totalPax = adults + children;
-    let basePrice = 0;
-    const supplementDetails: string[] = [];
-    
-    // Check if we can price this journey
-    const fromIsPriced = validPickupLocations.has(fromLocation);
-    const toIsPriced = validPickupLocations.has(toLocation);
-    const pricedLocation = fromIsPriced ? fromLocation : (toIsPriced ? toLocation : null);
-    
-    if (!pricedLocation) {
-      return {
-        basePrice: 0,
-        supplements: 0,
-        totalPrice: 0,
-        supplementDetails: ['Price not available online - please contact us for a quote'],
-        canPrice: false
-      };
-    }
-
-    // Get the correct pricing
-    const pax = totalPax > 12 ? 12 : totalPax;
-    basePrice = pricingData[pricedLocation][pax];
-    supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
-
-    // Apply destination supplements for Champagny
-    if (toLocation === 'Champagny en Vanoise') {
-      basePrice += 50;
-      supplementDetails.push(`Champagny supplement: +€50.00`);
-    }
-
-    let supplements = 0;
-
-    // Apply time-based supplements
-    if (date) {
-      const departureDate = new Date(date);
-      const dayOfWeek = departureDate.getDay();
-
-      if (dayOfWeek === 6) {
-        const supplement = basePrice * 0.2;
-        supplements += supplement;
-        supplementDetails.push(`Saturday supplement: +€${supplement.toFixed(2)} (20%)`);
-      } else if (dayOfWeek === 0) {
-        const supplement = basePrice * 0.15;
-        supplements += supplement;
-        supplementDetails.push(`Sunday supplement: +€${supplement.toFixed(2)} (15%)`);
-      }
-    }
-
-    const totalPrice = basePrice + supplements;
-    
-    return {
-      basePrice: parseFloat(basePrice.toFixed(2)),
-      supplements: parseFloat(supplements.toFixed(2)),
-      totalPrice: parseFloat(totalPrice.toFixed(2)),
-      supplementDetails,
-      canPrice: true
-    };
+  const findPricedLocation = (fromLocation: string, toLocation: string): string | null => {
+    if (validPickupLocations.has(fromLocation)) return fromLocation;
+    if (validPickupLocations.has(toLocation)) return toLocation;
+    return null;
   };
+
+ // --- modify calculatePrice ---
+const calculatePrice = (
+  date: string,
+  time: string,
+  fromLocation: string,
+  toLocation: string,
+  applyAdminRule: boolean = true
+) => {
+  const totalPax = adults + children;
+  const supplementDetails: string[] = [];
+
+  const pricedLocation = findPricedLocation(fromLocation, toLocation);
+
+  if (!pricedLocation) {
+    return {
+      basePrice: 0,
+      supplements: 0,
+      totalPrice: 0,
+      supplementDetails: ['Price not available online - please contact us for a quote'],
+      canPrice: false,
+    };
+  }
+
+  const pax = totalPax > 12 ? 12 : totalPax;
+  let basePrice = pricingData[pricedLocation][pax] || 0;
+  supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+
+  let totalPrice = basePrice;
+  let supplements = 0;
+
+  // ✅ Apply admin percentage rules
+  if (applyAdminRule && date && percentageRules.length > 0) {
+    const journeyDate = new Date(date);
+
+    percentageRules.forEach(rule => {
+      const start = new Date(rule.start_date);
+      const end = new Date(rule.end_date);
+      const percent = parseFloat(rule.price);
+
+      if (journeyDate >= start && journeyDate <= end) {
+        const extra = (totalPrice * percent) / 100;
+        supplements += extra;
+        totalPrice += extra;
+        supplementDetails.push(
+          `Admin price adjustment: ${percent > 0 ? '+' : ''}${percent}% (€${extra.toFixed(2)})`
+        );
+      }
+    });
+  }
+
+  // ✅ Apply night-time charge
+  if (nightRule && isWithinNightHours(time, nightRule)) {
+    const extra = nightRule.charge;
+    supplements += extra;
+    totalPrice += extra;
+    supplementDetails.push(`Night-time charge: +€${extra.toFixed(2)}`);
+  }
+
+  return {
+    basePrice: parseFloat(basePrice.toFixed(2)),
+    supplements: parseFloat(supplements.toFixed(2)),
+    totalPrice: parseFloat(totalPrice.toFixed(2)),
+    supplementDetails,
+    canPrice: true,
+  };
+};
+
+
 
   const handleSubmit = () => {
     if (!isFormValid) return;
-    
+
     const totalPassengers = adults + children;
-    
+
     // Check if group size exceeds 12
     if (totalPassengers > 12) {
       return; // Should not happen due to validation, but just in case
     }
-    
+
     // Check if this is a resort-to-resort transfer
     if (isResortToResort(pickupLocation, destinationLocation)) {
       router.push('/contact');
       return;
     }
 
-    const departurePrice = calculatePrice(selectedDate, selectedTime, pickupLocation, destinationLocation);
-    let returnPrice = tripType === 'roundTrip' ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation) : null;
+    const departurePrice = calculatePrice(
+  selectedDate,
+  selectedTime,
+  pickupLocation,
+  destinationLocation,
+  true // 👈 outbound should include admin %
+);
+
+let returnPrice =
+  tripType === 'roundTrip'
+    ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation, false) // 👈 return leg should NOT include admin %
+    : null;
 
     // If we can't price either leg, redirect to contact page
     if (!departurePrice.canPrice || (tripType === 'roundTrip' && returnPrice && !returnPrice.canPrice)) {
@@ -377,17 +492,15 @@ export default function LocationInput() {
         <div className="flex absolute -top-6 bg-textprimary rounded-full p-1 mb-6 w-fit overflow-hidden">
           <button
             onClick={() => handleTripTypeChange('roundTrip')}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-              tripType === 'roundTrip' ? 'bg-white text-textprimary shadow' : 'text-white'
-            }`}
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${tripType === 'roundTrip' ? 'bg-white text-textprimary shadow' : 'text-white'
+              }`}
           >
             Round trip
           </button>
           <button
             onClick={() => handleTripTypeChange('oneWay')}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-              tripType === 'oneWay' ? 'bg-white text-textprimary shadow' : 'text-white'
-            }`}
+            className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${tripType === 'oneWay' ? 'bg-white text-textprimary shadow' : 'text-white'
+              }`}
           >
             One way
           </button>
@@ -406,12 +519,11 @@ export default function LocationInput() {
           </div>
 
           <div className="flex items-center justify-center">
-            <button 
+            <button
               onClick={handleSwapLocations}
               disabled={isSwapping}
-              className={`bg-gray-200 hover:bg-gray-300 rounded-full p-2 transition-all duration-200 ${
-                isSwapping ? 'animate-spin' : ''
-              }`}
+              className={`bg-gray-200 hover:bg-gray-300 rounded-full p-2 transition-all duration-200 ${isSwapping ? 'animate-spin' : ''
+                }`}
               aria-label="Swap locations"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -469,11 +581,9 @@ export default function LocationInput() {
             <button
               onClick={handleSubmit}
               disabled={!isFormValid}
-              className={`bg-blue-600 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 transition-colors duration-200 w-full h-full ${
-                isMobile ? 'text-sm py-2' : ''
-              } ${
-                !isFormValid ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
-              }`}
+              className={`bg-blue-600 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 transition-colors duration-200 w-full h-full ${isMobile ? 'text-sm py-2' : ''
+                } ${!isFormValid ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+                }`}
             >
               {isMobile ? 'Book Now' : 'Book Now'}
             </button>
