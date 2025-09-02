@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import LocationCustom from '../formcomponent/LocationCustom';
 import DateTimeInput from '../formcomponent/DateTimeInput';
 import PaxSelectorInput from '../formcomponent/PaxSelectorInput';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type LocationOption = {
   value: string;
@@ -16,15 +16,36 @@ type LocationOption = {
 
 export default function LocationInput() {
   const router = useRouter();
-  const [tripType, setTripType] = useState<'oneWay' | 'roundTrip'>('roundTrip');
-  const [pickupLocation, setPickupLocation] = useState('');
-  const [destinationLocation, setDestinationLocation] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('09:00');
-  const [returnDate, setReturnDate] = useState('');
-  const [returnTime, setReturnTime] = useState('09:00');
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
+  const searchParams = useSearchParams();
+  
+  // Initialize state from URL parameters if available
+  const [tripType, setTripType] = useState<'oneWay' | 'roundTrip'>(
+    searchParams.get('tripType') as 'oneWay' | 'roundTrip' || 'roundTrip'
+  );
+  const [pickupLocation, setPickupLocation] = useState(
+    searchParams.get('pickupLocation') || ''
+  );
+  const [destinationLocation, setDestinationLocation] = useState(
+    searchParams.get('destinationLocation') || ''
+  );
+  const [selectedDate, setSelectedDate] = useState(
+    searchParams.get('selectedDate') || ''
+  );
+  const [selectedTime, setSelectedTime] = useState(
+    searchParams.get('selectedTime') || '09:00'
+  );
+  const [returnDate, setReturnDate] = useState(
+    searchParams.get('returnDate') || ''
+  );
+  const [returnTime, setReturnTime] = useState(
+    searchParams.get('returnTime') || '09:00'
+  );
+  const [adults, setAdults] = useState(
+    parseInt(searchParams.get('adults') || '1')
+  );
+  const [children, setChildren] = useState(
+    parseInt(searchParams.get('children') || '0')
+  );
   const [isMobile, setIsMobile] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [minReturnDate, setMinReturnDate] = useState('');
@@ -34,24 +55,24 @@ export default function LocationInput() {
   const [loadingPrices, setLoadingPrices] = useState(true);
   const [nightRule, setNightRule] = useState<{start_time: string; end_time: string; charge: number} | null>(null);
 
-useEffect(() => {
-  const fetchNightRule = async () => {
-    try {
-      const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/midnight-pricing", { cache: "no-store" });
-      const json = await res.json();
-      if (json.success && json.data) {
-        setNightRule({
-          start_time: json.data.start_time,
-          end_time: json.data.end_time,
-          charge: parseFloat(json.data.charge),
-        });
+  useEffect(() => {
+    const fetchNightRule = async () => {
+      try {
+        const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/midnight-pricing", { cache: "no-store" });
+        const json = await res.json();
+        if (json.success && json.data) {
+          setNightRule({
+            start_time: json.data.start_time,
+            end_time: json.data.end_time,
+            charge: parseFloat(json.data.charge),
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching night charge rule:", err);
       }
-    } catch (err) {
-      console.error("Error fetching night charge rule:", err);
-    }
-  };
-  fetchNightRule();
-}, []);
+    };
+    fetchNightRule();
+  }, []);
 
   const [percentageRules, setPercentageRules] = useState<
     { start_date: string; end_date: string; price: string }[]
@@ -126,22 +147,15 @@ useEffect(() => {
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
     // Airports and stations
-
-  
     { value: 'Chambery CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
     { value: 'Geneva GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
     { value: 'Lyon LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
-    
     { value: 'Grenoble GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
-      { value: 'GARE AIME', label: 'GARE (AIME)', type: 'airport', country: 'FR', code: 'AIME' },
-        { value: 'GARE BSM', label: 'GARE (BSM)', type: 'airport', country: 'FR', code: 'BSM' },
-    // { value: 'Chambery (CMF)', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'Chambery (CMF)' },
-    // { value: 'Geneva Airport (GVA)', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'Geneva Airport (GVA)' },
+    { value: 'GARE AIME', label: 'GARE (AIME)', type: 'airport', country: 'FR', code: 'AIME' },
+    { value: 'GARE BSM', label: 'GARE (BSM)', type: 'airport', country: 'FR', code: 'BSM' },
     { value: 'Geneva Hotel', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
     { value: 'Geneva City Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
-    // { value: 'Lyon (LYS)', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'Lyon (LYS)' },
     { value: 'Lyon City Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    // { value: 'Grenoble (GNB)', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'Grenoble (GNB)' },
     { value: 'Aime Train Station', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'Aime Train Station' },
     { value: 'Bourg Saint Maurice Train Station', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'Bourg Saint Maurice Train Station' },
 
@@ -212,7 +226,7 @@ useEffect(() => {
     setPickupLocations(initialPickupLocations);
     setDestinationLocations(initialDestinationLocations);
 
-    // Auto-select the first pickup location if none is selected
+    // Only auto-select if no values from URL parameters
     if (!pickupLocation && initialPickupLocations.length > 0) {
       setPickupLocation(initialPickupLocations[1].value);
     }
@@ -226,8 +240,6 @@ useEffect(() => {
     setPickupLocations(getPickupLocations(pickupLocation, destinationLocation));
     setDestinationLocations(getDestinationLocations(destinationLocation, pickupLocation));
   }, [pickupLocation, destinationLocation]);
-
-
 
   // Map of valid pickup locations for pricing (airports and stations)
   const validPickupLocations = new Set(Object.keys(pricingData));
@@ -348,80 +360,79 @@ useEffect(() => {
     const toIsPriced = validPickupLocations.has(toLocation);
     return fromIsPriced || toIsPriced;
   };
+  
   const findPricedLocation = (fromLocation: string, toLocation: string): string | null => {
     if (validPickupLocations.has(fromLocation)) return fromLocation;
     if (validPickupLocations.has(toLocation)) return toLocation;
     return null;
   };
 
- // --- modify calculatePrice ---
-const calculatePrice = (
-  date: string,
-  time: string,
-  fromLocation: string,
-  toLocation: string,
-  applyAdminRule: boolean = true
-) => {
-  const totalPax = adults + children;
-  const supplementDetails: string[] = [];
+  // --- modify calculatePrice ---
+  const calculatePrice = (
+    date: string,
+    time: string,
+    fromLocation: string,
+    toLocation: string,
+    applyAdminRule: boolean = true
+  ) => {
+    const totalPax = adults + children;
+    const supplementDetails: string[] = [];
 
-  const pricedLocation = findPricedLocation(fromLocation, toLocation);
+    const pricedLocation = findPricedLocation(fromLocation, toLocation);
 
-  if (!pricedLocation) {
+    if (!pricedLocation) {
+      return {
+        basePrice: 0,
+        supplements: 0,
+        totalPrice: 0,
+        supplementDetails: ['Price not available online - please contact us for a quote'],
+        canPrice: false,
+      };
+    }
+
+    const pax = totalPax > 12 ? 12 : totalPax;
+    let basePrice = pricingData[pricedLocation][pax] || 0;
+    supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+
+    let totalPrice = basePrice;
+    let supplements = 0;
+
+    // ✅ Apply admin percentage rules
+    if (applyAdminRule && date && percentageRules.length > 0) {
+      const journeyDate = new Date(date);
+
+      percentageRules.forEach(rule => {
+        const start = new Date(rule.start_date);
+        const end = new Date(rule.end_date);
+        const percent = parseFloat(rule.price);
+
+        if (journeyDate >= start && journeyDate <= end) {
+          const extra = (totalPrice * percent) / 100;
+          supplements += extra;
+          totalPrice += extra;
+          supplementDetails.push(
+            `Admin price adjustment: ${percent > 0 ? '+' : ''}${percent}% (€${extra.toFixed(2)})`
+          );
+        }
+      });
+    }
+
+    // ✅ Apply night-time charge
+    if (nightRule && isWithinNightHours(time, nightRule)) {
+      const extra = nightRule.charge;
+      supplements += extra;
+      totalPrice += extra;
+      supplementDetails.push(`Night-time charge: +€${extra.toFixed(2)}`);
+    }
+
     return {
-      basePrice: 0,
-      supplements: 0,
-      totalPrice: 0,
-      supplementDetails: ['Price not available online - please contact us for a quote'],
-      canPrice: false,
+      basePrice: parseFloat(basePrice.toFixed(2)),
+      supplements: parseFloat(supplements.toFixed(2)),
+      totalPrice: parseFloat(totalPrice.toFixed(2)),
+      supplementDetails,
+      canPrice: true,
     };
-  }
-
-  const pax = totalPax > 12 ? 12 : totalPax;
-  let basePrice = pricingData[pricedLocation][pax] || 0;
-  supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
-
-  let totalPrice = basePrice;
-  let supplements = 0;
-
-  // ✅ Apply admin percentage rules
-  if (applyAdminRule && date && percentageRules.length > 0) {
-    const journeyDate = new Date(date);
-
-    percentageRules.forEach(rule => {
-      const start = new Date(rule.start_date);
-      const end = new Date(rule.end_date);
-      const percent = parseFloat(rule.price);
-
-      if (journeyDate >= start && journeyDate <= end) {
-        const extra = (totalPrice * percent) / 100;
-        supplements += extra;
-        totalPrice += extra;
-        supplementDetails.push(
-          `Admin price adjustment: ${percent > 0 ? '+' : ''}${percent}% (€${extra.toFixed(2)})`
-        );
-      }
-    });
-  }
-
-  // ✅ Apply night-time charge
-  if (nightRule && isWithinNightHours(time, nightRule)) {
-    const extra = nightRule.charge;
-    supplements += extra;
-    totalPrice += extra;
-    supplementDetails.push(`Night-time charge: +€${extra.toFixed(2)}`);
-  }
-
-  return {
-    basePrice: parseFloat(basePrice.toFixed(2)),
-    supplements: parseFloat(supplements.toFixed(2)),
-    totalPrice: parseFloat(totalPrice.toFixed(2)),
-    supplementDetails,
-    canPrice: true,
   };
-};
-
-
 
   const handleSubmit = () => {
     if (!isFormValid) return;
@@ -440,17 +451,17 @@ const calculatePrice = (
     }
 
     const departurePrice = calculatePrice(
-  selectedDate,
-  selectedTime,
-  pickupLocation,
-  destinationLocation,
-  true // 👈 outbound should include admin %
-);
+      selectedDate,
+      selectedTime,
+      pickupLocation,
+      destinationLocation,
+      true // 👈 outbound should include admin %
+    );
 
-let returnPrice =
-  tripType === 'roundTrip'
-    ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation, false) // 👈 return leg should NOT include admin %
-    : null;
+    let returnPrice =
+      tripType === 'roundTrip'
+        ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation, false) // 👈 return leg should NOT include admin %
+        : null;
 
     // If we can't price either leg, redirect to contact page
     if (!departurePrice.canPrice || (tripType === 'roundTrip' && returnPrice && !returnPrice.canPrice)) {
