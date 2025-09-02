@@ -17,7 +17,7 @@ type LocationOption = {
 export default function LocationInput() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Initialize state from URL parameters if available
   const [tripType, setTripType] = useState<'oneWay' | 'roundTrip'>(
     searchParams.get('tripType') as 'oneWay' | 'roundTrip' || 'roundTrip'
@@ -53,7 +53,27 @@ export default function LocationInput() {
   const [showLargeGroupMessage, setShowLargeGroupMessage] = useState(false);
   const [pricingData, setPricingData] = useState<Record<string, Record<number, number>>>({});
   const [loadingPrices, setLoadingPrices] = useState(true);
-  const [nightRule, setNightRule] = useState<{start_time: string; end_time: string; charge: number} | null>(null);
+  const [nightRule, setNightRule] = useState<{ start_time: string; end_time: string; charge: number } | null>(null);
+  // --- state for weekend price ---
+  const [weekendPrice, setWeekendPrice] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchWeekendPrice = async () => {
+      try {
+        const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/weekend-price", {
+          cache: "no-store",
+        });
+        const json = await res.json();
+        if (json.success && json.data && json.data.length > 0) {
+          setWeekendPrice(parseFloat(json.data[0].price));
+        }
+      } catch (err) {
+        console.error("Error fetching weekend price:", err);
+      }
+    };
+
+    fetchWeekendPrice();
+  }, []);
 
   useEffect(() => {
     const fetchNightRule = async () => {
@@ -123,26 +143,26 @@ export default function LocationInput() {
 
     fetchPricing();
   }, []);
-  const isWithinNightHours = (timeStr: string, rule: {start_time: string; end_time: string}) => {
-  if (!timeStr) return false;
+  const isWithinNightHours = (timeStr: string, rule: { start_time: string; end_time: string }) => {
+    if (!timeStr) return false;
 
-  const [h, m] = timeStr.split(":").map(Number);
-  const bookingMinutes = h * 60 + m;
+    const [h, m] = timeStr.split(":").map(Number);
+    const bookingMinutes = h * 60 + m;
 
-  const [startH, startM] = rule.start_time.split(":").map(Number);
-  const [endH, endM] = rule.end_time.split(":").map(Number);
+    const [startH, startM] = rule.start_time.split(":").map(Number);
+    const [endH, endM] = rule.end_time.split(":").map(Number);
 
-  const startMinutes = startH * 60 + startM;
-  const endMinutes = endH * 60 + endM;
+    const startMinutes = startH * 60 + startM;
+    const endMinutes = endH * 60 + endM;
 
-  if (startMinutes < endMinutes) {
-    // e.g. 20:00 → 23:59 (same day range)
-    return bookingMinutes >= startMinutes && bookingMinutes <= endMinutes;
-  } else {
-    // e.g. 20:00 → 05:00 (crosses midnight)
-    return bookingMinutes >= startMinutes || bookingMinutes <= endMinutes;
-  }
-};
+    if (startMinutes < endMinutes) {
+      // e.g. 20:00 → 23:59 (same day range)
+      return bookingMinutes >= startMinutes && bookingMinutes <= endMinutes;
+    } else {
+      // e.g. 20:00 → 05:00 (crosses midnight)
+      return bookingMinutes >= startMinutes || bookingMinutes <= endMinutes;
+    }
+  };
 
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
@@ -360,7 +380,7 @@ export default function LocationInput() {
     const toIsPriced = validPickupLocations.has(toLocation);
     return fromIsPriced || toIsPriced;
   };
-  
+
   const findPricedLocation = (fromLocation: string, toLocation: string): string | null => {
     if (validPickupLocations.has(fromLocation)) return fromLocation;
     if (validPickupLocations.has(toLocation)) return toLocation;
@@ -425,6 +445,27 @@ export default function LocationInput() {
       supplementDetails.push(`Night-time charge: +€${extra.toFixed(2)}`);
     }
 
+    // ✅ Apply weekend price (Saturday = 6, Sunday = 0)
+    if (date) {
+      const day = new Date(date).getDay();
+
+      // Weekend check
+      if ((day === 6 || day === 0) && weekendPrice > 0) {
+        const basePrice = totalPrice; // current total before surcharge
+        const percentageFromApi = weekendPrice; // e.g., API returns "2" → means 2%
+
+        // Calculate surcharge
+        const surcharge = (basePrice * percentageFromApi) / 100;
+
+        supplements += surcharge;
+        totalPrice += surcharge;
+
+        supplementDetails.push(`Weekend surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
+      }
+    }
+
+
+
     return {
       basePrice: parseFloat(basePrice.toFixed(2)),
       supplements: parseFloat(supplements.toFixed(2)),
@@ -433,6 +474,7 @@ export default function LocationInput() {
       canPrice: true,
     };
   };
+
 
   const handleSubmit = () => {
     if (!isFormValid) return;
