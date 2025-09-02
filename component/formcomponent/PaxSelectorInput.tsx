@@ -51,33 +51,34 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
   const maxChildrenReached = totalPassengers >= maxTotal;
 
   const handleAdultsChange = (newAdults: number) => {
+    if (newAdults < 1) return; // Ensure at least 1 adult
+    
     const newTotal = newAdults + tempChildren;
     if (newTotal <= maxTotal) {
       setTempAdults(newAdults);
-    } else if (tempChildren > 0) {
-      // If adding an adult would exceed the limit, but we have children,
-      // reduce children first if possible
-      const availableSpace = maxTotal - newAdults;
-      if (availableSpace >= 0) {
-        setTempAdults(newAdults);
-        setTempChildren(Math.min(tempChildren, availableSpace));
-      }
+    } else {
+      // If adding would exceed max, set to maximum possible
+      const availableAdults = maxTotal - tempChildren;
+      setTempAdults(Math.max(1, availableAdults)); // Ensure at least 1 adult
     }
   };
 
   const handleChildrenChange = (newChildren: number) => {
+    if (newChildren < 0) return;
+    
     const newTotal = tempAdults + newChildren;
     if (newTotal <= maxTotal) {
       setTempChildren(newChildren);
-    } else if (tempAdults > 0) {
-      // If adding a child would exceed the limit, but we have adults,
-      // reduce adults first if possible
-      const availableSpace = maxTotal - newChildren;
-      if (availableSpace >= 0) {
-        setTempChildren(newChildren);
-        setTempAdults(Math.min(tempAdults, availableSpace));
-      }
+    } else {
+      // If adding would exceed max, set to maximum possible
+      const availableChildren = maxTotal - tempAdults;
+      setTempChildren(Math.max(0, availableChildren));
     }
+  };
+
+  const handleDone = () => {
+    setShowDropdown(false);
+    onChange(tempAdults, tempChildren);
   };
 
   return (
@@ -123,7 +124,7 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
                 <button
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => handleAdultsChange(tempAdults - 1)}
-                  disabled={tempAdults === 0}
+                  disabled={tempAdults <= 1}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
@@ -178,7 +179,7 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
                 </span>
               </p>
               <button
-                onClick={() => setShowDropdown(false)}
+                onClick={handleDone}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Done

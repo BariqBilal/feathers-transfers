@@ -17,6 +17,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ height = '80vh', bgImage, tit
         minHeight: height,
       }}
     >
+      
       <div className="bg-black/20 absolute inset-0"></div>
 
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 text-white md:text-center text-left md:pt-32 pt-8">
