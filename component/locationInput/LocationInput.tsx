@@ -214,7 +214,7 @@ useEffect(() => {
 
     // Auto-select the first pickup location if none is selected
     if (!pickupLocation && initialPickupLocations.length > 0) {
-      setPickupLocation(initialPickupLocations[0].value);
+      setPickupLocation(initialPickupLocations[1].value);
     }
     if (!destinationLocation && initialDestinationLocations.length > 0) {
       setDestinationLocation(initialPickupLocations[11].value);
