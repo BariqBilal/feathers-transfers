@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import LocationInput from '../locationInput/LocationInput';
 
 interface HeroSectionProps {
@@ -25,7 +25,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({ height = '80vh', bgImage, tit
       </div>
 
       <div className="relative z-10 w-full md:pb-10 mx-auto mt-auto md:top-20 top-4">
+          <Suspense fallback={
+              <div className="relative flex items-center justify-center">
+                <div className="bg-white p-4 rounded-xl md:shadow-lg md:w-auto w-full md:min-w-4xl pt-12">
+                  <div className="flex items-center justify-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                  </div>
+                </div>
+              </div>
+            }>
         <LocationInput />
+            </Suspense>
       </div>
     </section>
   );

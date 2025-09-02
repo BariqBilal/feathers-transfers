@@ -5,9 +5,9 @@ export default function AirportInfoCards() {
   return (
     <div className='bg-gray-100'>
       <p className='text-lg md:text-3xl pt-6 pl-12 font-bold text-left'>Arrival Procedure at Geneva Airport</p>
-    <div className="min-h-[65vh]  flex items-center justify-center font-['Inter'] p-4 sm:p-6 lg:p-8">
+    <div className="min-h-[65vh]  flex items-center justify-center  p-4 sm:p-6 lg:p-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
-        {/* Terminal 1 (Main) Card */}
+
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col">
           <a href='https://www.gva.ch/en/Site/Passagers/Acces-Transports/Plan/Plan-du-Terminal-1' target='_blank' className="text-xl underline font-semibold text-gray-800 mb-3">Terminal 1 (Main)</a>
           <p className="text-gray-600 text-lg mb-4 flex-grow text-justify ">
@@ -23,7 +23,6 @@ export default function AirportInfoCards() {
           </div>
         </div>
 
-        {/* Terminal 2 (Charter) Card */}
         <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col">
           <a href='https://www.gva.ch/en/Site/Passagers/Acces-Transports/Plan/Terminal-2' className="text-xl font-semibold underline text-gray-800 mb-3">Terminal 2 (Charter)</a>
           <p className="text-gray-600 text-lg mb-4 flex-grow text-justify">

@@ -4,14 +4,14 @@ import { Suspense, useState, useEffect } from 'react';
 import Image from 'next/image';
 
 // Import React Icons
-import { MdLocationOn, MdCalendarMonth, MdAccessTime } from 'react-icons/md';
+import { MdLocationOn, MdCalendarMonth, MdAccessTime, MdArrowBack } from 'react-icons/md';
 import { FaUsers, FaEuroSign, FaCar, FaCommentDots, FaSnowflake, FaSkiing, FaShoppingCart } from 'react-icons/fa';
 
 function JourneyPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true); // Start with loading true for initial load
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // Track initial page load
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Extract all the parameters from the URL
   const tripType = searchParams.get('tripType') || 'oneWay';
@@ -23,13 +23,15 @@ function JourneyPageContent() {
   const returnTime = searchParams.get('returnTime') || '';
   const adults = searchParams.get('adults') || '2';
   const children = searchParams.get('children') || '0';
+  const basePrice = searchParams.get('basePrice') || '0';
+  const supplements = searchParams.get('supplements') || '0';
+  const supplementDetails = searchParams.get('supplementDetails') || '[]';
+  const returnBasePrice = searchParams.get('returnBasePrice') || '0';
+  const returnSupplements = searchParams.get('returnSupplements') || '0';
+  const returnSupplementDetails = searchParams.get('returnSupplementDetails') || '[]';
 
   // Pricing information
-  const basePrice = parseFloat(searchParams.get('basePrice') || '0');
   const totalPrice = parseFloat(searchParams.get('totalPrice') || '0');
-  
-  // Return journey pricing (if applicable)
-  const returnBasePrice = parseFloat(searchParams.get('returnBasePrice') || '0');
   const returnTotalPrice = parseFloat(searchParams.get('returnTotalPrice') || '0');
 
   // Format date for display
@@ -82,22 +84,57 @@ function JourneyPageContent() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Handle back button click - navigate back to form with all data preserved
+  const handleBack = () => {
+    if (journeyStep === 2) {
+      // Go back to journey 1
+      setJourneyStep(1);
+    } else {
+      // Go back to the form with all data
+      const params = new URLSearchParams();
+      
+      // Add all form parameters
+      params.append('tripType', tripType);
+      params.append('pickupLocation', pickupLocation);
+      params.append('destinationLocation', destinationLocation);
+      params.append('selectedDate', selectedDate);
+      params.append('selectedTime', selectedTime);
+      params.append('returnDate', returnDate);
+      params.append('returnTime', returnTime);
+      params.append('adults', adults);
+      params.append('children', children);
+      params.append('basePrice', basePrice);
+      params.append('supplements', supplements);
+      params.append('supplementDetails', supplementDetails);
+      params.append('totalPrice', totalPrice.toString());
+      
+      if (tripType === 'roundTrip') {
+        params.append('returnBasePrice', returnBasePrice);
+        params.append('returnSupplements', returnSupplements);
+        params.append('returnSupplementDetails', returnSupplementDetails);
+        params.append('returnTotalPrice', returnTotalPrice.toString());
+      }
+
+      router.push(`/book-now?${params.toString()}`);
+    }
+  };
+
   // Handle button click for navigating to the booking summary
   const handleSelect = async () => {
     setIsLoading(true);
     
     if (tripType === 'oneWay' || !journey2) {
       // For one-way trips, show loader and then navigate
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second loader
+      await new Promise(resolve => setTimeout(resolve, 1000));
       navigateToBookingSummary();
     } else {
       if (journeyStep === 1) {
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second loader
+        await new Promise(resolve => setTimeout(resolve, 1000));
         setJourneyStep(2);
         setIsLoading(false);
-        window.scrollTo(0, 0); // Scroll to top
+        window.scrollTo(0, 0);
       } else {
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second loader
+        await new Promise(resolve => setTimeout(resolve, 1000));
         navigateToBookingSummary();
       }
     }
@@ -128,19 +165,29 @@ function JourneyPageContent() {
       {/* Background Image */}
       <Image src={bgImage} alt="Background Image" layout="fill" objectFit="cover" className="z-0" />
 
-      {/* Loading Overlay - Show for both initial load and button clicks */}
+      {/* Loading Overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-white bg-opacity-70 flex items-center justify-center z-50">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       )}
 
-      {/* Main Content Container - Only show when not loading */}
+      {/* Main Content Container */}
       {!isLoading && (
         <div className="relative z-10 bg-white bg-opacity-95 rounded-lg shadow-xl w-full max-w-5xl mx-auto">
-          {/* Header Bar */}
-          <div className="bg-[#3B82F6] p-4 sm:p-5 rounded-t-lg text-center">
-            <h1 className="text-white text-xl sm:text-2xl font-bold">JOURNEY #{journeyStep}</h1>
+          {/* Header Bar with Back Button */}
+          <div className="bg-[#3B82F6] p-4 sm:p-5 rounded-t-lg flex items-center justify-between">
+            <button 
+              onClick={handleBack}
+              className="text-white flex items-center hover:bg-blue-700 p-2 rounded-md transition-colors"
+            >
+              <MdArrowBack className="text-xl mr-1" />
+              <span className="hidden sm:inline">Back</span>
+            </button>
+            <h1 className="text-white text-xl sm:text-2xl font-bold text-center flex-grow mr-8">
+              JOURNEY #{journeyStep}
+            </h1>
+            <div className="w-10"></div> {/* Spacer to balance the back button */}
           </div>
 
           {/* Main Content Area */}
@@ -280,7 +327,7 @@ function JourneyPageContent() {
 }
 
 export default function JourneyPage() {
-  return (
+  return ( 
     <Suspense fallback={<div>Loading...</div>}>
       <JourneyPageContent />
     </Suspense>
