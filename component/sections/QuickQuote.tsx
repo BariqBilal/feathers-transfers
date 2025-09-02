@@ -173,9 +173,9 @@ const QuoteSystem = () => {
     if (!pickupLocation && initialPickupLocations.length > 0) {
       setPickupLocation(initialPickupLocations[1].value);
     }
-    if (!destinationLocation && initialDestinationLocations.length > 0) {
-      setDestinationLocation(initialPickupLocations[11].value);
-    }
+    // if (!destinationLocation && initialDestinationLocations.length > 0) {
+    //   setDestinationLocation(initialPickupLocations[.value);
+    // }
   }, [pickupLocation, destinationLocation]);
 
   const validPickupLocations = new Set(Object.keys(pricingData));
