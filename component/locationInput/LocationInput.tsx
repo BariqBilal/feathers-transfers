@@ -245,9 +245,9 @@ export default function LocationInput() {
     if (!pickupLocation && initialPickupLocations.length > 0) {
       setPickupLocation(initialPickupLocations[1].value);
     }
-    if (!destinationLocation && initialDestinationLocations.length > 0) {
-      setDestinationLocation(initialPickupLocations[11].value);
-    }
+    // if (!destinationLocation && initialDestinationLocations.length > 0) {
+    //   setDestinationLocation(initialPickupLocations[11].value);
+    // }
   }, []);
 
   // Update filtered locations when values change
