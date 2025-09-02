@@ -167,34 +167,29 @@ export default function LocationInput() {
   // All locations that can be selected in either pickup or destination
   const allLocations: LocationOption[] = [
     // Airports and stations
-    { value: 'Chambery CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
+   { value: 'Chambery CMF', label: 'Chambery (CMF)', type: 'airport', country: 'FR', code: 'CMF' },
     { value: 'Geneva GVA', label: 'Geneva Airport (GVA)', type: 'airport', country: 'CH', code: 'GVA' },
     { value: 'Lyon LYS', label: 'Lyon (LYS)', type: 'airport', country: 'FR', code: 'LYS' },
     { value: 'Grenoble GNB', label: 'Grenoble (GNB)', type: 'airport', country: 'FR', code: 'GNB' },
-    { value: 'GARE AIME', label: 'GARE (AIME)', type: 'airport', country: 'FR', code: 'AIME' },
-    { value: 'GARE BSM', label: 'GARE (BSM)', type: 'airport', country: 'FR', code: 'BSM' },
-    { value: 'Geneva Hotel', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
-    { value: 'Geneva City Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
-    { value: 'Lyon City Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
-    { value: 'Aime Train Station', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'Aime Train Station' },
-    { value: 'Bourg Saint Maurice Train Station', label: 'Bourg Saint Maurice Train Station', type: 'station', country: 'FR', code: 'Bourg Saint Maurice Train Station' },
-
-    // Resorts
-    { value: 'La Plagne 1800', label: 'La Plagne 1800', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Centre', label: 'La Plagne Centre', type: 'resort', country: 'FR' },
+    { value: 'Gare AIME', label: 'GARE (AIME)', type: 'airport', country: 'FR', code: 'AIME' },
+    { value: 'Gare BSM', label: 'GARE (BSM)', type: 'airport', country: 'FR', code: 'BSM' },
+    { value: 'Hotel GVA', label: 'Geneva Hotel', type: 'hotel', country: 'CH' },
+    { value: 'Gen Centre', label: 'Geneva City Centre', type: 'city', country: 'CH' },
+    { value: 'Lyon Centre', label: 'Lyon City Centre', type: 'city', country: 'FR' },
+    { value: 'AIME', label: 'Aime Train Station', type: 'station', country: 'FR', code: 'GARE AIME' },
+    { value: 'BSM', label: 'Bourg St Maurice Train station', type: 'station', country: 'FR', code: 'GARE BSM' },
+    { value: 'Plagne 1800', label: 'Plagne 1800', type: 'resort', country: 'FR' },
+    { value: 'Plagne Centre', label: 'Plagne Centre', type: 'resort', country: 'FR' },
     { value: 'Belle Plagne', label: 'Belle Plagne', type: 'resort', country: 'FR' },
     { value: 'La Plagne Bellecote', label: 'La Plagne Bellecote', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Aime 2000', label: 'La Plagne - Aime 2000', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Aime 2000', label: 'La Plagne Aime 2000', type: 'resort', country: 'FR' },
     { value: 'La Plagne Villages', label: 'La Plagne Villages', type: 'resort', country: 'FR' },
     { value: 'La Plagne Soleil', label: 'La Plagne Soleil', type: 'resort', country: 'FR' },
     { value: 'La Plagne La Roche', label: 'La Plagne La Roche', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Crete Cote', label: 'La Plagne Crete Cote', type: 'resort', country: 'FR' },
-    { value: 'La Plagne Montablert', label: 'La Plagne Montablert', type: 'resort', country: 'FR' },
+    { value: 'La Plagne Crete Cote', label: 'La Plagne Crête Cote', type: 'resort', country: 'FR' },
     { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-
-    // Other
     {
       value: 'other-resort',
       label: 'For other resorts please contact info@featherstransfers.com',
