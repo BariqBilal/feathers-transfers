@@ -12,40 +12,40 @@ const quickLinks = [
 ];
 
 const contactInfo = [
-  { 
-    icon: <Phone className="h-4 w-4 mr-2 text-blue-100" />, 
+  {
+    icon: <Phone className="h-4 w-4 mr-2 text-blue-100" />,
     text: 'Tim: +33 6 79 52 49 59',
     href: 'tel:+33679524959'
   },
-  { 
-    icon: <Phone className="h-4 w-4 mr-2 text-blue-100" />, 
+  {
+    icon: <Phone className="h-4 w-4 mr-2 text-blue-100" />,
     text: 'Anna: +33 6 20 90 90 25',
     href: 'tel:+33620909025'
   },
-  { 
-    icon: <Mail className="h-4 w-4 mr-2 text-blue-100" />, 
+  {
+    icon: <Mail className="h-4 w-4 mr-2 text-blue-100" />,
     text: 'info@featherstransfers.com',
     href: 'mailto:info@featherstransfers.com'
   },
-  { 
-    icon: <MapPin className="h-4 w-4 mr-2 text-blue-100" />, 
+  {
+    icon: <MapPin className="h-4 w-4 mr-2 text-blue-100" />,
     text: 'Feathers Transfers, Plagne Bellecote, 73210 La Plagne Tarentaise, France'
   },
 ];
 
 const socialLinks = [
-  { 
-    icon: <Facebook className="h-6 w-6" />, 
+  {
+    icon: <Facebook className="h-6 w-6" />,
     href: 'https://www.facebook.com/featherstransfers',
     name: 'Facebook'
   },
-  { 
-    icon: <Twitter className="h-6 w-6" />, 
+  {
+    icon: <Twitter className="h-6 w-6" />,
     href: 'https://www.x.com/featherstrans',
     name: 'Twitter'
   },
-  { 
-    icon: <Instagram className="h-6 w-6" />, 
+  {
+    icon: <Instagram className="h-6 w-6" />,
     href: 'https://www.instagram.com/featherstransfers',
     name: 'Instagram'
   },
@@ -65,10 +65,10 @@ export default function Footer() {
           <div className="col-span-1">
             <h3 className="text-xl font-bold mb-4">Feathers Transfers</h3>
             <p className="text-sm text-blue-100 text-justify mb-4">
-             Your trusted transfer service based in La Plagne, specialising in airport and train station transfers to all twelve resorts.
+              Your trusted transfer service based in La Plagne, specialising in airport and train station transfers to all twelve resorts.
             </p>
             <p className="text-sm text-blue-100 text-justify">
-             Operating during winter ski season (December to April) from the third largest ski area in the world.
+              Operating during winter ski season (December to April) from the third largest ski area in the world.
             </p>
           </div>
 
@@ -86,15 +86,15 @@ export default function Footer() {
           </div>
           <div className="col-span-1">
             <Image
-                        src="/Logo.png"
-                        alt="Feathers Transfers Logo"
-                        width={80}
-                        height={80}
-                        className="object-cover"
-                      />
+              src="/Logo--.png"
+              alt="Feathers Transfers Logo"
+              width={150}
+              height={150}
+              className="object-cover"
+            />
           </div>
 
-           
+
 
           <div className="col-span-1">
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
@@ -118,9 +118,9 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
             <div className="flex space-x-4 mb-4">
               {socialLinks.map((social, index) => (
-                <a 
-                  key={index} 
-                  href={social.href} 
+                <a
+                  key={index}
+                  href={social.href}
                   className="text-blue-100 hover:text-white"
                   aria-label={social.name}
                   target="_blank"
@@ -130,7 +130,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
-            
+
             <h4 className="text-md font-semibold mb-2">Serving Airports:</h4>
             <ul className="text-sm text-blue-100 space-y-1">
               {airportInfo.map((airport, index) => (

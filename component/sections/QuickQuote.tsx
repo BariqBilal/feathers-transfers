@@ -36,7 +36,25 @@ const QuoteSystem = () => {
   const [percentageRules, setPercentageRules] = useState<
     { start_date: string; end_date: string; price: string }[]
   >([]);
-  
+  const [weekendPrice, setWeekendPrice] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchWeekendPrice = async () => {
+      try {
+        const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/weekend-price", {
+          cache: "no-store",
+        });
+        const json = await res.json();
+        if (json.success && json.data && json.data.length > 0) {
+          setWeekendPrice(parseFloat(json.data[0].price));
+        }
+      } catch (err) {
+        console.error("Error fetching weekend price:", err);
+      }
+    };
+
+    fetchWeekendPrice();
+  }, []);
   useEffect(() => {
     const fetchPercentageRules = async () => {
       try {
@@ -226,6 +244,25 @@ const QuoteSystem = () => {
           supplementDetails.push(`Admin price increase: +${percent}% (€${extra.toFixed(2)})`);
         }
       });
+      if (date) {
+        const day = new Date(date).getDay();
+
+        // Weekend check
+        if ((day === 6 || day === 0) && weekendPrice > 0) {
+          const basePrice = totalPrice; // current total before surcharge
+          const percentageFromApi = weekendPrice; // e.g., API returns "2" → means 2%
+
+          // Calculate surcharge
+          const surcharge = (basePrice * percentageFromApi) / 100;
+
+          supplements += surcharge;
+          totalPrice += surcharge;
+
+          supplementDetails.push(`Weekend surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
+        }
+      }
+
+
     }
 
     return {
