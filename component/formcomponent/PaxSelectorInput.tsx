@@ -52,7 +52,7 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
 
   const handleAdultsChange = (newAdults: number) => {
     if (newAdults < 1) return; // Ensure at least 1 adult
-    
+
     const newTotal = newAdults + tempChildren;
     if (newTotal <= maxTotal) {
       setTempAdults(newAdults);
@@ -65,7 +65,7 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
 
   const handleChildrenChange = (newChildren: number) => {
     if (newChildren < 0) return;
-    
+
     const newTotal = tempAdults + newChildren;
     if (newTotal <= maxTotal) {
       setTempChildren(newChildren);
@@ -111,15 +111,15 @@ const PaxSelectorInput: React.FC<PaxSelectorInputProps> = ({
             {/* Max passengers warning */}
             {totalPassengers >= maxTotal && (
               <div className="mb-3 p-2 bg-yellow-100 border border-yellow-400 rounded text-yellow-800 text-sm">
-                Maximum {maxTotal} passengers allowed. For larger groups, please contact us. 
-                 <a
-    href="https://mail.google.com/mail/?view=cm&fs=1&to=info@featherstransfers.com"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="underline text-blue-500"
-  >
-    info@featherstransfers.com
-  </a>
+                Maximum {maxTotal} passengers allowed. For larger groups, please contact us.
+                <a
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=info@featherstransfers.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-blue-500"
+                >
+                  info@featherstransfers.com
+                </a>
               </div>
             )}
 

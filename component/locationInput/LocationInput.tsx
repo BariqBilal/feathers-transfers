@@ -382,93 +382,86 @@ export default function LocationInput() {
     return null;
   };
 
-  // --- modify calculatePrice ---
-  const calculatePrice = (
-    date: string,
-    time: string,
-    fromLocation: string,
-    toLocation: string,
-    applyAdminRule: boolean = true
-  ) => {
-    const totalPax = adults + children;
-    const supplementDetails: string[] = [];
+const calculatePrice = (
+  date: string,
+  time: string,
+  fromLocation: string,
+  toLocation: string,
+  applyAdminRule: boolean = true
+) => {
+  const totalPax = adults + children;
+  const supplementDetails: string[] = [];
 
-    const pricedLocation = findPricedLocation(fromLocation, toLocation);
+  const pricedLocation = findPricedLocation(fromLocation, toLocation);
 
-    if (!pricedLocation) {
-      return {
-        basePrice: 0,
-        supplements: 0,
-        totalPrice: 0,
-        supplementDetails: ['Price not available online - please contact us for a quote'],
-        canPrice: false,
-      };
-    }
-
-    const pax = totalPax > 12 ? 12 : totalPax;
-    let basePrice = pricingData[pricedLocation][pax] || 0;
-    supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
-
-    let totalPrice = basePrice;
-    let supplements = 0;
-
-    // ✅ Apply admin percentage rules
-    if (applyAdminRule && date && percentageRules.length > 0) {
-      const journeyDate = new Date(date);
-
-      percentageRules.forEach(rule => {
-        const start = new Date(rule.start_date);
-        const end = new Date(rule.end_date);
-        const percent = parseFloat(rule.price);
-
-        if (journeyDate >= start && journeyDate <= end) {
-          const extra = (totalPrice * percent) / 100;
-          supplements += extra;
-          totalPrice += extra;
-          supplementDetails.push(
-            `Admin price adjustment: ${percent > 0 ? '+' : ''}${percent}% (€${extra.toFixed(2)})`
-          );
-        }
-      });
-    }
-
-    // ✅ Apply night-time charge
-    if (nightRule && isWithinNightHours(time, nightRule)) {
-      const extra = nightRule.charge;
-      supplements += extra;
-      totalPrice += extra;
-      supplementDetails.push(`Night-time charge: +€${extra.toFixed(2)}`);
-    }
-
-    // ✅ Apply weekend price (Saturday = 6, Sunday = 0)
-    if (date) {
-      const day = new Date(date).getDay();
-
-      // Weekend check
-      if ((day === 6 || day === 0) && weekendPrice > 0) {
-        const basePrice = totalPrice; // current total before surcharge
-        const percentageFromApi = weekendPrice; // e.g., API returns "2" → means 2%
-
-        // Calculate surcharge
-        const surcharge = (basePrice * percentageFromApi) / 100;
-
-        supplements += surcharge;
-        totalPrice += surcharge;
-
-        supplementDetails.push(`Weekend surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
-      }
-    }
-
-
-
+  if (!pricedLocation) {
     return {
-      basePrice: parseFloat(basePrice.toFixed(2)),
-      supplements: parseFloat(supplements.toFixed(2)),
-      totalPrice: parseFloat(totalPrice.toFixed(2)),
-      supplementDetails,
-      canPrice: true,
+      basePrice: 0,
+      supplements: 0,
+      totalPrice: 0,
+      supplementDetails: ['Price not available online - please contact us for a quote'],
+      canPrice: false,
     };
+  }
+
+  const pax = totalPax > 12 ? 12 : totalPax;
+  let basePrice = pricingData[pricedLocation][pax] || 0;
+  supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+
+  let totalPrice = basePrice;
+  let supplements = 0;
+
+  // Apply admin percentage rules
+  if (applyAdminRule && date && percentageRules.length > 0) {
+    const journeyDate = new Date(date);
+
+    percentageRules.forEach(rule => {
+      const start = new Date(rule.start_date);
+      const end = new Date(rule.end_date);
+      const percent = parseFloat(rule.price);
+
+      if (journeyDate >= start && journeyDate <= end) {
+        const extra = (totalPrice * percent) / 100;
+        supplements += extra;
+        totalPrice += extra;
+        supplementDetails.push(
+          `Admin price adjustment: ${percent > 0 ? '+' : ''}${percent}% (€${extra.toFixed(2)})`
+        );
+      }
+    });
+  }
+
+  // Apply night rule surcharge
+  if (nightRule && isWithinNightHours(time, nightRule)) {
+    const basePrice = totalPrice;
+    const apiPrice = nightRule?.charge;
+    const extra = (basePrice * apiPrice )/ 100;
+    supplements += extra;
+    totalPrice += extra;
+    supplementDetails.push(`Night-time charge: +€${extra.toFixed(2)}`);
+  }
+
+  // Apply weekend surcharge
+  if (date) {
+    const day = new Date(date).getDay();
+    if ((day === 6 || day === 0) && weekendPrice > 0) {
+      const basePrice = totalPrice; 
+      const percentageFromApi = weekendPrice; 
+      const surcharge = (basePrice * percentageFromApi) / 100;
+      supplements += surcharge;
+      totalPrice += surcharge;
+      supplementDetails.push(`Weekend surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
+    }
+  }
+
+  return {
+    basePrice: parseFloat(basePrice.toFixed(2)),
+    supplements: parseFloat(supplements.toFixed(2)),
+    totalPrice: parseFloat(totalPrice.toFixed(2)),
+    supplementDetails,
+    canPrice: true,
   };
+};
 
 
   const handleSubmit = () => {
@@ -497,7 +490,7 @@ export default function LocationInput() {
 
     let returnPrice =
       tripType === 'roundTrip'
-        ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation, false) // 👈 return leg should NOT include admin %
+        ? calculatePrice(returnDate, returnTime, destinationLocation, pickupLocation, true) // 👈 return leg should NOT include admin %
         : null;
 
     // If we can't price either leg, redirect to contact page
