@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin } from 'lucide-react';
 import { Facebook, Twitter, Instagram } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-
+// links
 const quickLinks = [
   { name: 'Useful Links', href: '/link-page' },
   { name: 'About Us', href: '/about' },
