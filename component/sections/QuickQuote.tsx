@@ -416,6 +416,7 @@ const QuoteSystem = () => {
     return allLocations.find(loc => loc.value === value)?.label || value;
   };
 
+
   const formatDate = (dateString: string) => {
     if (!dateString) return '';
 
@@ -564,11 +565,19 @@ const QuoteSystem = () => {
             </div>
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
-              <div className="text-yellow-700">
-                <p>For other resorts please contact </p><a href="mailto:info@featherstransfers.com" className='underline text-blue-500'>
-                  info@featherstransfers.com
-                </a>
-              </div>
+
+         <div className="mb-3 p-2 bg-yellow-100 border border-yellow-400 rounded text-yellow-800 text-sm">
+  For other resorts please contact{" "}
+  <a
+    href="https://mail.google.com/mail/?view=cm&fs=1&to=info@featherstransfers.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="underline text-blue-500"
+  >
+    info@featherstransfers.com
+  </a>
+</div>
+
             </div>
           )}
 
