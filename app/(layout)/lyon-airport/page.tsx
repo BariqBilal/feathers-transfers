@@ -55,7 +55,7 @@ export default function AirportGeneva(){
       imageUrl={airportData.imageUrl}
         imageAlt={airportData.imageAlt}
       />
-       <ProcedureSection sectionTitle="Arrival Proceedure at Lyon Airport" steps={stepsData} />
+       <ProcedureSection sectionTitle="Arrival Procedure at Lyon Airport" steps={stepsData} />
        <div style={{ padding: '20px' }}>
       <InfoCard
         title="Lyon Saint-Exupéry Airport – did you know ?"
