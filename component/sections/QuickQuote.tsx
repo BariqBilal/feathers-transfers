@@ -38,7 +38,7 @@ const QuoteSystem = () => {
   >([]);
   const [weekendPrice, setWeekendPrice] = useState<number>(0);
 
-  useEffect(() => {
+ useEffect(() => {
     const fetchWeekendPrice = async () => {
       try {
         const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/weekend-price", {
@@ -46,7 +46,7 @@ const QuoteSystem = () => {
         });
         const json = await res.json();
         if (json.success && json.data && json.data.length > 0) {
-          setWeekendPrice(parseFloat(json.data[0].price));
+          setWeekendPrice(json.data);
         }
       } catch (err) {
         console.error("Error fetching weekend price:", err);
@@ -201,78 +201,79 @@ const QuoteSystem = () => {
     return null;
   };
 
-  const calculatePrice = (
-    date: string,
-    time: string,
-    fromLocation: string,
-    toLocation: string
-  ) => {
-    const totalPax = adults + children;
-    const supplementDetails: string[] = [];
 
-    const pricedLocation = findPricedLocation(fromLocation, toLocation);
+const calculatePrice = (
+  date: string,
+  time: string,
+  fromLocation: string,
+  toLocation: string
+) => {
+  const totalPax = adults + children;
+  const supplementDetails: string[] = [];
 
-    if (!pricedLocation) {
-      return {
-        basePrice: 0,
-        supplements: 0,
-        totalPrice: 0,
-        supplementDetails: ['Price not available online - please contact us for a quote'],
-        canPrice: false,
-      };
-    }
+  const pricedLocation = findPricedLocation(fromLocation, toLocation);
 
-    const pax = totalPax > 12 ? 12 : totalPax;
-    let basePrice = pricingData[pricedLocation][pax] || 0;
-    supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
-
-    let totalPrice = basePrice;
-    let supplements = 0;
-
-    if (date && percentageRules.length > 0) {
-      const journeyDate = new Date(date);
-
-      percentageRules.forEach(rule => {
-        const start = new Date(rule.start_date);
-        const end = new Date(rule.end_date);
-        const percent = parseFloat(rule.price);
-
-        if (journeyDate >= start && journeyDate <= end) {
-          const extra = (totalPrice * percent) / 100;
-          supplements += extra;
-          totalPrice += extra;
-          supplementDetails.push(`Admin price increase: +${percent}% (€${extra.toFixed(2)})`);
-        }
-      });
-      if (date) {
-        const day = new Date(date).getDay();
-
-        // Weekend check
-        if ((day === 6 || day === 0) && weekendPrice > 0) {
-          const basePrice = totalPrice; // current total before surcharge
-          const percentageFromApi = weekendPrice; // e.g., API returns "2" → means 2%
-
-          // Calculate surcharge
-          const surcharge = (basePrice * percentageFromApi) / 100;
-
-          supplements += surcharge;
-          totalPrice += surcharge;
-
-          supplementDetails.push(`Weekend surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
-        }
-      }
-
-
-    }
-
+  if (!pricedLocation) {
     return {
-      basePrice: parseFloat(basePrice.toFixed(2)),
-      supplements: parseFloat(supplements.toFixed(2)),
-      totalPrice: parseFloat(totalPrice.toFixed(2)),
-      supplementDetails,
-      canPrice: true,
+      basePrice: 0,
+      supplements: 0,
+      totalPrice: 0,
+      supplementDetails: ['Price not available online - please contact us for a quote'],
+      canPrice: false,
     };
+  }
+
+  const pax = totalPax > 12 ? 12 : totalPax;
+  let basePrice = pricingData[pricedLocation][pax] || 0;
+  supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+
+  let totalPrice = basePrice;
+  let supplements = 0;
+
+  if (date && percentageRules.length > 0) {
+    const journeyDate = new Date(date);
+
+    percentageRules.forEach(rule => {
+      const start = new Date(rule.start_date);
+      const end = new Date(rule.end_date);
+      const percent = parseFloat(rule.price);
+
+      if (journeyDate >= start && journeyDate <= end) {
+        const extra = (totalPrice * percent) / 100;
+        supplements += extra;
+        totalPrice += extra;
+        supplementDetails.push(`Admin price increase: +${percent}% (€${extra.toFixed(2)})`);
+      }
+    });
+  }
+
+  if (date) {
+    const day = new Date(date).getDay();
+    const dayName = day === 6 ? 'saturday' : day === 0 ? 'sunday' : null;
+
+    if (dayName && Array.isArray(weekendPrice) && weekendPrice.length > 0) {
+      const dayPrice = weekendPrice.find((item: {day: string, price: string}) => item.day === dayName);
+      if (dayPrice) {
+        console.log(basePrice,'basePrice')
+        const percentageFromApi = parseFloat(dayPrice.price);
+        const surcharge = (basePrice * percentageFromApi) / 100;
+        console.log(surcharge,'surcharge')
+        supplements += surcharge;
+        totalPrice += surcharge;
+        
+        supplementDetails.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)} surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
+      }
+    }
+  }
+
+  return {
+    basePrice: parseFloat(basePrice.toFixed(2)),
+    supplements: parseFloat(supplements.toFixed(2)),
+    totalPrice: parseFloat(totalPrice.toFixed(2)),
+    supplementDetails,
+    canPrice: true,
   };
+};
 
   useEffect(() => {
     if (isFormValid && !showQuoteDetails) {
