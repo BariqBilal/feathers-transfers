@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Menu } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const navItems = [
@@ -29,6 +30,21 @@ export default function Navbar() {
     { name: 'Contact Us', href: '/contact' },
   ];
 
+  // Check if device is mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
+
+  // Handle click outside for desktop dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (openDropdown && dropdownRefs.current[openDropdown]) {
@@ -37,12 +53,17 @@ export default function Navbar() {
         }
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    
+    if (!isMobile) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [openDropdown]);
+  }, [openDropdown, isMobile]);
 
+  // Handle scroll to close dropdowns
   useEffect(() => {
     const handleScroll = () => {
       setOpenDropdown(null);
@@ -52,6 +73,30 @@ export default function Navbar() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Handle desktop dropdown hover
+  const handleMouseEnter = (itemName: string) => {
+    if (!isMobile) {
+      setOpenDropdown(itemName);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setOpenDropdown(null);
+    }
+  };
+
+  // Handle dropdown click (works for both desktop and mobile)
+  const handleDropdownClick = (itemName: string) => {
+    setOpenDropdown(openDropdown === itemName ? null : itemName);
+  };
+
+  // Close mobile menu
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    setOpenDropdown(null);
+  };
 
   return (
     <nav className="bg-white shadow-sm font-inter sticky top-0 z-50">
@@ -86,11 +131,12 @@ export default function Navbar() {
                   ref={(el) => {
                     dropdownRefs.current[item.name] = el;
                   }}
-                  onMouseEnter={() => setOpenDropdown(item.name)}
-                  onMouseLeave={() => setOpenDropdown(null)}
+                  onMouseEnter={() => handleMouseEnter(item.name)}
+                  onMouseLeave={handleMouseLeave}
                 >
                   <button
-                    className="text-gray-700 hover:text-blue-600 text-sm font-medium flex items-center"
+                    onClick={() => handleDropdownClick(item.name)}
+                    className="text-gray-700 hover:text-blue-600 text-sm font-medium flex items-center transition-colors duration-200"
                   >
                     {item.name}
                     <ChevronDown
@@ -100,12 +146,12 @@ export default function Navbar() {
                     />
                   </button>
                   {openDropdown === item.name && (
-                    <div className="absolute right-0 mt-0 w-48 bg-white shadow-lg rounded-md z-20">
+                    <div className="absolute right-0 mt-2 w-56 bg-white shadow-lg rounded-md border border-gray-100 z-20 py-1">
                       {item.dropdownItems.map((dropdownItem) => (
                         <Link
                           key={dropdownItem.name}
                           href={dropdownItem.href}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors duration-150"
                           onClick={() => setOpenDropdown(null)}
                         >
                           {dropdownItem.name}
@@ -118,7 +164,7 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-gray-700 hover:text-blue-600 text-sm font-medium"
+                  className="text-gray-700 hover:text-blue-600 text-sm font-medium transition-colors duration-200"
                 >
                   {item.name}
                 </Link>
@@ -130,9 +176,14 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-gray-700 hover:text-blue-600 focus:outline-none"
+              className="p-2 text-gray-700 hover:text-blue-600 focus:outline-none transition-colors duration-200"
+              aria-label="Toggle mobile menu"
             >
-              <Menu className="h-6 w-6" />
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -140,52 +191,49 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden px-4 pb-4">
-          {navItems.map((item) =>
-            item.dropdownItems ? (
-              <div key={item.name} className="mb-2">
-                <button
-                  onClick={() =>
-                    setOpenDropdown(openDropdown === item.name ? null : item.name)
-                  }
-                  className="w-full text-left text-gray-700 font-medium py-2 flex justify-between items-center"
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+          <div className="px-4 py-2 space-y-1 max-h-96 overflow-y-auto">
+            {navItems.map((item) =>
+              item.dropdownItems ? (
+                <div key={item.name} className="border-b border-gray-100 last:border-b-0">
+                  <button
+                    onClick={() => handleDropdownClick(item.name)}
+                    className="w-full text-left text-gray-700 font-medium py-3 flex justify-between items-center hover:text-blue-600 transition-colors duration-200"
+                  >
+                    <span>{item.name}</span>
+                    <ChevronDown
+                      className={`h-5 w-5 transition-transform duration-200 ${
+                        openDropdown === item.name ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {openDropdown === item.name && (
+                    <div className="ml-4 pb-2 space-y-1">
+                      {item.dropdownItems.map((dropdownItem) => (
+                        <Link
+                          key={dropdownItem.name}
+                          href={dropdownItem.href}
+                          className="block text-sm text-gray-600 hover:text-blue-600 py-2 pl-2 hover:bg-gray-50 rounded transition-colors duration-150"
+                          onClick={closeMobileMenu}
+                        >
+                          {dropdownItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="block text-gray-700 hover:text-blue-600 py-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 px-2 rounded transition-colors duration-200"
+                  onClick={closeMobileMenu}
                 >
                   {item.name}
-                  <ChevronDown
-                    className={`h-5 w-5 transition-transform duration-200 ${
-                      openDropdown === item.name ? 'rotate-180' : ''
-                    }`}
-                  />
-                </button>
-                {openDropdown === item.name && (
-                  <div className="ml-4 space-y-1">
-                    {item.dropdownItems.map((dropdownItem) => (
-                      <Link
-                        key={dropdownItem.name}
-                        href={dropdownItem.href}
-                        className="block text-sm text-gray-600 hover:text-blue-600 py-1"
-                        onClick={() => {
-                          setOpenDropdown(null);
-                          setIsMobileMenuOpen(false);
-                        }}
-                      >
-                        {dropdownItem.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="block text-gray-700 hover:text-blue-600 py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            )
-          )}
+                </Link>
+              )
+            )}
+          </div>
         </div>
       )}
     </nav>

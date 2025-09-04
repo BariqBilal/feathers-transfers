@@ -406,7 +406,7 @@ function BookingSummaryContent() {
                   required
                 />
                 <label htmlFor="termsAndConditions" className="ml-2 block text-sm text-gray-900">
-                  I agree to the <Link href="/terms"><span className="text-primary underline">Terms and Conditions</span></Link>
+                  I agree to the all<Link href="/terms"><span className="text-primary underline">Terms and Conditions</span></Link>
                 </label>
               </div>
             </div>
