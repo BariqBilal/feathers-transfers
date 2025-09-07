@@ -126,12 +126,12 @@ const QuoteSystem = () => {
     { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-    {
-      value: 'other-resort',
-      label: 'For other resorts please contact info@featherstransfers.com',
-      type: 'other',
-      disabled: true
-    }
+      {
+        value: 'other-resort',
+        label: 'For other resorts please contact info@featherstransfers.com',
+        type: 'other',
+        disabled: true
+      }
   ];
 
   const getPickupLocations = (currentValue: string, oppositeValue: string) => {

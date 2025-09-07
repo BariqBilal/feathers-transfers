@@ -23,23 +23,12 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedDate, setSelectedDate] = useState(date);
   const [selectedHour, setSelectedHour] = useState(() => {
-    if (time) {
-      const hour = parseInt(time.split(':')[0]);
-      return hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    }
-    const currentHour = new Date().getHours();
-    return currentHour === 0 ? 12 : currentHour > 12 ? currentHour - 12 : currentHour;
+    if (time) return parseInt(time.split(':')[0]);
+    return new Date().getHours();
   });
   const [selectedMinute, setSelectedMinute] = useState(() => {
     if (time) return parseInt(time.split(':')[1]);
     return new Date().getMinutes();
-  });
-  const [selectedPeriod, setSelectedPeriod] = useState<'AM' | 'PM'>(() => {
-    if (time) {
-      const hour = parseInt(time.split(':')[0]);
-      return hour >= 12 ? 'PM' : 'AM';
-    }
-    return new Date().getHours() >= 12 ? 'PM' : 'AM';
   });
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [currentView, setCurrentView] = useState<'date' | 'time'>('date');
@@ -52,9 +41,8 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     if (date) setSelectedDate(date);
     if (time) {
       const [hour, minute] = time.split(':').map(Number);
-      setSelectedHour(hour === 0 ? 12 : hour > 12 ? hour - 12 : hour);
+      setSelectedHour(hour);
       setSelectedMinute(minute);
-      setSelectedPeriod(hour >= 12 ? 'PM' : 'AM');
     }
   }, [date, time]);
 
@@ -87,15 +75,6 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     return () => document.removeEventListener('click', handleOutsideClick, true);
   }, [showDropdown]);
 
-  // Convert 12-hour format to 24-hour format
-  const get24HourFormat = (hour: number, period: 'AM' | 'PM'): number => {
-    if (period === 'AM') {
-      return hour === 12 ? 0 : hour;
-    } else {
-      return hour === 12 ? 12 : hour + 12;
-    }
-  };
-
   // Format display text
   const displayDateTime = useMemo(() => {
     if (!selectedDate) return placeholder;
@@ -109,12 +88,12 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
     const year = dateObj.getFullYear();
     
     if (showTimeAfterDate || time) {
-      const timeStr = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')} ${selectedPeriod}`;
+      const timeStr = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
       return `${weekday}, ${day} ${month} ${year}, ${timeStr}`;
     }
     
     return `${weekday}, ${day} ${month} ${year}`;
-  }, [selectedDate, selectedHour, selectedMinute, selectedPeriod, placeholder, showTimeAfterDate, time]);
+  }, [selectedDate, selectedHour, selectedMinute, placeholder, showTimeAfterDate, time]);
 
   // Calendar navigation
   const goToPreviousMonth = () => {
@@ -149,13 +128,12 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
   };
 
   // Check if a time is disabled
-  const isTimeDisabled = (hour: number, minute: number, period: 'AM' | 'PM') => {
+  const isTimeDisabled = (hour: number, minute: number) => {
     if (!minTime || !minDate || selectedDate !== minDate) return false;
     
     const [minHour, minMinute] = minTime.split(':').map(Number);
-    const currentHour24 = get24HourFormat(hour, period);
     
-    return currentHour24 < minHour || (currentHour24 === minHour && minute < minMinute);
+    return hour < minHour || (hour === minHour && minute < minMinute);
   };
 
   // Generate calendar days
@@ -200,31 +178,24 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
       // Reset time if needed when date changes
       if (minDate && newDateStr === minDate && minTime) {
         const [minHour, minMinute] = minTime.split(':').map(Number);
-        const currentHour24 = get24HourFormat(selectedHour, selectedPeriod);
         
-        if (currentHour24 < minHour || (currentHour24 === minHour && selectedMinute < minMinute)) {
-          const newHour = minHour === 0 ? 12 : minHour > 12 ? minHour - 12 : minHour;
-          const newPeriod = minHour >= 12 ? 'PM' : 'AM';
-          setSelectedHour(newHour);
+        if (selectedHour < minHour || (selectedHour === minHour && selectedMinute < minMinute)) {
+          setSelectedHour(minHour);
           setSelectedMinute(minMinute);
-          setSelectedPeriod(newPeriod);
         }
       }
       
-      const hour24 = get24HourFormat(selectedHour, selectedPeriod);
-      const timeString = `${String(hour24).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
+      const timeString = `${String(selectedHour).padStart(2, '0')}:${String(selectedMinute).padStart(2, '0')}`;
       onChange(newDateStr, timeString);
     }
   };
 
   // Handle time change
-  const handleTimeChange = (newHour?: number, newMinute?: number, newPeriod?: 'AM' | 'PM') => {
+  const handleTimeChange = (newHour?: number, newMinute?: number) => {
     const hour = newHour ?? selectedHour;
     const minute = newMinute ?? selectedMinute;
-    const period = newPeriod ?? selectedPeriod;
     
-    const hour24 = get24HourFormat(hour, period);
-    const timeString = `${String(hour24).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+    const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     
     onChange(selectedDate, timeString);
   };
@@ -380,13 +351,13 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                       onChange={(e) => {
                         const newHour = parseInt(e.target.value);
                         setSelectedHour(newHour);
-                        handleTimeChange(newHour, selectedMinute, selectedPeriod);
+                        handleTimeChange(newHour, selectedMinute);
                       }}
                       className="w-16 h-12 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold"
                     >
-                      {Array.from({ length: 12 }, (_, i) => {
-                        const hour = i + 1;
-                        const disabled = isTimeDisabled(hour, selectedMinute, selectedPeriod);
+                      {Array.from({ length: 24 }, (_, i) => {
+                        const hour = i;
+                        const disabled = isTimeDisabled(hour, selectedMinute);
                         return (
                           <option key={hour} value={hour} disabled={disabled}>
                             {String(hour).padStart(2, '0')}
@@ -406,12 +377,12 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                       onChange={(e) => {
                         const newMinute = parseInt(e.target.value);
                         setSelectedMinute(newMinute);
-                        handleTimeChange(selectedHour, newMinute, selectedPeriod);
+                        handleTimeChange(selectedHour, newMinute);
                       }}
                       className="w-16 h-12 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg font-semibold"
                     >
                       {Array.from({ length: 60 }, (_, i) => {
-                        const disabled = isTimeDisabled(selectedHour, i, selectedPeriod);
+                        const disabled = isTimeDisabled(selectedHour, i);
                         return (
                           <option key={i} value={i} disabled={disabled}>
                             {String(i).padStart(2, '0')}
@@ -420,46 +391,10 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
                       })}
                     </select>
                   </div>
-                  
-                  {/* AM/PM */}
-                  <div className="flex flex-col items-center">
-                    <label className="text-sm font-medium text-gray-600 mb-2">Period</label>
-                    <div className="flex flex-col bg-gray-100 rounded-lg p-1">
-                      <button
-                        onClick={() => {
-                          setSelectedPeriod('AM');
-                          handleTimeChange(selectedHour, selectedMinute, 'AM');
-                        }}
-                        className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-                          selectedPeriod === 'AM'
-                            ? 'bg-white text-blue-600 shadow-sm'
-                            : 'text-gray-600 hover:text-gray-800'
-                        }`}
-                      >
-                        AM
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedPeriod('PM');
-                          handleTimeChange(selectedHour, selectedMinute, 'PM');
-                        }}
-                        className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-                          selectedPeriod === 'PM'
-                            ? 'bg-white text-blue-600 shadow-sm'
-                            : 'text-gray-600 hover:text-gray-800'
-                        }`}
-                      >
-                        PM
-                      </button>
-                    </div>
-                  </div>
                 </div>
                 
                 <div className="text-lg font-semibold text-gray-800 mb-2">
-                  {String(selectedHour).padStart(2, '0')}:{String(selectedMinute).padStart(2, '0')} {selectedPeriod}
-                </div>
-                <div className="text-sm text-gray-500">
-                  24-hour format: {String(get24HourFormat(selectedHour, selectedPeriod)).padStart(2, '0')}:{String(selectedMinute).padStart(2, '0')}
+                  {String(selectedHour).padStart(2, '0')}:{String(selectedMinute).padStart(2, '0')}
                 </div>
               </div>
               

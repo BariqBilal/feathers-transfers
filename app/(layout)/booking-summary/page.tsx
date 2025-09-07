@@ -5,8 +5,8 @@ import Image from 'next/image';
 import axios from 'axios';
 
 // Import React Icons
-import { MdLocationOn, MdCalendarMonth, MdAccessTime } from 'react-icons/md';
-import { FaUsers, FaEuroSign } from 'react-icons/fa';
+import { MdLocationOn, MdCalendarMonth, MdAccessTime, MdFlight } from 'react-icons/md';
+import { FaUsers, FaEuroSign, FaPlane } from 'react-icons/fa';
 import Link from 'next/link';
 
 function BookingSummaryContent() {
@@ -69,7 +69,9 @@ function BookingSummaryContent() {
     email: '',
     accommodationAddress: '',
     accommodationWebsite: '',
-    specialRequests: ''
+    specialRequests: '',
+    flightNumber: '',
+    airline: ''
   });
 
   // State for terms and conditions checkbox
@@ -120,6 +122,8 @@ function BookingSummaryContent() {
         accommodation_address: formData.accommodationAddress,
         accommodation_website: formData.accommodationWebsite,
         special_requests: formData.specialRequests,
+        flight_number: formData.flightNumber,
+        airline: formData.airline,
         adults: adults,
         children: children,
         supermarket_stop: includeSupermarketStop
@@ -158,6 +162,10 @@ function BookingSummaryContent() {
       params.append('totalPrice', totalPrice.toString());
       params.append('returnTotalPrice', returnTotalPrice.toString());
       params.append('includeSupermarketStop', includeSupermarketStop.toString());
+
+      // Add flight information
+      params.append('flightNumber', formData.flightNumber);
+      params.append('airline', formData.airline);
 
       // Add additional information
       params.append('accommodationAddress', formData.accommodationAddress);
@@ -309,6 +317,41 @@ function BookingSummaryContent() {
                     onChange={handleInputChange}
                     className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                     required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Flight Information */}
+            <div className="border border-gray-300 rounded-xl p-6 shadow-sm">
+              <h3 className="text-lg sm:text-xl font-bold mb-4 text-gray-800">Flight Information (Optional)</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mb-4">
+                  <label htmlFor="flightNumber" className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <MdFlight className="mr-2 text-blue-600" /> Flight Number
+                  </label>
+                  <input
+                    type="text"
+                    id="flightNumber"
+                    name="flightNumber"
+                    value={formData.flightNumber}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="e.g., BA123"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="airline" className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                    <FaPlane className="mr-2 text-blue-600" /> Airline
+                  </label>
+                  <input
+                    type="text"
+                    id="airline"
+                    name="airline"
+                    value={formData.airline}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="e.g., British Airways"
                   />
                 </div>
               </div>
