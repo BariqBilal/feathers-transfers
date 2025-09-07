@@ -4,7 +4,7 @@ import { FiCheckCircle, FiHome } from 'react-icons/fi';
 import { Suspense, useEffect, useState } from 'react';
 import { MdLocationOn, MdCalendarMonth, MdAccessTime, MdEmail, MdPhone } from 'react-icons/md';
 import { FaUsers, FaEuroSign, FaShoppingCart } from 'react-icons/fa';
-
+// gg
 function BookingConfirmationContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
