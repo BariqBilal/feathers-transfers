@@ -35,10 +35,10 @@ export default function Navbar() {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkIfMobile();
     window.addEventListener('resize', checkIfMobile);
-    
+
     return () => {
       window.removeEventListener('resize', checkIfMobile);
     };
@@ -53,11 +53,11 @@ export default function Navbar() {
         }
       }
     };
-    
+
     if (!isMobile) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -131,18 +131,15 @@ export default function Navbar() {
                   ref={(el) => {
                     dropdownRefs.current[item.name] = el;
                   }}
-                  onMouseEnter={() => handleMouseEnter(item.name)}
-                  onMouseLeave={handleMouseLeave}
                 >
                   <button
-                    onClick={() => handleDropdownClick(item.name)}
+                    onClick={() => handleDropdownClick(item.name)} // ✅ Click toggle
                     className="text-gray-700 hover:text-blue-600 text-sm font-medium flex items-center transition-colors duration-200"
                   >
                     {item.name}
                     <ChevronDown
-                      className={`ml-1 h-4 w-4 transition-transform duration-200 ${
-                        openDropdown === item.name ? 'rotate-180' : ''
-                      }`}
+                      className={`ml-1 h-4 w-4 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''
+                        }`}
                     />
                   </button>
                   {openDropdown === item.name && (
@@ -171,6 +168,7 @@ export default function Navbar() {
               )
             )}
           </div>
+
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
@@ -202,9 +200,8 @@ export default function Navbar() {
                   >
                     <span>{item.name}</span>
                     <ChevronDown
-                      className={`h-5 w-5 transition-transform duration-200 ${
-                        openDropdown === item.name ? 'rotate-180' : ''
-                      }`}
+                      className={`h-5 w-5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''
+                        }`}
                     />
                   </button>
                   {openDropdown === item.name && (

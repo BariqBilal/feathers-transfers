@@ -1,4 +1,7 @@
+"use client";
+
 import React, { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import LocationInput from '../locationInput/LocationInput';
 
 interface HeroSectionProps {
@@ -9,6 +12,19 @@ interface HeroSectionProps {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ height = '80vh', bgImage, title, description }) => {
+  const searchParams = useSearchParams();
+
+  // ✅ Extract booking details
+  const bookingData = {
+    tripType: (searchParams.get("tripType") as "oneWay" | "roundTrip") || "oneWay",
+    pickupLocation: searchParams.get("pickupLocation") || "",
+    destinationLocation: searchParams.get("destinationLocation") || "",
+
+    adults: searchParams.get("adults") || "1",
+    children: searchParams.get("children") || "0",
+  };
+
+
   return (
     <section
       className="relative h-full bg-cover bg-center flex flex-col justify-between items-center"
@@ -17,7 +33,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ height = '80vh', bgImage, tit
         minHeight: height,
       }}
     >
-      
       <div className="bg-black/20 absolute inset-0"></div>
 
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 text-white md:text-center text-left md:pt-32 pt-8">
@@ -26,17 +41,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ height = '80vh', bgImage, tit
       </div>
 
       <div className="relative z-10 w-full md:pb-10 mx-auto mt-auto md:top-20 top-4">
-          <Suspense fallback={
-              <div className="relative flex items-center justify-center">
-                <div className="bg-white p-4 rounded-xl md:shadow-lg md:w-auto w-full md:min-w-4xl pt-12">
-                  <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                  </div>
-                </div>
+        <Suspense fallback={
+          <div className="relative flex items-center justify-center">
+            <div className="bg-white p-4 rounded-xl md:shadow-lg md:w-auto w-full md:min-w-4xl pt-12">
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
-            }>
-        <LocationInput />
-            </Suspense>
+            </div>
+          </div>
+        }>
+          {/* ✅ Pass bookingData as props */}
+          <LocationInput defaultValues={bookingData} />
+        </Suspense>
       </div>
     </section>
   );

@@ -38,7 +38,7 @@ const QuoteSystem = () => {
   >([]);
   const [weekendPrice, setWeekendPrice] = useState<number>(0);
 
- useEffect(() => {
+  useEffect(() => {
     const fetchWeekendPrice = async () => {
       try {
         const res = await fetch("https://devsquare-apis.vercel.app/api/transfers/weekend-price", {
@@ -126,12 +126,12 @@ const QuoteSystem = () => {
     { value: 'Montchavin', label: 'Montchavin', type: 'resort', country: 'FR' },
     { value: 'Les Coches', label: 'Les Coches', type: 'resort', country: 'FR' },
     { value: 'Champagny en Vanoise', label: 'Champagny en Vanoise', type: 'resort', country: 'FR' },
-      {
-        value: 'other-resort',
-        label: 'For other resorts please contact info@featherstransfers.com',
-        type: 'other',
-        disabled: true
-      }
+    {
+      value: 'other-resort',
+      label: 'For other resorts please contact info@featherstransfers.com',
+      type: 'other',
+      disabled: true
+    }
   ];
 
   const getPickupLocations = (currentValue: string, oppositeValue: string) => {
@@ -202,78 +202,78 @@ const QuoteSystem = () => {
   };
 
 
-const calculatePrice = (
-  date: string,
-  time: string,
-  fromLocation: string,
-  toLocation: string
-) => {
-  const totalPax = adults + children;
-  const supplementDetails: string[] = [];
+  const calculatePrice = (
+    date: string,
+    time: string,
+    fromLocation: string,
+    toLocation: string
+  ) => {
+    const totalPax = adults + children;
+    const supplementDetails: string[] = [];
 
-  const pricedLocation = findPricedLocation(fromLocation, toLocation);
+    const pricedLocation = findPricedLocation(fromLocation, toLocation);
 
-  if (!pricedLocation) {
-    return {
-      basePrice: 0,
-      supplements: 0,
-      totalPrice: 0,
-      supplementDetails: ['Price not available online - please contact us for a quote'],
-      canPrice: false,
-    };
-  }
+    if (!pricedLocation) {
+      return {
+        basePrice: 0,
+        supplements: 0,
+        totalPrice: 0,
+        supplementDetails: ['Price not available online - please contact us for a quote'],
+        canPrice: false,
+      };
+    }
 
-  const pax = totalPax > 12 ? 12 : totalPax;
-  let basePrice = pricingData[pricedLocation][pax] || 0;
-  supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
+    const pax = totalPax > 12 ? 12 : totalPax;
+    let basePrice = pricingData[pricedLocation][pax] || 0;
+    supplementDetails.push(`Base price for ${pax} passengers: €${basePrice.toFixed(2)}`);
 
-  let totalPrice = basePrice;
-  let supplements = 0;
+    let totalPrice = basePrice;
+    let supplements = 0;
 
-  if (date && percentageRules.length > 0) {
-    const journeyDate = new Date(date);
+    if (date && percentageRules.length > 0) {
+      const journeyDate = new Date(date);
 
-    percentageRules.forEach(rule => {
-      const start = new Date(rule.start_date);
-      const end = new Date(rule.end_date);
-      const percent = parseFloat(rule.price);
+      percentageRules.forEach(rule => {
+        const start = new Date(rule.start_date);
+        const end = new Date(rule.end_date);
+        const percent = parseFloat(rule.price);
 
-      if (journeyDate >= start && journeyDate <= end) {
-        const extra = (totalPrice * percent) / 100;
-        supplements += extra;
-        totalPrice += extra;
-        supplementDetails.push(`Admin price increase: +${percent}% (€${extra.toFixed(2)})`);
-      }
-    });
-  }
+        if (journeyDate >= start && journeyDate <= end) {
+          const extra = (totalPrice * percent) / 100;
+          supplements += extra;
+          totalPrice += extra;
+          supplementDetails.push(`Admin price increase: +${percent}% (€${extra.toFixed(2)})`);
+        }
+      });
+    }
 
-  if (date) {
-    const day = new Date(date).getDay();
-    const dayName = day === 6 ? 'saturday' : day === 0 ? 'sunday' : null;
+    if (date) {
+      const day = new Date(date).getDay();
+      const dayName = day === 6 ? 'saturday' : day === 0 ? 'sunday' : null;
 
-    if (dayName && Array.isArray(weekendPrice) && weekendPrice.length > 0) {
-      const dayPrice = weekendPrice.find((item: {day: string, price: string}) => item.day === dayName);
-      if (dayPrice) {
-        console.log(basePrice,'basePrice')
-        const percentageFromApi = parseFloat(dayPrice.price);
-        const surcharge = (basePrice * percentageFromApi) / 100;
-        console.log(surcharge,'surcharge')
-        supplements += surcharge;
-        totalPrice += surcharge;
-        
-        supplementDetails.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)} surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
+      if (dayName && Array.isArray(weekendPrice) && weekendPrice.length > 0) {
+        const dayPrice = weekendPrice.find((item: { day: string, price: string }) => item.day === dayName);
+        if (dayPrice) {
+          console.log(basePrice, 'basePrice')
+          const percentageFromApi = parseFloat(dayPrice.price);
+          const surcharge = (basePrice * percentageFromApi) / 100;
+          console.log(surcharge, 'surcharge')
+          supplements += surcharge;
+          totalPrice += surcharge;
+
+          supplementDetails.push(`${dayName.charAt(0).toUpperCase() + dayName.slice(1)} surcharge (${percentageFromApi}%): +€${surcharge.toFixed(2)}`);
+        }
       }
     }
-  }
 
-  return {
-    basePrice: parseFloat(basePrice.toFixed(2)),
-    supplements: parseFloat(supplements.toFixed(2)),
-    totalPrice: parseFloat(totalPrice.toFixed(2)),
-    supplementDetails,
-    canPrice: true,
+    return {
+      basePrice: parseFloat(basePrice.toFixed(2)),
+      supplements: parseFloat(supplements.toFixed(2)),
+      totalPrice: parseFloat(totalPrice.toFixed(2)),
+      supplementDetails,
+      canPrice: true,
+    };
   };
-};
 
   useEffect(() => {
     if (isFormValid && !showQuoteDetails) {
@@ -389,8 +389,19 @@ const calculatePrice = (
       return;
     }
 
-    router.push(`/book-now`);
+    const query = new URLSearchParams({
+      adults: adults.toString(),
+      children: children.toString(),
+      tripType,
+      pickupLocation,
+      destinationLocation,
+
+
+    });
+
+    router.push(`/book-now?${query.toString()}`);
   };
+
 
   const handleChangeDetails = () => {
     setShowQuoteDetails(true);
@@ -567,17 +578,17 @@ const calculatePrice = (
           ) : (
             <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
 
-         <div className="mb-3 p-2 bg-yellow-100 border border-yellow-400 rounded text-yellow-800 text-sm">
-  For other resorts please contact{" "}
-  <a
-    href="https://mail.google.com/mail/?view=cm&fs=1&to=info@featherstransfers.com"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="underline text-blue-500"
-  >
-    info@featherstransfers.com
-  </a>
-</div>
+              <div className="mb-3 p-2 bg-yellow-100 border border-yellow-400 rounded text-yellow-800 text-sm">
+                For other resorts please contact{" "}
+                <a
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=info@featherstransfers.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-blue-500"
+                >
+                  info@featherstransfers.com
+                </a>
+              </div>
 
             </div>
           )}

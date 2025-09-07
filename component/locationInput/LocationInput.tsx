@@ -14,37 +14,61 @@ type LocationOption = {
   disabled?: boolean;
 };
 
-export default function LocationInput() {
+type LocationInputProps = {
+  defaultValues?: {
+    tripType?: 'oneWay' | 'roundTrip';
+    pickupLocation?: string;
+    destinationLocation?: string;
+    selectedDate?: string;
+    selectedTime?: string;
+    returnDate?: string;
+    returnTime?: string;
+    adults?: string;
+    children?: string;
+  };
+};
+
+export default function LocationInput({ defaultValues }: LocationInputProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Initialize state from URL parameters if available
+  // Initialize state from searchParams → fallback to props → fallback to default
   const [tripType, setTripType] = useState<'oneWay' | 'roundTrip'>(
-    searchParams.get('tripType') as 'oneWay' | 'roundTrip' || 'roundTrip'
+    (searchParams.get('tripType') as 'oneWay' | 'roundTrip') ||
+      defaultValues?.tripType ||
+      'roundTrip'
   );
+
   const [pickupLocation, setPickupLocation] = useState(
-    searchParams.get('pickupLocation') || ''
+    searchParams.get('pickupLocation') || defaultValues?.pickupLocation || ''
   );
+
   const [destinationLocation, setDestinationLocation] = useState(
-    searchParams.get('destinationLocation') || ''
+    searchParams.get('destinationLocation') || defaultValues?.destinationLocation || ''
   );
+
   const [selectedDate, setSelectedDate] = useState(
-    searchParams.get('selectedDate') || ''
+    searchParams.get('selectedDate') || defaultValues?.selectedDate || ''
   );
+
   const [selectedTime, setSelectedTime] = useState(
-    searchParams.get('selectedTime') || '09:00'
+    searchParams.get('selectedTime') || defaultValues?.selectedTime || '09:00'
   );
+
   const [returnDate, setReturnDate] = useState(
-    searchParams.get('returnDate') || ''
+    searchParams.get('returnDate') || defaultValues?.returnDate || ''
   );
+
   const [returnTime, setReturnTime] = useState(
-    searchParams.get('returnTime') || '09:00'
+    searchParams.get('returnTime') || defaultValues?.returnTime || '09:00'
   );
+
   const [adults, setAdults] = useState(
-    parseInt(searchParams.get('adults') || '1')
+    parseInt(searchParams.get('adults') || defaultValues?.adults || '1')
   );
+
   const [children, setChildren] = useState(
-    parseInt(searchParams.get('children') || '0')
+    parseInt(searchParams.get('children') || defaultValues?.children || '0')
   );
   const [isMobile, setIsMobile] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
