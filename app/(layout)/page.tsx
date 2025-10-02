@@ -1,10 +1,16 @@
+"use client";
+import { useEffect } from "react";
+
 import HeroSection3 from "@/component/sections/HeroSection3";
 import PartnerSection from "@/component/sections/PartnerSection";
 import QuoteSection from "@/component/sections/QueteSection";
 import ServiceSection from "@/component/sections/ServiceSection";
 import Testimonials from "@/component/sections/Testimonials";
 
+
+
 export default function Home() {
+   
   return (
     <div className="">
       <HeroSection3
