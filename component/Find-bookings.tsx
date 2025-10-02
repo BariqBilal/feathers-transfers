@@ -212,7 +212,7 @@ export default function FindBookings() {
     const handleDeleteBooking = async (id: string) => {
         try {
             // Call the DELETE API to remove the booking
-            const res = await fetch(`http://localhost:3001/api/transfers?${new URLSearchParams({ id })}`, {
+            const res = await fetch(`https://devsquare-apis.vercel.app/api/transfers?${new URLSearchParams({ id })}`, {
                 method: "DELETE",
             });
 
@@ -260,7 +260,7 @@ export default function FindBookings() {
 
         try {
             // Simulate API request for updating booking
-            const res = await fetch(`http://localhost:3001/api/transfers`, {
+            const res = await fetch(`https://devsquare-apis.vercel.app/api/transfers`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(editBooking),
